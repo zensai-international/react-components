@@ -1,9 +1,15 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var DeclarationBundlerPlugin = require('declaration-bundler-webpack-plugin');
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
 module.exports = {
-    context: path.resolve(__dirname, './src'),
-    entry: './index',
+    context: path.resolve(__dirname, '.'),
+    entry: {
+        'index': './src/index',
+        'index.tests': './tests/index'
+    },
     externals: {
         'react': {
             root: 'React',
@@ -19,22 +25,27 @@ module.exports = {
         }
     },
     module: {
-        loaders: [
-            { loader: 'ts-loader', test: /\.tsx?$/ }
+        rules: [
+            {
+                loader: 'ts-loader',
+                // options: {
+                //     transpileOnly: true
+                // },
+                test: /\.tsx?$/
+            }
         ]
     },
     output: {
-        filename: 'index.js',
-        libraryTarget: 'umd',
-        path: './dist'
+        filename: '[name].js',
+        path: path.resolve(__dirname, './dist')
     },
     plugins: [
         new webpack.DefinePlugin({
             'NODE_ENV': JSON.stringify('production')
         }),
-        new webpack.NoErrorsPlugin(),
-        /*new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin()*/],
+        new webpack.NoEmitOnErrorsPlugin(),
+        new ForkTsCheckerWebpackPlugin()
+    ],
     resolve: {
         alias: {
             'react$': path.resolve(__dirname, './node_modules/react/dist/react-with-addons'),
@@ -42,15 +53,6 @@ module.exports = {
             'react-addons-test-utils$': path.resolve(__dirname, './node_modules/react-addons-test-utils/index'),
             'sinon': 'sinon/pkg/sinon'
         },
-        extensions: ['', '.js', '.json', '.ts', '.tsx']
-    },
-    resolveLoader: {
-        modulesDirectories: ['./node_modules']
-    },
-    ts: {
-        'compilerOptions': {
-            'declaration': true,
-            'outDir': 'types'
-        }
+        extensions: ['.js', '.json', '.ts', '.tsx']
     }
 }

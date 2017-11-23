@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
 import { SortDirection } from '../../src/infrastructure/data/common';
 import { Comparer } from '../../src/infrastructure/comparer';
 

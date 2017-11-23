@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
 import { ClientDataSource } from '../../../src/infrastructure/data/client-data-source';
 import { DataSourcePager, PageType } from '../../../src/infrastructure/data/data-source-pager';
 

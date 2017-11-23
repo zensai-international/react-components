@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
 import { CssClassNameGenerator } from '../../src/infrastructure/css-class-name-generator';
 
 describe('ClassNameGenerator', () => {

@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
 import { CssClassNameBuilder } from '../../src/infrastructure/css-class-name-builder';
 
 describe('ClassNameBuilder', () => {

@@ -1,5 +1,5 @@
 {
-  "author": "Dev4U",
+  "author": "Elearningforce",
   "dependencies": {
     "@types/react": "^15.0.37",
     "@types/react-dom": "^15.5.1",
@@ -12,6 +12,7 @@
     "@types/mocha": "^2.2.32",
     "chai": "^3.5.0",
     "chrome": "^0.1.0",
+    "declaration-bundler-webpack-plugin": "^1.0.3",
     "enzyme": "^2.3.0",
     "fork-ts-checker-webpack-plugin": "^0.2.6",
     "karma": "^0.13.22",
@@ -29,17 +30,16 @@
     "test": "test"
   },
   "license": "ISC",
-  "name": "dev4u.react-components",
+  "name": "ef.react-components",
   "main": "./dist/index.js",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/types/src/index.d.ts",
   "typescript": {
-    "definition": "./dist/index.d.ts"
+    "definition": "./dist/types/src/index.d.ts"
   },
   "scripts": {
-    "build:dev-vendors": "webpack --config webpack.config.dev-vendors.js",
-    "build:dev": "webpack --config webpack.config.dev.js --display-error-details --display-modules",
-    "build:prod": "webpack --config webpack.config.prod.js",
+    "build:dev": "webpack --config webpack.config.js --display-error-details --display-modules",
+    "build:prod": "webpack --config webpack.config.js",
     "run:tests": "karma start karma.config.js --watch"
   },
-  "version": "1.0.7"
+  "version": "1.0.0"
 }

@@ -1,9 +1,7 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
 import { DataType, SortDirection } from '../../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../../src/infrastructure/data/client-data-source';
 import { DataViewMode } from '../../../src/infrastructure/data/data-source';
-import { FieldAccessor } from '../../../src/infrastructure/data/field-accessor';
 import { TypeConverterProvider } from '../../../src/infrastructure/type-converter';
 
 describe('ClientDataSource', () => {
@@ -262,7 +260,7 @@ describe('ClientDataSource', () => {
         describe('by one "date" field if value is string', () => {
             const typeConverter = TypeConverterProvider.instance.get(DataType.Date);
             const fieldAccessor = {
-                getValue(model: any, compositeField: string): any {
+                getValue(model: any): any {
                     return typeConverter.convert(model.dateField);
                 },
                 setValue: () => null

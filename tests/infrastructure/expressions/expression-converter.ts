@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
-import { ComparisonExpression, ComparisonOperator, FilterExpression } from '../../../src/infrastructure/expressions/expression';
+import { ComparisonOperator, FilterExpression } from '../../../src/infrastructure/expressions/expression';
 import { ExpressionConverter } from '../../../src/infrastructure/expressions/expression-converter';
 
 describe('ExpressionConverter', () => {

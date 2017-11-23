@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "declaration": true,
+        "outDir": "types",
         "jsx": "react",
         "module": "commonjs",
         "noImplicitAny": false,

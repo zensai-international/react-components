@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as Mocha from 'mocha';
 import { UriBuilder, UriParser, UriScheme } from '../../src/infrastructure/uri';
 
 describe('UriBuilder', () => {
