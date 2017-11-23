@@ -1,11 +1,10 @@
 .vscode
-node_modules
-src
 tests
-typings
+/node_modules
+/src
+/typings
 .npmignore
 karma.config.js
 webpack.config.js
 tsconfig.json
 typings.json
-\!Notes.txt
