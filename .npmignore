@@ -1,0 +1,13 @@
+.vscode
+node_modules
+src
+tests
+typings
+.npmignore
+karma.config.js
+webpack.config.dev-vendors.js
+webpack.config.dev.js
+webpack.config.prod.js
+tsconfig.json
+typings.json
+\!Notes.txt

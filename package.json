@@ -1,0 +1,45 @@
+{
+  "author": "Dev4U",
+  "dependencies": {
+    "@types/react": "^15.0.37",
+    "@types/react-dom": "^15.5.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/enzyme": "^2.5.37",
+    "@types/mocha": "^2.2.32",
+    "chai": "^3.5.0",
+    "chrome": "^0.1.0",
+    "enzyme": "^2.3.0",
+    "fork-ts-checker-webpack-plugin": "^0.2.6",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-cli": "^1.0.0",
+    "karma-mocha": "^1.0.1",
+    "karma-mocha-reporter": "^2.0.4",
+    "mocha": "^2.5.3",
+    "react-addons-test-utils": "^15.6.0",
+    "ts-loader": "^2.2.2",
+    "typescript": "^2.4.1",
+    "webpack": "^3.2.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "license": "ISC",
+  "name": "dev4u.react-components",
+  "main": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "typescript": {
+    "definition": "./dist/index.d.ts"
+  },
+  "scripts": {
+    "build:dev-vendors": "webpack --config webpack.config.dev-vendors.js",
+    "build:dev": "webpack --config webpack.config.dev.js --display-error-details --display-modules",
+    "build:prod": "webpack --config webpack.config.prod.js",
+    "run:tests": "karma start karma.config.js --watch"
+  },
+  "version": "1.0.7"
+}
