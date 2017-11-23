@@ -11,7 +11,7 @@ export interface GridHeaderProps {
 }
 
 export interface GridHeaderStyle extends Style {
-    row?: GridHeaderRowStyle;
+    row: GridHeaderRowStyle;
 }
 
 export abstract class GridHeader<P extends GridHeaderProps, S> extends React.Component<P, S> {

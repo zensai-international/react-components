@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { GridBody } from './grid-body';
 import { GridHeader } from './grid-header';
-import { InternalGrid, InternalGridProps } from '../internal-grid';
+import { InternalGrid as InternalGridBase, InternalGridProps } from '../internal-grid';
 
-export class Grid extends InternalGrid<InternalGridProps> {
+export class InternalGrid extends InternalGridBase<InternalGridProps> {
     public render(): JSX.Element {
         const className = this.props.style.className;
 

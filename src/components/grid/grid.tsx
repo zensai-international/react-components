@@ -1,7 +1,7 @@
 import { Grid as GridBase, GridProps as GridBaseProps, GridState, GridStyle } from './grid-base';
 import { InternalGrid, InternalGridProps } from './internal-grid';
-import { Grid as BlockGrid } from './block/grid';
-import { Grid as TableGrid } from './table/grid';
+import { InternalGrid as BlockGrid } from './block/internal-grid';
+import { InternalGrid as TableGrid } from './table/internal-grid';
 
 const DefaultStyle: GridStyle = {
     className: '',
@@ -36,7 +36,14 @@ const DefaultStyle: GridStyle = {
         row: {
             className: '',
             cell: {
-                className: ''
+                className: '',
+                iconBySortDirection: {
+                    [1]: { className: '' },
+                    [2]: { className: '' }
+                },
+                title: {
+                    className: ''
+                }
             }
         }
     }

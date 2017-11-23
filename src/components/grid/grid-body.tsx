@@ -6,10 +6,10 @@ import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
 
 export interface GridBodyStyle extends Style {
-    dataRow?: GridRowStyle;
-    detailsRow?: GridRowStyle;
-    emptyRow?: GridRowStyle;
-    loadingRow?: GridRowStyle;
+    dataRow: GridRowStyle;
+    detailsRow: GridRowStyle;
+    emptyRow: GridRowStyle;
+    loadingRow: GridRowStyle;
 }
 
 export interface GridBodyProps {

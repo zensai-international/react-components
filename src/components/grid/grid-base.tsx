@@ -17,8 +17,8 @@ export interface GridState {
 }
 
 export interface GridStyle extends Style {
-    body?: GridBodyStyle;
-    header?: GridHeaderStyle;
+    body: GridBodyStyle;
+    header: GridHeaderStyle;
 }
 
 export abstract class Grid<P extends GridProps, S extends GridState> extends React.Component<P, S> {

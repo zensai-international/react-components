@@ -12,15 +12,16 @@ export interface GridRowProps {
 }
 
 export interface GridRowStyle extends Style {
-    cell?: GridCellStyle;
+    cell: GridCellStyle;
 }
 
 export abstract class GridRow<P extends GridRowProps, S> extends React.Component<P, S> {
     protected renderCell(column: GridColumn<GridColumnProps>, index: number): JSX.Element {
         const Cell = this.cellType;
         const key = `${this.props.index}_${index}`;
+        const style = this.props.style.cell;
 
-        return <Cell {...this.props} column={column} columnIndex={index} key={key} rowIndex={this.props.index} />;
+        return <Cell {...this.props} column={column} columnIndex={index} key={key} rowIndex={this.props.index} style={style} />;
     }
 
     protected renderCells(): JSX.Element[] {
