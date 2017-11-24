@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { ComparisonOperator, FilterExpression } from '../../../src/infrastructure/expressions/expression';
 import { ExpressionConverter } from '../../../src/infrastructure/expressions/expression-converter';
 
-describe('ExpressionConverter', () => {
+export default describe('ExpressionConverter', () => {
     describe('toComparison', () => {
         describe('if operator is "contain"', () => {
             const expressionConverter = new ExpressionConverter();

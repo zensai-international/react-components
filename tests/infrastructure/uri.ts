@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { UriBuilder, UriParser, UriScheme } from '../../src/infrastructure/uri';
 
-describe('UriBuilder', () => {
+export default describe('UriBuilder', () => {
     describe('addParameter', () => {
         it('if use one time', () => {
             const uriBuilder = new UriBuilder();
@@ -77,7 +77,7 @@ describe('UriParser', () => {
     it('if only one query parameter', () => {
         const uri = new UriParser().parse('/path?p0=0');
 
-        expect(uri.query).to.be.equal('?p0=0');
+        expect(uri.query).to.be.equal('p0=0');
         expect(uri.queryParameters['p0']).to.be.equal('0');
     });
 });

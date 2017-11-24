@@ -2,12 +2,13 @@ import { expect } from 'chai';
 import { ClientDataSource } from '../../../src/infrastructure/data/client-data-source';
 import { DataSourcePager, PageType } from '../../../src/infrastructure/data/data-source-pager';
 
-describe('DataSourcePager', () => {
+export default describe('DataSourcePager', () => {
     function createPager(pageSize?: number) {
-        const dataSource = new ClientDataSource(
-            [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
-            { pageSize: pageSize || 2, pageIndex: 2 }
-        );
+        const dataSource = new ClientDataSource({
+            dataGetter: () => [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
+            pageSize: pageSize || 2,
+            pageIndex: 2
+        });
         dataSource.dataBind();
 
         return new DataSourcePager(dataSource);
@@ -87,10 +88,12 @@ describe('DataSourcePager', () => {
         });
 
         it('if first page size is 1 and page size is 2', () => {
-            const dataSource = new ClientDataSource(
-                [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }],
-                { firstPageSize: 1, pageSize: 2, pageIndex: 1 }
-            );    
+            const dataSource = new ClientDataSource({
+                dataGetter: () => [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }],
+                firstPageSize: 1,
+                pageSize: 2,
+                pageIndex: 1
+            });
             const pager = new DataSourcePager(dataSource);
 
             dataSource.dataBind();
@@ -125,7 +128,7 @@ describe('DataSourcePager', () => {
         });
 
         it('if data source is empty', () => {
-            const dataSource = new ClientDataSource([], { pageSize: 2, pageIndex: 0 });
+            const dataSource = new ClientDataSource({ dataGetter: () => [], pageSize: 2, pageIndex: 0 });
             const pager = new DataSourcePager(dataSource);
 
             dataSource.dataBind();

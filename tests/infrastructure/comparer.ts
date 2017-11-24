@@ -4,7 +4,7 @@ import { Comparer } from '../../src/infrastructure/comparer';
 
 const comparer = Comparer.instance;
 
-describe('Comparer', () => {
+export default describe('Comparer', () => {
     describe('compare', () => {
         describe('with different sort direction', () => {
             it('if sort direction is "Ascending"', () => {

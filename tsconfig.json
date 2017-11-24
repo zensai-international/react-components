@@ -3,6 +3,10 @@
         "declaration": true,
         "outDir": "types",
         "jsx": "react",
+        "lib": [
+            "dom",
+            "es2016"
+        ],
         "module": "commonjs",
         "noImplicitAny": false,
         "noUnusedLocals": true,

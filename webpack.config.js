@@ -7,8 +7,8 @@ var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 module.exports = {
     context: path.resolve(__dirname, '.'),
     entry: {
-        'index': './src/index',
-        'index.tests': './tests/index'
+        'index': ['./src/index'],
+        'index.tests': ['./tests/index']
     },
     externals: {
         'react': {
@@ -52,7 +52,8 @@ module.exports = {
             'react$': path.resolve(__dirname, './node_modules/react/dist/react-with-addons'),
             'react-dom$': path.resolve(__dirname, './node_modules/react-dom/dist/react-dom'),
             'react-addons-test-utils$': path.resolve(__dirname, './node_modules/react-addons-test-utils/index'),
-            'sinon': 'sinon/pkg/sinon'
+            'sinon': 'sinon/pkg/sinon',
+            'url': path.resolve(__dirname, './node_modules/url/url'),
         },
         extensions: ['.js', '.json', '.ts', '.tsx']
     }

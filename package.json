@@ -4,7 +4,8 @@
     "@types/react": "^15.0.37",
     "@types/react-dom": "^15.5.1",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",

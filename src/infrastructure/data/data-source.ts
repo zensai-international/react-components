@@ -22,8 +22,17 @@ export enum DataSourceState {
     Bound
 }
 
+export interface DataSourceProps {
+    fieldAccessor?: FieldAccessor;
+    firstPageSize?: number;
+    pageSize?: number;
+    pageIndex?: number;
+    sortedBy?: SortExpression[];
+    viewMode?: DataViewMode;
+}
+
 export interface DataSource<T> {
-    dataBind();
+    dataBind(): Promise<DataView<T>>;
     filter(...expressions: FilterExpression[]);
     setPageIndex(value: number);
     sort(...expressions: SortExpression[]);

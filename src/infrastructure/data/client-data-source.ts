@@ -1,23 +1,19 @@
 import { ClientDataSourceChangeTracker } from './client-data-source-change-tracker';
 import { FilterExpression, SortExpression } from './common';
-import { DataSource, DataSourceState, DataView, DataViewMode } from './data-source';
+import { DataSource, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
 import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker } from './data-source-change-tracker';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Comparer } from '../comparer';
 import { Event } from '../event';
 
-export interface ClientDataSourceProps {
-    fieldAccessor?: FieldAccessor;
-    firstPageSize?: number;
-    pageSize?: number;
-    pageIndex?: number;
-    sortedBy?: SortExpression[];
-    viewMode?: DataViewMode;
+export interface ClientDataSourceProps<T> extends DataSourceProps {
+    dataGetter: (() => Promise<T[]>) | (() => T[]);
 }
 
 export class ClientDataSource<T> implements DataSource<T> {
     private _changeTracker: DataSourceChangeTracker<T>;
-    private _data: (() => Promise<T[]>) | T[];
+    private _data: T[];
+    private _dataGetter: (() => Promise<T[]>) | (() => T[]);
     private _fieldAccessor: FieldAccessor;
     private _firstPageSize: number;
     private _onDataBinging: Event<any>;
@@ -29,24 +25,22 @@ export class ClientDataSource<T> implements DataSource<T> {
     private _view: DataView<T>;
     private _viewMode: DataViewMode;
 
-    public constructor(data: T[], props?: ClientDataSourceProps) {
-        if (props) {
-            this._fieldAccessor = props.fieldAccessor;
-            this._firstPageSize = props.firstPageSize || 0;
-            this._viewMode = props.viewMode
-            if (props.pageSize) {
-                this._pageSize = props.pageSize;
-                this.setPageIndex(props.pageIndex || 0);
-            }
+    public constructor(props: ClientDataSourceProps<T>) {
+        this._fieldAccessor = props.fieldAccessor;
+        this._firstPageSize = props.firstPageSize || 0;
+        this._viewMode = props.viewMode
 
-            if (props.sortedBy) {
-                this.sort(...props.sortedBy);
-            }
+        if (props.pageSize) {
+            this._pageSize = props.pageSize;
+            this.setPageIndex(props.pageIndex || 0);
+        }
 
+        if (props.sortedBy) {
+            this.sort(...props.sortedBy);
         }
 
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
-        this._data = data;
+        this._dataGetter = props.dataGetter;
         this._onDataBinging = new Event<any>();
         this._onDataBound = new Event<any>();
         this._state = DataSourceState.Empty;
@@ -99,23 +93,29 @@ export class ClientDataSource<T> implements DataSource<T> {
         }
     }
 
-    public dataBind() {
+    public dataBind(): Promise<DataView<T>> {
         this.handleDataBinding();
 
-        if (this._data != null) {
-            const data = this._data as T[];
+        if (!this._data && this._dataGetter && !(this._dataGetter as any).then) {
+            this._data = (this._dataGetter as () => T[])();
+        }
 
-            if (data) {
-                this.internalDataBind(data);
-                this.handleDataBound();
-            } else {
-                (this._data as (() => Promise<T[]>))().then(x => {
+        if (this._data) {
+            this.internalDataBind(this._data);
+            this.handleDataBound();
+
+            return new Promise<DataView<T>>((resolve: (value?: any) => void) => {
+                resolve(this.view);
+            });
+        } else if (this._dataGetter) {
+            (this._dataGetter as () => Promise<T[]>)()
+                .then(x => {
                     this._data = x;
 
                     this.internalDataBind(x);
                     this.handleDataBound();
-                });
-            }
+                })
+                .then(() => this.view);
         }
     }
 
@@ -134,6 +134,7 @@ export class ClientDataSource<T> implements DataSource<T> {
                 : x.data.slice(firstIndex, lastIndex);
         };
     }
+
     public filter(...expressions: FilterExpression[]) {
         this._sort = x => {
             x.filteredBy = expressions;

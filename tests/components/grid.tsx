@@ -7,7 +7,7 @@ import { SortDirection } from '../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../src/infrastructure/data/client-data-source';
 import { DataSource } from '../../src/infrastructure/data/data-source';
 
-describe('<Grid />', () => {
+export default describe('<Grid />', () => {
     describe('behaviour', () => {
         describe('sorting', () => {
             let dataSource: DataSource<any>;

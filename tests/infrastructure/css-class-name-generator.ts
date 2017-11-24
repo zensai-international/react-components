@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { CssClassNameGenerator } from '../../src/infrastructure/css-class-name-generator';
 
-describe('ClassNameGenerator', () => {
+export default describe('ClassNameGenerator', () => {
     describe('generate', () => {
         it('result is different', () => {
             let classNameGenerator = new CssClassNameGenerator();

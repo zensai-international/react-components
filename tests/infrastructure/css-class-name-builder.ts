@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { CssClassNameBuilder } from '../../src/infrastructure/css-class-name-builder';
 
-describe('ClassNameBuilder', () => {
+export default describe('ClassNameBuilder', () => {
     describe('add', () => {
         it('one class', () => {
             let classNameBuilder = new CssClassNameBuilder();
