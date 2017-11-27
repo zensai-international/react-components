@@ -22,7 +22,9 @@ module.exports = {
             commonjs2: 'react-dom',
             commonjs: 'react-dom',
             amd: 'react-dom',
-        }
+        },
+        'sinon': 'sinon',
+        'sinon-promise': 'sinon-promise'
     },
     module: {
         rules: [

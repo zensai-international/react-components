@@ -1,6 +1,10 @@
 import { expect } from 'chai';
+import * as sinon from 'sinon';
+import * as sinonPromise from 'sinon-promise';
 import { DataSourceState } from '../../../src/infrastructure/data/data-source';
 import { ODataDataSource } from '../../../src/infrastructure/data/odata-data-source';
+
+sinonPromise(sinon);
 
 const totalCount = 10;
 const serviceResult = {
@@ -37,16 +41,15 @@ export default describe('ODataDataSource', () => {
         });
 
         it(`generated url must be '${serviceUrl}?$count=true' if it is first time`, () => {
+            const dataGetter = sinon.promise();
             const dataSource = new ODataDataSource<any>({
-                dataGetter: (generatedUrl: string) => {
-                    expect(generatedUrl).to.equal(`${serviceUrl}?$count=true`);
-
-                    return getData();
-                },
+                dataGetter: dataGetter,
                 url: serviceUrl
             });
 
             dataSource.dataBind();
+
+            expect(dataGetter.calledOnce).to.be.true;
         });
 
         it(`generated url must be '${serviceUrl}' if it is second time`, () => {
