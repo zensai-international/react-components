@@ -22,7 +22,7 @@ export abstract class InternalGrid<P extends InternalGridProps> extends React.Co
         const Body = this.bodyType;
         const bodyStyle = this.props.style.body;
 
-        return <Body {...this.props} style={bodyStyle} />;
+        return <Body {...this.props} messages={this.props.messages} style={bodyStyle} />;
     }
 
     protected abstract get bodyType(): { new (): GridBody<GridBodyProps, any> };

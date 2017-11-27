@@ -6,9 +6,15 @@ import { InternalGrid, InternalGridProps } from './internal-grid';
 import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../../src/infrastructure/data/data-source';
 
+export interface GridMessages {
+    loading: string;
+    noItems: string;
+}
+
 export interface GridProps {
     autoBind?: boolean;
     dataSource: DataSource<any>;
+    messages?: GridMessages;
     style?: GridStyle;
 }
 
@@ -69,10 +75,17 @@ export abstract class Grid<P extends GridProps, S extends GridState> extends Rea
     public render(): JSX.Element {
         const InternalGrid = this.internalGridType;
 
-        return <InternalGrid {...this.props} columns={this.columns} expandedModels={this.state.expandedModels} style={this.style} />
+        return <InternalGrid {...this.props} columns={this.columns} expandedModels={this.state.expandedModels} messages={this.messages} style={this.style} />
     }
 
     protected abstract get internalGridType(): { new (): InternalGrid<InternalGridProps> }
+
+    protected get messages(): GridMessages {
+        return this.props.messages || {
+            loading: '',
+            noItems: ''
+        };
+    }
 
     protected get style(): GridStyle {
         return this.props.style;

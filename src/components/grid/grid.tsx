@@ -19,7 +19,7 @@ const DefaultStyle: GridStyle = {
                 className: ''
             }
         },
-        emptyRow: {
+        messageRow: {
             className: '',
             cell: {
                 className: ''

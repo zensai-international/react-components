@@ -19,10 +19,10 @@ export interface Uri {
 }
 
 export class UriBuilder {
-    private _host: string = 'localhost';
+    private _host: string;
     private _path: string = '';
-    private _port: number = DefaultHttpPort;
-    private _scheme: UriScheme = UriScheme.HTTP;
+    private _port: number;
+    private _scheme: UriScheme;
     private _queryParameters?: { [name: string]: string } = {};
 
     public constructor(uri?: Uri) {
@@ -32,6 +32,10 @@ export class UriBuilder {
                 .setPort(uri.port)
                 .setPath(uri.path)
                 .addQueryParameters(uri.queryParameters);
+        } else {
+            this._host = 'localhost';
+            this._port = DefaultHttpPort;
+            this._scheme = UriScheme.HTTP;
         }
     }
 
@@ -95,7 +99,7 @@ export class UriBuilder {
         const query = UriBuilder.getQuery(this._queryParameters);
         const pathAndQuery = this._path + query;
 
-        if (isFullUrl) {
+        if (isFullUrl && (this._scheme != UriScheme.Unknown)) {
             const schemeAndHostAndPort = !this._port || UriBuilder.isDefaultPort(this._scheme, this._port)
                 ? `${UriScheme[this._scheme].toLowerCase()}://${this._host}`
                 : `${UriScheme[this._scheme].toLowerCase()}://${this._host}:${this._port}`;

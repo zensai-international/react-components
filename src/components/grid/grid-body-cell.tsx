@@ -9,6 +9,8 @@ export class GridBodyCell<P extends GridBodyCellProps, S> extends GridCell<P, S>
         const model = this.props.model;
         const field = this.props.column.props.field;
 
-        return field ? this.props.dataSource.fieldAccessor.getValue(model, field) : null;
+        return (model && field)
+            ? this.props.dataSource.fieldAccessor.getValue(model, field)
+            : null;
     }
 }
