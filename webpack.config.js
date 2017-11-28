@@ -23,8 +23,8 @@ module.exports = {
             commonjs: 'react-dom',
             amd: 'react-dom',
         },
-        'sinon': 'sinon',
-        'sinon-promise': 'sinon-promise'
+        /*'sinon': 'sinon',
+        'sinon-promise': 'sinon-promise'*/
     },
     module: {
         rules: [
