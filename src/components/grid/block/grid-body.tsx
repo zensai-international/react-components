@@ -4,6 +4,7 @@ import { GridBody as GridBodyBase, GridBodyProps } from '../grid-body';
 import { Style } from '../../common';
 
 export class GridBody extends GridBodyBase<GridBodyProps, any> {
+
     protected renderMessageRow(message: string, style: Style): JSX.Element {
         return (
             <div className={style.className}>{message}</div>
@@ -26,5 +27,5 @@ export class GridBody extends GridBodyBase<GridBodyProps, any> {
 
     protected get rowType(): { new (): GridBodyRow } {
         return GridBodyRow;
-    }
+    } 
 }

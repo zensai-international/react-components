@@ -40,7 +40,8 @@
     "definition": "./dist/types/src/index.d.ts"
   },
   "scripts": {
-    "build:dev": "webpack --config webpack.config.js --display-error-details --display-modules --watch",
+    "build:dev": "webpack --config webpack.config.js --display-error-details --display-modules",
+    "build:dev-watch": "webpack --config webpack.config.js --display-error-details --display-modules --watch",
     "build:prod": "webpack --config webpack.config.js",
     "run:tests": "karma start karma.config.js --watch"
   },

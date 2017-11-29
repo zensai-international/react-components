@@ -1,4 +1,4 @@
-export type EventHandler<T> = { (sender: any, eventArts?: T): void; };
+export type EventHandler<T> = { (sender: any, eventArgs?: T): void; };
 
 export class Event<T> {
     private handlers: EventHandler<T>[] = [];

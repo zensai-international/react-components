@@ -3,11 +3,13 @@ import { GridColumn, GridColumnProps } from './grid-column-base';
 import { GridHeaderRow, GridHeaderRowProps, GridHeaderRowStyle } from './grid-header-row';
 import { Style } from '../common';
 import { DataSource } from '../../infrastructure/data/data-source';
+import { EventsStore } from "../../infrastructure/event-store";
 
 export interface GridHeaderProps {
     columns: GridColumn<GridColumnProps>[];
     dataSource: DataSource<any>;
     style: GridHeaderStyle;
+    eventsStore: EventsStore;
 }
 
 export interface GridHeaderStyle extends Style {

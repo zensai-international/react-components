@@ -8,6 +8,7 @@ module.exports = {
     context: path.resolve(__dirname, '.'),
     entry: {
         'index': ['./src/index'],
+        'examples/grid': ['./examples/grid'],
         'index.tests': ['./tests/index']
     },
     externals: {

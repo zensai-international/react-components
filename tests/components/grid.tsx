@@ -1,11 +1,13 @@
 import * as Enzyme from 'enzyme';
 import { expect } from 'chai';
 import * as React from 'react';
-import { GridColumn } from '../../src/components/grid/grid-column';
-import { Grid } from '../../src/components/grid/grid';
+import { GridColumn, GridExpandContentColumn } from '../../src/components/grid/grid-column';
+import { Grid, DefaultStyle } from '../../src/components/grid/grid';
 import { SortDirection } from '../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../src/infrastructure/data/client-data-source';
 import { DataSource } from '../../src/infrastructure/data/data-source';
+import { EventsStore } from "../../src/infrastructure/event-store";
+import { GridBodyRow, GridBodyRowProps } from "../../src/components/grid/grid-body-row";
 
 export default describe('<Grid />', () => {
     describe('behaviour', () => {
@@ -77,6 +79,53 @@ export default describe('<Grid />', () => {
                 expect(dataSource.view.sortedBy[0].field).to.equal('description', 'sortedBy[0].field');
             });
         });
+
+        describe('expand/collapse rows', () =>{
+            let dataSource: DataSource<any>;
+            let grid;
+            
+            beforeEach(() => {
+                dataSource = new ClientDataSource({ dataGetter: () => [{ title: 'title 1', subItems: [{ title: 'sub title 1' }] }] });
+                dataSource.dataBind();
+                const eventsStore = new EventsStore();
+                const columns = [
+                                new GridColumn({ body: { template: () => "" } }),
+                                new GridColumn({ field: "title", title: "Title" }),
+                            ];
+
+                grid = Enzyme.mount(
+                    <Grid dataSource={dataSource}>
+                        <GridExpandContentColumn eventsStore={eventsStore} renderDetails={(rowType: { new (): GridBodyRow<GridBodyRowProps, any> }, index: number, model: any) => {
+                            const Row = rowType;
+                            const childDataSource = new ClientDataSource<any>({ dataGetter: () => model.subItems });
+                            childDataSource.dataBind();
+
+                            return model.subItems.map(v =>
+                                <Row columns={columns} dataSource={childDataSource} eventsStore={eventsStore}
+                                    style={DefaultStyle.body.dataRow} index={index} model={v} />
+                            )
+
+                        }} />
+                        <GridColumn field="title" title="Title" />
+                    </Grid>
+                );
+            });
+
+             it('click on expand/collapse content', () => {
+                expect(grid.find('tr').length).to.equal(1, 'rows count');
+
+                grid.find('td a')
+                    .first()
+                    .simulate('click');
+                expect(grid.find('tr').length).to.equal(2, 'rows and subrows count');
+
+                grid.find('td a')
+                    .first()
+                    .simulate('click');
+
+                expect(grid.find('tr').length).to.equal(1, 'rows and subrows count');
+            });
+        })
     });
 
     describe('property', () => {
