@@ -43,7 +43,7 @@ export default describe('ClientDataSource', () => {
             { field: 'value5' }
         ];
 
-        it('by default', () => {
+        it('default behaviour', () => {
             const dataSource = new ClientDataSource({ dataGetter: () => data , pageSize: 1 });
 
             dataSource.dataBind();
@@ -135,7 +135,7 @@ export default describe('ClientDataSource', () => {
     });
 
     describe('sort', () => {
-        describe('view properties', () => {
+        describe('default behaviour', () => {
             it ('ascending sorting by one field', () => {
                 const dataSource = new ClientDataSource({ dataGetter: () => [] });
 
