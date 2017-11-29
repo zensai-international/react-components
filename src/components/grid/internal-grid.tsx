@@ -3,11 +3,13 @@ import { GridProps, GridStyle } from './grid-base';
 import { GridBody, GridBodyProps } from './grid-body';
 import { GridColumn, GridColumnProps } from './grid-column-base';
 import { GridHeader, GridHeaderProps } from './grid-header';
+import { EventsStore } from "../../infrastructure/event-store";
 
 export interface InternalGridProps extends GridProps {
     columns: GridColumn<GridColumnProps>[];
     expandedModels: any[];
     style: GridStyle;
+    eventsStore: EventsStore;
 }
 
 export abstract class InternalGrid<P extends InternalGridProps> extends React.Component<P, any> {

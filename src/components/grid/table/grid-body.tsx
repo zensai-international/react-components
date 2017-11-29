@@ -28,5 +28,5 @@ export class GridBody extends GridBodyBase<GridBodyProps, any> {
 
     protected get rowType(): { new (): GridBodyRow } {
         return GridBodyRow;
-    }
+    } 
 }

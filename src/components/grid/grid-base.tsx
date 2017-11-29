@@ -5,6 +5,7 @@ import { GridHeaderStyle } from './grid-header';
 import { InternalGrid, InternalGridProps } from './internal-grid';
 import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../../src/infrastructure/data/data-source';
+import { EventsStore } from "../../infrastructure/event-store";
 
 export interface GridMessages {
     loading: string;
@@ -16,6 +17,7 @@ export interface GridProps {
     dataSource: DataSource<any>;
     messages?: GridMessages;
     style?: GridStyle;
+    eventsStore?: EventsStore;
 }
 
 export interface GridState {
@@ -29,13 +31,39 @@ export interface GridStyle extends Style {
 
 export abstract class Grid<P extends GridProps, S extends GridState> extends React.Component<P, S> {
     private _columns: GridColumn<GridColumnProps>[];
+    public static defaultProps: Partial<GridProps> = {
+        eventsStore: new EventsStore()
+    }
 
     public constructor(props: P) {
         super(props);
-
         this.state = { expandedModels: [] } as any;
-
         this.handleDataBound = this.handleDataBound.bind(this);
+
+        this.handleContentExpandedOrCollapsed = this.handleContentExpandedOrCollapsed.bind(this);
+        if(this.props.eventsStore){
+            this.props.eventsStore.onExpandOrCollapseContent.on(this.handleContentExpandedOrCollapsed);
+        }
+    }
+
+    protected handleContentExpandedOrCollapsed(_: any, model: any) {
+        const models = this.state.expandedModels || [];
+        let index = models.indexOf(model);
+        if (index != -1) {
+            models.splice(index, 1);
+        } else {
+            models.push(model);
+        }
+        this.setState({ expandedModels: models });
+    }
+
+    protected handleDetailRowCollapsed(_: any, model: any) {
+        const models = this.state.expandedModels 
+        let index = models.indexOf(model);
+        if (index != -1) {
+            models.splice(index, 1);
+        }
+        this.setState({expandedModels: models})
     }
 
     protected handleDataBound(dataSource: DataSource<any>) {
@@ -74,8 +102,8 @@ export abstract class Grid<P extends GridProps, S extends GridState> extends Rea
 
     public render(): JSX.Element {
         const InternalGrid = this.internalGridType;
-
-        return <InternalGrid {...this.props} columns={this.columns} expandedModels={this.state.expandedModels} messages={this.messages} style={this.style} />
+        return <InternalGrid eventsStore={this.props.eventsStore} columns={this.columns} 
+                             expandedModels={this.state.expandedModels} messages={this.messages} style={this.style} {...this.props}  />
     }
 
     protected abstract get internalGridType(): { new (): InternalGrid<InternalGridProps> }

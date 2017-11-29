@@ -3,12 +3,14 @@ import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
 import { GridColumn, GridColumnProps } from './grid-column-base';
 import { Style } from '../common';
 import { DataSource } from '../../../src/infrastructure/data/data-source';
+import { EventsStore } from "../../infrastructure/event-store";
 
 export interface GridRowProps {
     columns: GridColumn<GridColumnProps>[];
     dataSource: DataSource<any>;
     index: number;
     style: GridRowStyle;
+    eventsStore: EventsStore;
 }
 
 export interface GridRowStyle extends Style {
@@ -16,6 +18,7 @@ export interface GridRowStyle extends Style {
 }
 
 export abstract class GridRow<P extends GridRowProps, S> extends React.Component<P, S> {
+
     protected renderCell(column: GridColumn<GridColumnProps>, index: number): JSX.Element {
         const Cell = this.cellType;
         const key = `${this.props.index}_${index}`;

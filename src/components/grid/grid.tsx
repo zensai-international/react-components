@@ -3,7 +3,7 @@ import { InternalGrid, InternalGridProps } from './internal-grid';
 import { InternalGrid as BlockGrid } from './block/internal-grid';
 import { InternalGrid as TableGrid } from './table/internal-grid';
 
-const DefaultStyle: GridStyle = {
+export const DefaultStyle: GridStyle = {
     className: '',
     body: {
         className: '',
@@ -59,6 +59,7 @@ export interface GridProps extends GridBaseProps {
 }
 
 export class Grid extends GridBase<GridProps, GridState> {
+
     protected get internalGridType(): { new (): InternalGrid<InternalGridProps> } {
         return (this.props.renderingMode == GridRenderingMode.Block) ? BlockGrid : TableGrid;
     }
