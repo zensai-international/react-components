@@ -82,6 +82,7 @@ export class ClientDataSource<T> implements DataSource<T> {
     protected internalDataBind(data: T[]) {
         this._view = this._view || {};
         this._view.data = data;
+        this._view.totalCount = data.length;
 
         if (this._sort)
         {
@@ -183,10 +184,6 @@ export class ClientDataSource<T> implements DataSource<T> {
 
     public get state(): DataSourceState {
         return this._state;
-    }
-
-    public get totalCount(): number {
-        return this._data.length;
     }
 
     public get view(): DataView<T> {

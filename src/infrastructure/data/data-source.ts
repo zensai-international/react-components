@@ -14,6 +14,7 @@ export interface DataView<T> {
     mode?: DataViewMode;
     pageIndex?: number;
     sortedBy?: SortExpression[];
+    totalCount?: number;
 }
 
 export enum DataSourceState {
@@ -41,11 +42,10 @@ export interface DataSource<T> {
     readonly changeTracker: DataSourceChangeTracker<T>;
     readonly fieldAccessor: FieldAccessor;
     readonly firstPageSize: number;
-    readonly pageSize?: number;
+    readonly pageSize: number;
     readonly state: DataSourceState;
-    readonly totalCount: number;
     readonly view: DataView<T>;
 
-    onDataBinding: Event<any>;
-    onDataBound: Event<any>;
+    readonly onDataBinding: Event<any>;
+    readonly onDataBound: Event<any>;
 }

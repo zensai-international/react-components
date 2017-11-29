@@ -10,7 +10,7 @@
         "module": "commonjs",
         "noImplicitAny": false,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": false,
         "sourceMap": false,
         "target": "es5"
     },

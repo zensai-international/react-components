@@ -22,8 +22,8 @@ export class DataSourcePager {
     public getPageCount(): number {
         return this.dataSource.pageSize
             ? Math.ceil(this.dataSource.firstPageSize
-                ? ((this.dataSource.totalCount - this.dataSource.firstPageSize) / this.dataSource.pageSize + 1)
-                : (this.dataSource.totalCount / this.dataSource.pageSize))
+                ? ((this.dataSource.view.totalCount - this.dataSource.firstPageSize) / this.dataSource.pageSize + 1)
+                : (this.dataSource.view.totalCount / this.dataSource.pageSize))
             : 1;
     }
 
@@ -45,12 +45,13 @@ export class DataSourcePager {
 
     public getPageInfo(pageIndex: number): PageInfo {
         const lastPageIndex = (pageIndex + 1) * this.dataSource.pageSize - 1;
+        const totalCount = this.dataSource.view ? this.dataSource.view.totalCount : null;
 
         return {
             firstIndex: pageIndex * this.dataSource.pageSize,
-            lastIndex: (lastPageIndex < this.dataSource.totalCount)
+            lastIndex: ((totalCount == null) || (lastPageIndex < totalCount))
                 ? lastPageIndex
-                : (this.dataSource.totalCount > 0) ? (this.dataSource.totalCount - 1) : 0
+                : (totalCount > 0) ? (totalCount - 1) : 0
         };
     }
 

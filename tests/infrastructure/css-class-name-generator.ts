@@ -4,10 +4,10 @@ import { CssClassNameGenerator } from '../../src/infrastructure/css-class-name-g
 export default describe('ClassNameGenerator', () => {
     describe('generate', () => {
         it('result is different', () => {
-            let classNameGenerator = new CssClassNameGenerator();
+            const classNameGenerator = new CssClassNameGenerator();
 
-            let className0 = classNameGenerator.generate();
-            let className1 = classNameGenerator.generate();
+            const className0 = classNameGenerator.generate();
+            const className1 = classNameGenerator.generate();
 
             expect(className0).is.not.null;
             expect(className1).is.not.null;
