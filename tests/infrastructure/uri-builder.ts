@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { UriBuilder, UriParser, UriScheme } from '../../src/infrastructure/uri';
+import { UriScheme } from '../../src/infrastructure/uri';
+import { UriBuilder } from '../../src/infrastructure/uri-builder';
 
 export default describe('UriBuilder', () => {
     describe('addParameter', () => {
@@ -70,14 +71,5 @@ export default describe('UriBuilder', () => {
 
             expect(uriBuilder.build()).to.be.equal('https://localhost:11');
         });
-    });
-});
-
-describe('UriParser', () => {
-    it('if only one query parameter', () => {
-        const uri = new UriParser().parse('/path?p0=0');
-
-        expect(uri.query).to.be.equal('p0=0');
-        expect(uri.queryParameters['p0']).to.be.equal('0');
     });
 });

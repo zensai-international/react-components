@@ -1,70 +1,206 @@
-import { Grid as GridBase, GridProps as GridBaseProps, GridState, GridStyle } from './grid-base';
-import { InternalGrid, InternalGridProps } from './internal-grid';
-import { InternalGrid as BlockGrid } from './block/internal-grid';
-import { InternalGrid as TableGrid } from './table/internal-grid';
+import * as React from 'react';
+import { DefultGridProps } from './default-grid-pros';
+import { GridBody, GridBodyProps, GridBodyStyle } from './grid-body';
+import { GridBodyRow, GridBodyRowTemplate } from './grid-body-row';
+import { GridBodyCell } from './grid-body-cell';
+import { GridColumn, GridColumnProps } from './grid-column';
+import { GridExpanderColumn } from './grid-expander-column';
+import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
+import { Style } from '../common';
+import { DataSource, DataSourceState } from '../../../src/infrastructure/data/data-source';
 
-export const DefaultStyle: GridStyle = {
-    className: '',
-    body: {
-        className: '',
-        dataRow: {
-            className: '',
-            cell: {
-                className: ''
-            }
-        },
-        detailsRow: {
-            className: '',
-            cell: {
-                className: ''
-            }
-        },
-        messageRow: {
-            className: '',
-            cell: {
-                className: ''
-            }
-        },
-        loadingRow: {
-            className: '',
-            cell: {
-                className: ''
-            }
-        },
-    },
-    header: {
-        row: {
-            className: '',
-            cell: {
-                className: '',
-                iconBySortDirection: {
-                    [1]: { className: '' },
-                    [2]: { className: '' }
-                },
-                title: {
-                    className: ''
-                }
-            }
+export interface GridMessages {
+    loading: string;
+    noItems: string;
+}
+
+export enum GridSelectionMode {
+    None,
+    Single,
+    Multi
+}
+
+export interface GridProps {
+    autoBind?: boolean;
+    bodyRowTemplate?: GridBodyRowTemplate;
+    dataSource: DataSource;
+    messages?: GridMessages;
+    selectionMode?: GridSelectionMode;
+    style?: GridStyle;
+
+    onBodyCellClicked?: (row: GridBodyCell) => void;
+    onBodyRowClicked?: (row: GridBodyRow) => void;
+}
+
+export interface GridState {
+    expandedItems?: any[];
+    selectedItems?: any[];
+}
+
+export interface GridStyle extends Style {
+    body: GridBodyStyle;
+    header: GridHeaderStyle;
+}
+
+export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
+    public static childContextTypes = {
+        dataSource: React.PropTypes.object,
+        gridState: React.PropTypes.object
+    };
+    public static defaultProps: Partial<GridProps> = DefultGridProps;
+
+    private _columns: GridColumn<GridColumnProps>[];
+
+    public constructor(props: P) {
+        super(props);
+
+        this.state = {
+            expandedItems: [],
+            selectedItems: []
+        } as S;
+
+        this.handleBodyCellClicked = this.handleBodyCellClicked.bind(this);
+        this.handleBodyRowClicked = this.handleBodyRowClicked.bind(this);
+        this.handleHeaderCellClicked = this.handleHeaderCellClicked.bind(this);
+        this.handleHeaderRowClicked = this.handleHeaderRowClicked.bind(this);
+        this.handleDataBound = this.handleDataBound.bind(this);
+    }
+
+    public getChildContext(): any {
+        return {
+            dataSource: this.props.dataSource,
+            gridState: this.state
+        };
+    }
+
+    protected handleBodyCellClicked(cell: GridBodyCell) {
+        const item = cell.props.item;
+
+        if (cell.props.column instanceof GridExpanderColumn) {
+            this.changeItemExpansion(item);
+        }
+
+        if (this.props.onBodyCellClicked) {
+            this.props.onBodyCellClicked(cell);
         }
     }
-};
 
-export enum GridRenderingMode {
-    Block,
-    Table
-}
+    protected handleBodyRowClicked(row: GridBodyRow) {
+        this.changeItemSelection(row.props.item);
 
-export interface GridProps extends GridBaseProps {
-    renderingMode?: GridRenderingMode;
-}
-
-export class Grid extends GridBase<GridProps, GridState> {
-
-    protected get internalGridType(): { new (): InternalGrid<InternalGridProps> } {
-        return (this.props.renderingMode == GridRenderingMode.Block) ? BlockGrid : TableGrid;
+        if (this.props.onBodyRowClicked) {
+            this.props.onBodyRowClicked(row);
+        }
     }
 
-    protected get style(): GridStyle {
-        return this.props.style ? this.props.style : DefaultStyle;
+    protected handleHeaderCellClicked(cell: any) {
+    }
+
+    protected handleHeaderRowClicked() {
+    }
+
+    protected handleDataBound(dataSource: DataSource) {
+        if (dataSource == this.props.dataSource) {
+            this.forceUpdate();
+        }
+    }
+
+    protected renderHeader(): JSX.Element {
+        const Header = this.headerType;
+        const headerStyle = this.props.style.header;
+
+        return (
+            <Header {...this.props}
+                columns={this.columns}
+                onCellClicked={this.handleHeaderCellClicked}
+                onRowClicked={this.handleHeaderRowClicked}
+                style={headerStyle} />
+        );
+    }
+
+    protected renderBody(): JSX.Element {
+        const Body = this.bodyType;
+        const bodyStyle = this.props.style.body;
+
+        return (
+            <Body {...this.props}
+                columns={this.columns}
+                messages={this.props.messages}
+                onCellClicked={this.handleBodyCellClicked}
+                onRowClicked={this.handleBodyRowClicked}
+                rowTemplate={this.props.bodyRowTemplate}
+                style={bodyStyle} />
+        );
+    }
+
+    protected changeItemExpansion(item: any) {
+        const index = this.state.expandedItems.indexOf(item);
+        const expandedItems = this.state.expandedItems;
+
+        if (index != -1) {
+            expandedItems.splice(index, 1);
+        } else {
+            expandedItems.push(item);
+        }
+
+        this.setState({ expandedItems });
+    }
+
+    protected changeItemSelection(item: any) {
+        if (this.props.selectionMode != GridSelectionMode.None) {
+            const itemIndex = this.state.selectedItems.indexOf(item);
+            const selectedItems = this.state.selectedItems;
+
+            if (itemIndex != -1) {
+                selectedItems.splice(item, 1);
+            } else {
+                if ((this.props.selectionMode == GridSelectionMode.Single)) {
+                    selectedItems.splice(item, 1);
+                }
+
+                selectedItems.push(item);
+            }
+
+            this.setState({ selectedItems: selectedItems });
+        }
+    }
+
+    protected setDataSource(dataSource: DataSource) {
+        if ((this.props.autoBind != false) && (dataSource.state == DataSourceState.Empty)) {
+            dataSource.dataBind();
+        }
+
+        if (dataSource) {
+            dataSource.onDataBound.on(this.handleDataBound);
+        }
+    }
+
+    public componentWillMount() {
+        this.setDataSource(this.props.dataSource);
+    }
+
+    public componentWillUpdate() {
+        this._columns = null;
+    }
+
+    public componentWillReceiveProps(nextProps: P) {
+        if ((this.props.dataSource != nextProps.dataSource) && (nextProps.dataSource != null)) {
+            if (this.props.dataSource) {
+                this.props.dataSource.onDataBound.off(this.handleDataBound);
+            }
+
+            this.setDataSource(nextProps.dataSource);
+        }
+    }
+
+    protected abstract get bodyType(): { new (): GridBody<GridBodyProps, any> };
+    
+    protected abstract get headerType(): { new (): GridHeader<GridHeaderProps, any> };
+
+    public get columns(): GridColumn<GridColumnProps>[] {
+        return this._columns = this._columns
+            || React.Children.toArray(this.props.children)
+                .map(x => new (x as any).type((x as any).props))
+                .filter(x => x instanceof GridColumn) as any;
     }
 }

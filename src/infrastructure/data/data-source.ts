@@ -32,7 +32,7 @@ export interface DataSourceProps {
     viewMode?: DataViewMode;
 }
 
-export interface DataSource<T> {
+export interface DataSource<T = any> {
     dataBind(): Promise<DataView<T>>;
     filter(...expressions: FilterExpression[]);
     setPageIndex(value: number);
@@ -46,6 +46,6 @@ export interface DataSource<T> {
     readonly state: DataSourceState;
     readonly view: DataView<T>;
 
-    readonly onDataBinding: Event<any>;
-    readonly onDataBound: Event<any>;
+    readonly onDataBinding: Event<DataSource>;
+    readonly onDataBound: Event<DataSource>;
 }

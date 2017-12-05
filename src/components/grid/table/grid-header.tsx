@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GridHeaderRow } from './grid-header-row';
 import { GridHeader as GridHeaderBase, GridHeaderProps } from '../grid-header';
 
-export class GridHeader extends GridHeaderBase<GridHeaderProps, any> {
+export class GridHeader<P extends GridHeaderProps = GridHeaderProps, S = any> extends GridHeaderBase<P, S> {
     public render(): JSX.Element {
         const className = this.props.style.className;
 
@@ -14,6 +14,6 @@ export class GridHeader extends GridHeaderBase<GridHeaderProps, any> {
     }
 
     protected get rowType(): { new(): GridHeaderRow } {
-        return GridHeaderRow;
+        return GridHeaderRow as any;
     }
 }

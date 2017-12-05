@@ -6,7 +6,7 @@ import { GridHeaderCell } from './grid-header-cell';
 import { GridHeaderRow } from './grid-header-row';
 import { GridHeader } from './grid-header';
 
-export const block = {
+export const table = {
     Grid,
     GridBodyCell,
     GridBodyRow,

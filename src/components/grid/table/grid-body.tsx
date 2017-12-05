@@ -1,19 +1,16 @@
 import * as React from 'react';
 import { GridBodyRow } from './grid-body-row';
 import { GridBody as GridBodyBase, GridBodyProps } from '../grid-body';
-import { Style } from '../../common';
 
-export class GridBody extends GridBodyBase<GridBodyProps, any> {
-    protected renderMessageRow(message: string, style: Style): JSX.Element {
+export class GridBody<P extends GridBodyProps = GridBodyProps, S = any> extends GridBodyBase<P, S> {
+    protected renderMessageRow(messageContent: JSX.Element | string): JSX.Element {
+        const className = this.props.style.row.className;
+
         return (
-            <tr className={style.className}>
-                <td colSpan={this.props.columns.length}>{message}</td>
+            <tr className={className}>
+                <td colSpan={this.props.columns.length}>{messageContent}</td>
             </tr>
         );
-    }
-
-    protected renderDetailsRow(/*model: any, index: number*/): JSX.Element {
-        throw new Error("Method not implemented.");
     }
 
     public render(): JSX.Element {
@@ -27,6 +24,6 @@ export class GridBody extends GridBodyBase<GridBodyProps, any> {
     }
 
     protected get rowType(): { new (): GridBodyRow } {
-        return GridBodyRow;
-    } 
+        return GridBodyRow as any;
+    }
 }

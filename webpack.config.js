@@ -22,8 +22,11 @@ module.exports = {
             root: 'ReactDOM',
             commonjs2: 'react-dom',
             commonjs: 'react-dom',
-            amd: 'react-dom',
+            amd: 'react-dom'
         },
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': 'window'
         /*'sinon': 'sinon',
         'sinon-promise': 'sinon-promise'*/
     },

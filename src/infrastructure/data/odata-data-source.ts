@@ -3,7 +3,9 @@ import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { DataSourcePager } from './data-source-pager';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Event } from '../event';
-import { Uri, UriBuilder, UriParser } from '../uri';
+import { Uri } from '../uri';
+import { UriBuilder } from '../uri-builder';
+import { UriParser } from '../uri-parser';
 import { SortExpression, SortDirection } from './common';
 // import { FilterExpression } from '../expressions/expression';
 
@@ -59,6 +61,9 @@ export class ODataDataSource<T> implements DataSource<T> {
         };
 
         this.setPageIndex(props.pageIndex || 0);
+        if (props.sortedBy) {
+            this.sort(...props.sortedBy);
+        }
     }
 
     protected addSortToUrl(urlBuilder: UriBuilder, expressions: SortExpression[]) {

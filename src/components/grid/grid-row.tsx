@@ -1,34 +1,72 @@
 import * as React from 'react';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
-import { GridColumn, GridColumnProps } from './grid-column-base';
+import { GridColumn, GridColumnProps } from './grid-column';
+import { GridComponent } from './grid-component';
 import { Style } from '../common';
-import { DataSource } from '../../../src/infrastructure/data/data-source';
-import { EventsStore } from "../../infrastructure/event-store";
 
 export interface GridRowProps {
     columns: GridColumn<GridColumnProps>[];
-    dataSource: DataSource<any>;
     index: number;
     style: GridRowStyle;
-    eventsStore: EventsStore;
+
+    onCellClicked: (sender: any) => void;
+    onRowClicked: (sender: any) => void;
 }
 
 export interface GridRowStyle extends Style {
     cell: GridCellStyle;
 }
 
-export abstract class GridRow<P extends GridRowProps, S> extends React.Component<P, S> {
+export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> extends GridComponent<P, S> {
+    public constructor(props: P) {
+        super(props);
+
+        this.handleClicked = this.handleClicked.bind(this);
+    }
+
+    protected handleClicked() {
+        if (this.props.onRowClicked) {
+            this.props.onRowClicked(this);
+        }
+    }
 
     protected renderCell(column: GridColumn<GridColumnProps>, index: number): JSX.Element {
-        const Cell = this.cellType;
+        const Cell = column.props.body ? column.props.body.cellType || this.cellType : this.cellType;
         const key = `${this.props.index}_${index}`;
         const style = this.props.style.cell;
 
-        return <Cell {...this.props} column={column} columnIndex={index} key={key} rowIndex={this.props.index} style={style} />;
+        return (
+            <Cell {...this.props}
+                column={column}
+                columnIndex={index}
+                key={key}
+                rowIndex={this.props.index}
+                onClicked={this.props.onCellClicked}
+                style={style} />
+        );
     }
 
     protected renderCells(): JSX.Element[] {
         return this.props.columns.map((x, i) => this.renderCell(x, i));
+    }
+
+    protected renderContent(): JSX.Element | JSX.Element[] {
+        const Cell = this.cellType;
+        const style = this.props.style.cell;
+
+        return this.props.children
+            ? (
+                <Cell {...this.props}
+                    column={null}
+                    columnIndex={null}
+                    key={null}
+                    rowIndex={this.props.index}
+                    onClicked={null}
+                    style={style}>
+                    {this.props.children}
+                </Cell>
+            )
+            : this.renderCells();
     }
 
     protected abstract get cellType(): { new(): GridCell<GridCellProps, any> }

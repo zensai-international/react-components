@@ -1,20 +1,29 @@
-import * as React from 'react';
-import { GridColumn, GridColumnProps } from './grid-column-base';
+import { GridColumn, GridColumnProps } from './grid-column';
+import { GridComponent } from './grid-component';
 import { Style } from '../common';
-import { DataSource } from '../../infrastructure/data/data-source';
-import { EventsStore } from "../../infrastructure/event-store";
 
 export interface GridCellProps {
     column: GridColumn<GridColumnProps>;
     columnIndex: number;
-    dataSource: DataSource<any>;
     rowIndex: number;
     style: Style;
-    eventsStore: EventsStore;
+
+    onClicked: (sender: any) => void;
 }
 
 export interface GridCellStyle extends Style {
 }
 
-export class GridCell<P extends GridCellProps, S> extends React.Component<P, S> {
+export class GridCell<P extends GridCellProps = GridCellProps, S = any> extends GridComponent<P, S> {
+    public constructor(props: P) {
+        super(props);
+
+        this.handleClicked = this.handleClicked.bind(this);
+    }
+
+    protected handleClicked() {
+        if (this.props.onClicked) {
+            this.props.onClicked(this);
+        }
+    }
 }

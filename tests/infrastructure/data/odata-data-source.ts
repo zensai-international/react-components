@@ -150,6 +150,20 @@ export default describe('ODataDataSource', () => {
     });
 
     describe('sort', () => {
+        it('default behaviour', async () => {
+            const dataSource = new ODataDataSource({
+                dataGetter: getData,
+                sortedBy: [{ direction: SortDirection.Ascending, field: 'field' }],
+                url: serviceUrl
+            });
+
+            const view = await dataSource.dataBind();
+
+            expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
+            expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Ascending);
+            expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('field');
+        });
+
         it ('ascending sorting by one field', async () => {
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
