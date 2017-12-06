@@ -211,5 +211,21 @@ export default describe('ODataDataSource', () => {
 
             expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20desc`)).to.be.true;
         });
+
+        it('if page size is 1 and page index is 1', async () => {
+            const dataSource = new ODataDataSource<any>({
+                dataGetter: getPageData(),
+                pageIndex: 1,
+                url: serviceUrl,
+                viewMode: DataViewMode.FromFirstToCurrentPage
+            });
+
+            await dataSource.dataBind();
+            dataSource.sort({ direction: SortDirection.Descending, field: 'field' });
+            const view = await dataSource.dataBind();
+
+            expect(view.pageIndex, 'pageIndex').to.equal(0);
+            expect(view.data.length, 'view.data.length').to.equal(1);
+        });
     });
 });

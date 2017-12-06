@@ -117,7 +117,7 @@ export class ODataDataSource<T> implements DataSource<T> {
                 }
             },
             viewInitializer: (response: any, view: DataView<T>) => {
-                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage)
+                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (this._view.pageIndex == (value -1))
                     ? this._view.data.concat(view.data)
                     : view.data;
                 view.mode = this._viewMode;
@@ -193,6 +193,8 @@ export class ODataDataSource<T> implements DataSource<T> {
     }
 
     public sort(...expressions: SortExpression[]) {
+        this.setPageIndex(0);
+
         this._actions[DataSourceActionType.Sort] = this.createSortAction(expressions);
     }
 
