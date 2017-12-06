@@ -68,7 +68,7 @@ export default describe('ODataDataSource', () => {
 
     describe('setPageIndex', () => {
         it(`if page index is x generated url must be '${serviceUrl}?$count=true&$skip=x&$top=1'`, async () => {
-            const testCases = [/*{ pageIndex: 1 }, { pageIndex: 2 }, */{ pageIndex: 3 }];
+            const testCases = [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }];
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource<any>({
                 dataGetter: dataGetter,

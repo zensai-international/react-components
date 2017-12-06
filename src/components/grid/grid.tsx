@@ -30,6 +30,8 @@ export interface GridProps {
 
     onBodyCellClicked?: (row: GridBodyCell) => void;
     onBodyRowClicked?: (row: GridBodyRow) => void;
+    onItemSelected?: (item: any) => void;
+    onItemUnselected?: (item: any) => void;
 }
 
 export interface GridState {
@@ -152,16 +154,26 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             const selectedItems = this.state.selectedItems;
 
             if (itemIndex != -1) {
-                selectedItems.splice(item, 1);
+                selectedItems.splice(itemIndex, 1);
+
+                this.setState({ selectedItems: selectedItems });
+
+                if (this.props.onItemUnselected) {
+                    this.props.onItemUnselected(item);
+                }
             } else {
-                if ((this.props.selectionMode == GridSelectionMode.Single)) {
-                    selectedItems.splice(item, 1);
+                if ((this.props.selectionMode == GridSelectionMode.Single) && (selectedItems.length == 1)) {
+                    selectedItems.splice(0, 1);
                 }
 
                 selectedItems.push(item);
-            }
 
-            this.setState({ selectedItems: selectedItems });
+                this.setState({ selectedItems: selectedItems });
+
+                if (this.props.onItemSelected) {
+                    this.props.onItemSelected(item);
+                }
+            }
         }
     }
 

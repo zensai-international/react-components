@@ -108,7 +108,7 @@ export class ODataDataSource<T> implements DataSource<T> {
     protected createSetIndexAction(value: number): DataSourceAction<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => {
-                if (value) {
+                if (this.pageSize) {
                     const pager = new DataSourcePager(this);
                     const nextPage = pager.getPageInfo(value);
 
@@ -193,7 +193,7 @@ export class ODataDataSource<T> implements DataSource<T> {
     }
 
     public sort(...expressions: SortExpression[]) {
-        this._actions[DataSourceActionType.SetPageIndex] = this.createSortAction(expressions);
+        this._actions[DataSourceActionType.Sort] = this.createSortAction(expressions);
     }
 
     public update(/*model: T, field: string, value: any*/) {
