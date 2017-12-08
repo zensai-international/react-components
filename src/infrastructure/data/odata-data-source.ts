@@ -192,10 +192,11 @@ export class ODataDataSource<T = any> implements DataSource<T> {
     }
 
     protected createView(response: any): DataView<T> {
+
         const data = this._modelConverter
             ? response['value'].map(x => this._modelConverter(x))
             : response['value'] as T[];
-        const result = { data: data };
+        const result = { data: data, totalCount: this._view ? this._view.totalCount : null };
 
         for (let action in this._actions) {
             this._actions[action].viewInitializer(response, result);
