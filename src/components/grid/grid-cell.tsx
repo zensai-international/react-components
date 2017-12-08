@@ -26,4 +26,8 @@ export class GridCell<P extends GridCellProps = GridCellProps, S = any> extends 
             this.props.onClicked(this);
         }
     }
+
+    protected get style(): Style {
+        return this.props.style;
+    }
 }

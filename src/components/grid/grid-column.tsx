@@ -1,9 +1,10 @@
 import { GridComponent } from './grid-component';
 import { GridCell } from './grid-cell';
+import { Style } from '../common';
 
 export interface GridCellOverwriteProps {
     cellType?: { new (): GridCell };
-    style?: string;
+    style?: Style;
     template?: (item: any, column: GridColumn, cell: GridCell) => JSX.Element | JSX.Element[] | string;
 }
 

@@ -1,4 +1,5 @@
 import { GridCell, GridCellProps } from './grid-cell';
+import { Style, StyleHelper } from '../common';
 
 export interface GridBodyCellProps extends GridCellProps {
     isExpandedItem: boolean;
@@ -27,5 +28,13 @@ export class GridBodyCell<P extends GridBodyCellProps = GridBodyCellProps, S = a
         const template = column.props.body ? column.props.body.template : null;
 
         return template ? template(item, column, this) : value;
+    }
+
+    protected get style(): Style {
+        const column = this.props.column;
+
+        return (column && column.props.body && column.props.body.style)
+            ? StyleHelper.concat(this.props.style, column.props.body.style)
+            : this.props.style;
     }
 }

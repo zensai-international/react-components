@@ -3,7 +3,7 @@ import { GridBodyCell as GridBodyCellBase, GridBodyCellProps } from '../grid-bod
 
 export class GridBodyCell<P extends GridBodyCellProps = GridBodyCellProps, S = any> extends GridBodyCellBase<P, S> {
     public render(): JSX.Element {
-        const className = this.props.style.className;
+        const className = this.style.className;
 
         return (
             <div className={className} onClick={this.handleClicked}>
