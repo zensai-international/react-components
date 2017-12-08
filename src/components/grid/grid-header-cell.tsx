@@ -37,9 +37,9 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps, S> extends G
             : SortDirection.Ascending;
 
         if (direction) {
-            dataSource.sort({ direction: direction, field: field });
+            dataSource.sort([{ direction: direction, field: field }]);
         } else {
-            dataSource.sort();
+            dataSource.sort([]);
         }
 
         dataSource.dataBind();

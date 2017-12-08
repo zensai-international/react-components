@@ -65,6 +65,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         this.handleBodyRowClicked = this.handleBodyRowClicked.bind(this);
         this.handleHeaderCellClicked = this.handleHeaderCellClicked.bind(this);
         this.handleHeaderRowClicked = this.handleHeaderRowClicked.bind(this);
+        this.handleDataBinding = this.handleDataBinding.bind(this);
         this.handleDataBound = this.handleDataBound.bind(this);
     }
 
@@ -99,6 +100,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     protected handleHeaderRowClicked() {
+    }
+
+    protected handleDataBinding(dataSource: DataSource) {
+        if (dataSource == this.props.dataSource) {
+            this.forceUpdate();
+        }
     }
 
     protected handleDataBound(dataSource: DataSource) {
@@ -183,6 +190,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
 
         if (dataSource) {
+            dataSource.onDataBinding.on(this.handleDataBinding);
             dataSource.onDataBound.on(this.handleDataBound);
         }
     }
@@ -198,6 +206,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     public componentWillReceiveProps(nextProps: P) {
         if ((this.props.dataSource != nextProps.dataSource) && (nextProps.dataSource != null)) {
             if (this.props.dataSource) {
+                this.props.dataSource.onDataBinding.off(this.handleDataBinding);
                 this.props.dataSource.onDataBound.off(this.handleDataBound);
             }
 

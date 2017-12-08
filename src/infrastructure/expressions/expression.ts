@@ -1,8 +1,20 @@
-export type ComparisonExpression<T> = (x: T) => boolean;
+export type LambdaExpression<T> = (x: T) => boolean;
 
 export enum ComparisonOperator {
     Contain,
-    Equal
+    Equal,
+    Greater,
+    GreaterOrEqual,
+    Less,
+    LessOrEqual,
+    NotEqual
+}
+
+export interface ComparisonExpression {
+    expression?: (model: any) => boolean;
+    field?: string;
+    operator?: ComparisonOperator;
+    value?: any;
 }
 
 export enum LogicalOperator {
@@ -10,8 +22,10 @@ export enum LogicalOperator {
     Or
 }
 
-export interface FilterExpression {
-    field: string;
-    operator: ComparisonOperator;
-    value: any;
+export interface LogicalExpression {
+    left: ConditionalExpression;
+    operator: LogicalOperator;
+    right: ConditionalExpression;
 }
+
+export type ConditionalExpression = ComparisonExpression | LogicalExpression;

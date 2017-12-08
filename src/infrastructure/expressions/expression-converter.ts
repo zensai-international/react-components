@@ -1,10 +1,10 @@
-import { ComparisonExpression, ComparisonOperator, FilterExpression } from './expression';
+import { ComparisonExpression, ComparisonOperator, LambdaExpression } from './expression';
 import { DefaultFieldAccessor, FieldAccessor } from '../data/field-accessor';
 
 export class ExpressionConverter {
     private _fieldAccessor: FieldAccessor = new DefaultFieldAccessor();
 
-    public toComparison<T>(expression: FilterExpression): ComparisonExpression<T> {
+    public toComparison<T>(expression: ComparisonExpression): LambdaExpression<T> {
         return model => {
             let result = null;
             let comparer = null;
