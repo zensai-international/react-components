@@ -1,3 +1,5 @@
+
+import { SortExpression, SortDirection } from './common';
 import { DataSource, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { DataSourcePager } from './data-source-pager';
@@ -6,8 +8,8 @@ import { Event } from '../event';
 import { Uri } from '../uri';
 import { UriBuilder } from '../uri-builder';
 import { UriParser } from '../uri-parser';
-import { SortExpression, SortDirection } from './common';
-// import { FilterExpression } from '../expressions/expression';
+import { ConditionalExpression, ComparisonExpression, ComparisonOperator, LogicalOperator } from '../expressions/expression';
+import { ExpressionVisitor } from '../expressions/expression-visitor';
 
 export interface ODataDataSourceProps extends DataSourceProps {
     dataGetter: (url: string) => Promise<any>;
@@ -21,13 +23,14 @@ export interface DataSourceAction<T> {
     viewInitializer: (response: any, view: DataView<T>) => void;
 }
 
-export enum DataSourceActionType {
+export enum DataSourceOperation {
+    Filter,
     GetCount,
     SetPageIndex,
     Sort
 }
 
-export class ODataDataSource<T> implements DataSource<T> {
+export class ODataDataSource<T = any> implements DataSource<T> {
     private _actions: { [type: number]: DataSourceAction<T> };
     private _dataGetter: (url: string) => Promise<any>;
     private _fieldAccessor: FieldAccessor;
@@ -57,21 +60,67 @@ export class ODataDataSource<T> implements DataSource<T> {
         this._onDataBound = new Event<any>();
 
         this._actions = {
-            [DataSourceActionType.GetCount]: this.createGetCountAction()
+            [DataSourceOperation.GetCount]: this.createGetCountAction()
         };
 
         this.setPageIndex(props.pageIndex || 0);
         if (props.sortedBy) {
-            this.sort(...props.sortedBy);
+            this.sort(props.sortedBy);
         }
     }
 
-    protected addSortToUrl(urlBuilder: UriBuilder, expressions: SortExpression[]) {
+    // TODO: Need refactoring.
+    protected addFilterOperationToUrl(urlBuilder: UriBuilder, expression: ConditionalExpression) {
+        const comparisonOperatorAsString = {
+            [ComparisonOperator.Contain]: 'contains',
+            [ComparisonOperator.Equal]: 'eq',
+            [ComparisonOperator.Greater]: 'gt',
+            [ComparisonOperator.GreaterOrEqual]: 'ge',
+            [ComparisonOperator.Less]: 'lt',
+            [ComparisonOperator.LessOrEqual]: 'le'
+        };
+        const logicalOperatorAsString = {
+            [LogicalOperator.And]: 'and',
+            [LogicalOperator.Or]: 'or'
+        };
+
+        if (expression) {
+            const expressionVisitor = new ExpressionVisitor({
+                onVisitComparison: (expression: ComparisonExpression) => {
+                    const field = this._fieldMappings
+                        ? this._fieldMappings[expression.field] || expression.field
+                        : expression.field;
+                    const value = expression.value;
+                    let valueAsString = null;
+
+                    if (value instanceof Date) {
+                        valueAsString = (value as Date).toISOString();
+                    } else if (value != null) {
+                        valueAsString = value.toString();
+                    }
+
+                    switch (expression.operator) {
+                        case ComparisonOperator.Contain:
+                            return `${comparisonOperatorAsString[expression.operator]}(${field}, '${valueAsString}')`;
+                        default:
+                            return `${field} ${comparisonOperatorAsString[expression.operator]} ${valueAsString}`;
+                    }
+                },
+                onVisitLogical: (left: string, operator: LogicalOperator, right: string) => {
+                    return `(${left} ${logicalOperatorAsString[operator]} ${right})`;
+                }
+            });
+
+            urlBuilder.addQueryParameter('$filter', expressionVisitor.visit(expression));
+        }
+    }
+
+    protected addSortOperationToUrl(urlBuilder: UriBuilder, expressions: SortExpression[]) {
         const sortDirectionAsString = {
             [SortDirection.Ascending]: 'asc',
             [SortDirection.Descending]: 'desc'
         };
-        let parameterValue = '';
+        const parameterValueParts = [];
 
         for (let i = 0; i < expressions.length; i++) {
             const sortExpression = expressions[i];
@@ -79,15 +128,21 @@ export class ODataDataSource<T> implements DataSource<T> {
                 ? this._fieldMappings[sortExpression.field] || sortExpression.field
                 : sortExpression.field;
 
-            if (parameterValue != '') {
-                parameterValue += ',';
-            }
-            parameterValue += `${field} ${sortDirectionAsString[sortExpression.direction]}`;
+            parameterValueParts.push( `${field} ${sortDirectionAsString[sortExpression.direction]}`);
         }
 
-        if (parameterValue) {
-            urlBuilder.addQueryParameter('$orderby', parameterValue);
+        if (parameterValueParts.length) {
+            urlBuilder.addQueryParameter('$orderby', parameterValueParts.join(','));
         }
+    }
+
+    protected createFilterAction(expression: ConditionalExpression): DataSourceAction<T> {
+        return {
+            urlGenerator: (uriBuilder: UriBuilder) => this.addFilterOperationToUrl(uriBuilder, expression),
+            viewInitializer: (response: any, view: DataView<T>) => {
+                view.filteredBy = expression;
+            }
+        };
     }
 
     protected createGetCountAction(): DataSourceAction<T> {
@@ -128,7 +183,7 @@ export class ODataDataSource<T> implements DataSource<T> {
 
     protected createSortAction(expressions: SortExpression[]): DataSourceAction<T> {
         return {
-            urlGenerator: (uriBuilder: UriBuilder) => this.addSortToUrl(uriBuilder, expressions),
+            urlGenerator: (uriBuilder: UriBuilder) => this.addSortOperationToUrl(uriBuilder, expressions),
             viewInitializer: (response: any, view: DataView<T>) => {
                 view.sortedBy = expressions;
             }
@@ -172,9 +227,9 @@ export class ODataDataSource<T> implements DataSource<T> {
     }
 
     public async dataBind(): Promise<DataView<T>> {
-        const generatedUrl = this.generateUrl();
-
         this.handleDataBinding();
+
+        const generatedUrl = this.generateUrl();
 
         return this._dataGetter(generatedUrl)
             .then(x => {
@@ -186,17 +241,20 @@ export class ODataDataSource<T> implements DataSource<T> {
             });
     }
 
-    public filter(/*...expressions: FilterExpression[]*/) {
+    public filter(expression: ConditionalExpression) {
+        this.setPageIndex(0);
+
+        this._actions[DataSourceOperation.Filter] = this.createFilterAction(expression);
     }
 
     public setPageIndex(value: number) {
-        this._actions[DataSourceActionType.SetPageIndex] = this.createSetIndexAction(value);
+        this._actions[DataSourceOperation.SetPageIndex] = this.createSetIndexAction(value);
     }
 
-    public sort(...expressions: SortExpression[]) {
+    public sort(expressions: SortExpression[]) {
         this.setPageIndex(0);
 
-        this._actions[DataSourceActionType.Sort] = this.createSortAction(expressions);
+        this._actions[DataSourceOperation.Sort] = this.createSortAction(expressions);
     }
 
     public update(/*model: T, field: string, value: any*/) {

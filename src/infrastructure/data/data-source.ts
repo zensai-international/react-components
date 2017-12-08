@@ -1,7 +1,8 @@
-import { FilterExpression, SortExpression } from './common';
+import { SortExpression } from './common';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { FieldAccessor } from './field-accessor';
 import { Event } from '../event';
+import { ConditionalExpression } from '../expressions/expression';
 
 export enum DataViewMode {
     CurrentPage,
@@ -10,7 +11,7 @@ export enum DataViewMode {
 
 export interface DataView<T> {
     data?: T[];
-    filteredBy?: FilterExpression[];
+    filteredBy?: ConditionalExpression;
     mode?: DataViewMode;
     pageIndex?: number;
     sortedBy?: SortExpression[];
@@ -34,9 +35,9 @@ export interface DataSourceProps {
 
 export interface DataSource<T = any> {
     dataBind(): Promise<DataView<T>>;
-    filter(...expressions: FilterExpression[]);
+    filter(expression: ConditionalExpression);
     setPageIndex(value: number);
-    sort(...expressions: SortExpression[]);
+    sort(expressions: SortExpression[]);
     update(model: T, field: string, value: any);
 
     readonly changeTracker: DataSourceChangeTracker<T>;

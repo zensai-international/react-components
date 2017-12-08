@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ComparisonOperator, FilterExpression } from '../../../src/infrastructure/expressions/expression';
+import { ComparisonOperator, ComparisonExpression } from '../../../src/infrastructure/expressions/expression';
 import { ExpressionConverter } from '../../../src/infrastructure/expressions/expression-converter';
 
 export default describe('ExpressionConverter', () => {
@@ -8,7 +8,7 @@ export default describe('ExpressionConverter', () => {
             const expressionConverter = new ExpressionConverter();
             const model = { field0: 'xxxyyyzzz' };
 
-            function createFilterExpression(value: any): FilterExpression {
+            function createFilterExpression(value: any): ComparisonExpression {
                 return {
                     field: 'field0',
                     operator: ComparisonOperator.Contain,
@@ -69,7 +69,7 @@ export default describe('ExpressionConverter', () => {
             const expressionConverter = new ExpressionConverter();
             const model = { fields: [{ field0: 'xxxyyyzzz' }] };
 
-            function createFilterExpression(value: any): FilterExpression {
+            function createFilterExpression(value: any): ComparisonExpression {
                 return {
                     field: 'fields.field0',
                     operator: ComparisonOperator.Contain,

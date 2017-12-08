@@ -1,10 +1,11 @@
 import { ClientDataSourceChangeTracker } from './client-data-source-change-tracker';
-import { FilterExpression, SortExpression } from './common';
+import { SortExpression } from './common';
 import { DataSource, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
 import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker } from './data-source-change-tracker';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Comparer } from '../comparer';
 import { Event } from '../event';
+import { ConditionalExpression } from '../expressions/expression';
 
 export interface ClientDataSourceProps<T> extends DataSourceProps {
     dataGetter: (() => Promise<T[]>) | (() => T[]);
@@ -36,7 +37,7 @@ export class ClientDataSource<T> implements DataSource<T> {
         }
 
         if (props.sortedBy) {
-            this.sort(...props.sortedBy);
+            this.sort(props.sortedBy);
         }
 
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
@@ -136,14 +137,14 @@ export class ClientDataSource<T> implements DataSource<T> {
         };
     }
 
-    public filter(...expressions: FilterExpression[]) {
+    public filter(expression: ConditionalExpression) {
         this._sort = x => {
-            x.filteredBy = expressions;
-            x.data = x.data.filter(expressions[0].expression)
+            x.filteredBy = expression;
+            x.data = x.data.filter(expression[0].expression)
         };
     }
 
-    public sort(...expressions: SortExpression[]) {
+    public sort(expressions: SortExpression[]) {
         this._sort = x => {
             x.sortedBy = expressions;
             x.data = (expressions && (expressions.length > 0))

@@ -168,7 +168,7 @@ export default describe('ODataDataSource', () => {
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
 
-            dataSource.sort({ direction: SortDirection.Ascending, field: 'field' });
+            dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
             const view = await dataSource.dataBind();
 
             expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
@@ -182,7 +182,7 @@ export default describe('ODataDataSource', () => {
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, fieldMappings: fieldMappings, url: serviceUrl });
 
-            dataSource.sort({ direction: SortDirection.Ascending, field: 'field' });
+            dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
             await dataSource.dataBind();
 
             expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20asc`)).to.be.true;
@@ -192,7 +192,7 @@ export default describe('ODataDataSource', () => {
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
 
-            dataSource.sort({ direction: SortDirection.Descending, field: 'field' });
+            dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
             const view = await dataSource.dataBind();
 
             expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
@@ -206,7 +206,7 @@ export default describe('ODataDataSource', () => {
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, fieldMappings: fieldMappings, url: serviceUrl });
 
-            dataSource.sort({ direction: SortDirection.Descending, field: 'field' });
+            dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
             await dataSource.dataBind();
 
             expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20desc`)).to.be.true;
@@ -221,7 +221,7 @@ export default describe('ODataDataSource', () => {
             });
 
             await dataSource.dataBind();
-            dataSource.sort({ direction: SortDirection.Descending, field: 'field' });
+            dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
             const view = await dataSource.dataBind();
 
             expect(view.pageIndex, 'pageIndex').to.equal(0);

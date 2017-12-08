@@ -4,7 +4,7 @@ import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
 import { Style } from '../common';
-import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
+import { DataSource, DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
 
 export interface GridBodyStyle extends Style {
     row: GridBodyRowStyle;
@@ -57,21 +57,28 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
                 isSelectedItem={null}
                 item={null}
                 style={style.row}>
-                {messageContent}
+                <span>{messageContent}</span>
             </Row>
         );
     }
 
     protected renderRows(): JSX.Element[] {
+        const dataSource = this.props.dataSource;
+        const data = dataSource.view.data;
+        const renderRows = () => data.map((x, i) => this.renderDataRow(x, i)) as JSX.Element[];
+
         switch (this.props.dataSource.state) {
             case DataSourceState.Empty:
-            case DataSourceState.Binding:
                 return [this.renderLoadingRow()];
+            case DataSourceState.Binding:
+                return (dataSource.view && (dataSource.view.mode == DataViewMode.FromFirstToCurrentPage))
+                    ? renderRows().concat([this.renderLoadingRow()])
+                    : [this.renderLoadingRow()];
             case DataSourceState.Bound: {
                 const data = this.props.dataSource.view.data;
 
                 return (data.length > 0)
-                    ? data.map((x, i) => this.renderDataRow(x, i)) as JSX.Element[]
+                    ? renderRows()
                     : [this.renderMessageRow(this.props.messages.noItems)];
             }
         }

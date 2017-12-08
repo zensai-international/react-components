@@ -14,8 +14,3 @@ export interface SortExpression {
     direction: SortDirection;
     field: string;
 }
-
-export interface FilterExpression {
-    expression: (model: any) => boolean;
-    field: string;
-}
