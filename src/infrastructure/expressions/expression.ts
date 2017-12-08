@@ -11,7 +11,7 @@ export enum ComparisonOperator {
 }
 
 export interface ComparisonExpression {
-    expression?: (model: any) => boolean;
+    expression?: ((model: any) => boolean) | string;
     field?: string;
     operator?: ComparisonOperator;
     value?: any;

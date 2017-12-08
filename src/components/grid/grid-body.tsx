@@ -64,7 +64,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
 
     protected renderRows(): JSX.Element[] {
         const dataSource = this.props.dataSource;
-        const data = dataSource.view.data;
+        const data = dataSource.view ? dataSource.view.data : [];
         const renderRows = () => data.map((x, i) => this.renderDataRow(x, i)) as JSX.Element[];
 
         switch (this.props.dataSource.state) {

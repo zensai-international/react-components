@@ -14,7 +14,7 @@ export class ExpressionVisitor {
     }
 
     protected visitComparison(expression: ComparisonExpression): string {
-        return this.props.onVisitComparison(expression);
+        return (expression.expression as string) || this.props.onVisitComparison(expression);
     }
 
     protected visitLogical(expression: LogicalExpression): string {

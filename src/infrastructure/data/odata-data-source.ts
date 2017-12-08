@@ -77,7 +77,8 @@ export class ODataDataSource<T = any> implements DataSource<T> {
             [ComparisonOperator.Greater]: 'gt',
             [ComparisonOperator.GreaterOrEqual]: 'ge',
             [ComparisonOperator.Less]: 'lt',
-            [ComparisonOperator.LessOrEqual]: 'le'
+            [ComparisonOperator.LessOrEqual]: 'le',
+            [ComparisonOperator.NotEqual]: 'ne'
         };
         const logicalOperatorAsString = {
             [LogicalOperator.And]: 'and',
@@ -243,6 +244,10 @@ export class ODataDataSource<T = any> implements DataSource<T> {
     public filter(expression: ConditionalExpression) {
         this.setPageIndex(0);
 
+        if (this.view) {
+            this.view.data = [];
+        }
+
         this._actions[DataSourceOperation.Filter] = this.createFilterAction(expression);
     }
 
@@ -252,6 +257,10 @@ export class ODataDataSource<T = any> implements DataSource<T> {
 
     public sort(expressions: SortExpression[]) {
         this.setPageIndex(0);
+
+        if (this.view) {
+            this.view.data = [];
+        }
 
         this._actions[DataSourceOperation.Sort] = this.createSortAction(expressions);
     }
