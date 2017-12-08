@@ -23,16 +23,17 @@ function isElementVisible(element) {
 export interface InfiniteScrollPagerProps {
     isEnabled?: boolean;
     dataSource: DataSource<any>;
+    containerClass?: string
 }
 
 export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, any> {
     private _visibilityDetector: HTMLElement;
-
+ 
     public constructor(props: InfiniteScrollPagerProps) {
         super(props);
 
         this.state = { isLoading: false };
-
+        
         this.handleScroll = this.handleScroll.bind(this);
     }
 
@@ -49,15 +50,13 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     protected handleScroll() {
         if ((this.props.dataSource.state != DataSourceState.Binding) && isElementVisible(this._visibilityDetector)) {
             const dataSourcePager = new DataSourcePager(this.props.dataSource);
-
             dataSourcePager.moveToPage(PageType.Next);
         }
     }
 
     public componentDidMount() {
         if (this.props.isEnabled != false) {
-            document.addEventListener('scroll', this.handleScroll);
-            document.addEventListener('resize', this.handleScroll);
+            this.attachEvents();
         }
     }
 
@@ -73,14 +72,13 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
 
     public componentWillUnmount() {
         if (this.props.isEnabled) {
-            document.removeEventListener('scroll', this.handleScroll);
-            document.removeEventListener('resize', this.handleScroll);
+            this.detachEvents();
         }
     }
 
     public render(): JSX.Element {
         return (
-            <div onScroll={this.handleScroll}>
+            <div onScroll={this.handleScroll} >
                 {this.props.children}
                 <div ref={x => this._visibilityDetector = x} />
             </div>
