@@ -1,3 +1,15 @@
+export class Guid {
+    private readonly _value: string;
+
+    public constructor(value: string) {
+        this._value = value;
+    }
+
+    public toString() {
+        return this._value;
+    }
+}
+
 export enum DataType {
     Date,
     Enum,

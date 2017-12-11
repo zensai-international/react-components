@@ -96,13 +96,15 @@ export class ODataDataSource<T = any> implements DataSource<T> {
 
                     if (value instanceof Date) {
                         valueAsString = (value as Date).toISOString();
-                    } else if (value != null) {
+                    } else if (typeof value == 'string') {
+                        valueAsString = '\''+ value + '\'';
+                    } else  if (value != null) {
                         valueAsString = value.toString();
                     }
 
                     switch (expression.operator) {
                         case ComparisonOperator.Contain:
-                            return `${comparisonOperatorAsString[expression.operator]}(${field}, '${valueAsString}')`;
+                            return `${comparisonOperatorAsString[expression.operator]}(${field}, ${valueAsString})`;
                         default:
                             return `${field} ${comparisonOperatorAsString[expression.operator]} ${valueAsString}`;
                     }
