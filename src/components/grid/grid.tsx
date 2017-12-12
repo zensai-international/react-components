@@ -28,10 +28,10 @@ export interface GridProps {
     selectionMode?: GridSelectionMode;
     style?: GridStyle;
 
-    onBodyCellClicked?: (row: GridBodyCell) => void;
-    onBodyRowClicked?: (row: GridBodyRow) => void;
-    onItemSelected?: (item: any) => void;
-    onItemUnselected?: (item: any) => void;
+    onBodyCellClick?: (row: GridBodyCell) => void;
+    onBodyRowClick?: (row: GridBodyRow) => void;
+    onItemSelect?: (item: any) => void;
+    onItemUnselect?: (item: any) => void;
 }
 
 export interface GridState {
@@ -47,7 +47,8 @@ export interface GridStyle extends Style {
 export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
     public static childContextTypes = {
         dataSource: React.PropTypes.object,
-        gridState: React.PropTypes.object
+        gridState: React.PropTypes.object,
+        messages: React.PropTypes.object
     };
     public static defaultProps: Partial<GridProps> = DefultGridProps;
 
@@ -61,10 +62,10 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             selectedItems: []
         } as S;
 
-        this.handleBodyCellClicked = this.handleBodyCellClicked.bind(this);
-        this.handleBodyRowClicked = this.handleBodyRowClicked.bind(this);
-        this.handleHeaderCellClicked = this.handleHeaderCellClicked.bind(this);
-        this.handleHeaderRowClicked = this.handleHeaderRowClicked.bind(this);
+        this.handleBodyCellClick = this.handleBodyCellClick.bind(this);
+        this.handleBodyRowClick = this.handleBodyRowClick.bind(this);
+        this.handleHeaderCellClick = this.handleHeaderCellClick.bind(this);
+        this.handleHeaderRowClick = this.handleHeaderRowClick.bind(this);
         this.handleDataBinding = this.handleDataBinding.bind(this);
         this.handleDataBound = this.handleDataBound.bind(this);
     }
@@ -72,34 +73,35 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     public getChildContext(): any {
         return {
             dataSource: this.props.dataSource,
-            gridState: this.state
+            gridState: this.state,
+            messages: this.messages
         };
     }
 
-    protected handleBodyCellClicked(cell: GridBodyCell) {
+    protected handleBodyCellClick(cell: GridBodyCell) {
         const item = cell.props.item;
 
         if (cell.props.column instanceof GridExpanderColumn) {
             this.changeItemExpansion(item);
         }
 
-        if (this.props.onBodyCellClicked) {
-            this.props.onBodyCellClicked(cell);
+        if (this.props.onBodyCellClick) {
+            this.props.onBodyCellClick(cell);
         }
     }
 
-    protected handleBodyRowClicked(row: GridBodyRow) {
+    protected handleBodyRowClick(row: GridBodyRow) {
         this.changeItemSelection(row.props.item);
 
-        if (this.props.onBodyRowClicked) {
-            this.props.onBodyRowClicked(row);
+        if (this.props.onBodyRowClick) {
+            this.props.onBodyRowClick(row);
         }
     }
 
-    protected handleHeaderCellClicked(cell: any) {
+    protected handleHeaderCellClick(cell: any) {
     }
 
-    protected handleHeaderRowClicked() {
+    protected handleHeaderRowClick() {
     }
 
     protected handleDataBinding(dataSource: DataSource) {
@@ -121,8 +123,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         return (
             <Header {...this.props}
                 columns={this.columns}
-                onCellClicked={this.handleHeaderCellClicked}
-                onRowClicked={this.handleHeaderRowClicked}
+                onCellClick={this.handleHeaderCellClick}
+                onRowClick={this.handleHeaderRowClick}
                 style={headerStyle} />
         );
     }
@@ -134,9 +136,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         return (
             <Body {...this.props}
                 columns={this.columns}
-                messages={this.props.messages}
-                onCellClicked={this.handleBodyCellClicked}
-                onRowClicked={this.handleBodyRowClicked}
+                onCellClick={this.handleBodyCellClick}
+                onRowClick={this.handleBodyRowClick}
                 rowTemplate={this.props.bodyRowTemplate}
                 style={bodyStyle} />
         );
@@ -165,8 +166,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
                 this.setState({ selectedItems: selectedItems });
 
-                if (this.props.onItemUnselected) {
-                    this.props.onItemUnselected(item);
+                if (this.props.onItemUnselect) {
+                    this.props.onItemUnselect(item);
                 }
             } else {
                 if ((this.props.selectionMode == GridSelectionMode.Single) && (selectedItems.length == 1)) {
@@ -177,8 +178,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
                 this.setState({ selectedItems: selectedItems });
 
-                if (this.props.onItemSelected) {
-                    this.props.onItemSelected(item);
+                if (this.props.onItemSelect) {
+                    this.props.onItemSelect(item);
                 }
             }
         }
@@ -215,8 +216,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     protected abstract get bodyType(): { new (): GridBody<GridBodyProps, any> };
-    
+
     protected abstract get headerType(): { new (): GridHeader<GridHeaderProps, any> };
+
+    protected get messages(): GridMessages {
+        return this.props.messages;
+    }
 
     public get columns(): GridColumn<GridColumnProps>[] {
         return this._columns = this._columns

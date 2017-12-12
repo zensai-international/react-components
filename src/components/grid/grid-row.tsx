@@ -9,8 +9,8 @@ export interface GridRowProps {
     index: number;
     style: GridRowStyle;
 
-    onCellClicked: (sender: any) => void;
-    onRowClicked: (sender: any) => void;
+    onCellClick: (sender: any) => void;
+    onRowClick: (sender: any) => void;
 }
 
 export interface GridRowStyle extends Style {
@@ -21,12 +21,12 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
     public constructor(props: P) {
         super(props);
 
-        this.handleClicked = this.handleClicked.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    protected handleClicked() {
-        if (this.props.onRowClicked) {
-            this.props.onRowClicked(this);
+    protected handleClick() {
+        if (this.props.onRowClick) {
+            this.props.onRowClick(this);
         }
     }
 
@@ -41,7 +41,7 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
                 columnIndex={index}
                 key={key}
                 rowIndex={this.props.index}
-                onClicked={this.props.onCellClicked}
+                onClick={this.props.onCellClick}
                 style={style} />
         );
     }
@@ -61,7 +61,7 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
                     columnIndex={null}
                     key={null}
                     rowIndex={this.props.index}
-                    onClicked={null}
+                    onClick={null}
                     style={style}>
                     {this.props.children}
                 </Cell>

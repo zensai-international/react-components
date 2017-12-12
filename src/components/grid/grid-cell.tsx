@@ -8,7 +8,7 @@ export interface GridCellProps {
     rowIndex: number;
     style: Style;
 
-    onClicked: (sender: any) => void;
+    onClick: (sender: any) => void;
 }
 
 export interface GridCellStyle extends Style {
@@ -22,8 +22,8 @@ export class GridCell<P extends GridCellProps = GridCellProps, S = any> extends 
     }
 
     protected handleClicked() {
-        if (this.props.onClicked) {
-            this.props.onClicked(this);
+        if (this.props.onClick) {
+            this.props.onClick(this);
         }
     }
 

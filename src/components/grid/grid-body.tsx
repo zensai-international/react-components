@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { GridMessages } from './grid';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
@@ -13,12 +12,11 @@ export interface GridBodyStyle extends Style {
 export interface GridBodyProps {
     columns: GridColumn<GridColumnProps>[];
     dataSource: DataSource;
-    messages: GridMessages;
     style: GridBodyStyle;
     rowTemplate: GridBodyRowTemplate;
 
-    onCellClicked: (sender: any) => void;
-    onRowClicked: (sender: any) => void;
+    onCellClick: (sender: any) => void;
+    onRowClick: (sender: any) => void;
 }
 
 export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent<P, S> {
@@ -43,7 +41,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
     }
 
     protected renderLoadingRow(): JSX.Element {
-        return this.renderMessageRow(this.props.messages.loading);
+        return this.renderMessageRow(this.context.messages.loading);
     }
 
     protected renderMessageRow(messageContent: JSX.Element | string): JSX.Element {
@@ -56,6 +54,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
                 isExpandedItem={null}
                 isSelectedItem={null}
                 item={null}
+                key="row-message"
                 style={style.row}>
                 <span>{messageContent}</span>
             </Row>
@@ -79,7 +78,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
 
                 return (data.length > 0)
                     ? renderRows()
-                    : [this.renderMessageRow(this.props.messages.noItems)];
+                    : [this.renderMessageRow(this.context.messages.noItems)];
             }
         }
     }

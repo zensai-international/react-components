@@ -7,7 +7,7 @@ export class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = any>
         const className = this.style.className;
 
         return (
-            <tr className={className} onClick={this.handleClicked}>
+            <tr className={className} onClick={this.handleClick}>
                 {this.renderContent()}
             </tr>
         );

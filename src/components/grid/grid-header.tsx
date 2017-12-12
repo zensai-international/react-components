@@ -10,8 +10,8 @@ export interface GridHeaderProps {
     dataSource: DataSource<any>;
     style: GridHeaderStyle;
 
-    onCellClicked: (sender: any) => void;
-    onRowClicked: (sender: any) => void;
+    onCellClick: (sender: any) => void;
+    onRowClick: (sender: any) => void;
 }
 
 export interface GridHeaderStyle extends Style {
