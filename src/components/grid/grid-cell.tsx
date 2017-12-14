@@ -31,7 +31,7 @@ export abstract class GridCell<P extends GridCellProps = GridCellProps, S = any>
 
     protected get style(): Style {
         const column = this.props.column;
-        const styleByColumn = this.getStyleByColumn(column);
+        const styleByColumn = column ? this.getStyleByColumn(column) : null;
 
         return styleByColumn
             ? StyleHelper.concat(this.props.style, styleByColumn)
