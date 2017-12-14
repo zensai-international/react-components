@@ -12,23 +12,11 @@ module.exports = {
         'index.tests': ['./tests/index']
     },
     externals: {
-        'react': {
-            root: 'React',
-            commonjs2: 'react',
-            commonjs: 'react',
-            amd: 'react',
-        },
-        'react-dom': {
-            root: 'ReactDOM',
-            commonjs2: 'react-dom',
-            commonjs: 'react-dom',
-            amd: 'react-dom'
-        },
-        'react/addons': true,
+        'jsdom': 'window',
+        'cheerio': 'window',
         'react/lib/ExecutionEnvironment': true,
+        'react/addons': true,
         'react/lib/ReactContext': 'window'
-        /*'sinon': 'sinon',
-        'sinon-promise': 'sinon-promise'*/
     },
     module: {
         rules: [

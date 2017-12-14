@@ -1,6 +1,6 @@
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
-import { Style } from '../common';
+import { Style, StyleHelper } from '../common';
 
 export interface GridCellProps {
     column: GridColumn<GridColumnProps>;
@@ -14,12 +14,14 @@ export interface GridCellProps {
 export interface GridCellStyle extends Style {
 }
 
-export class GridCell<P extends GridCellProps = GridCellProps, S = any> extends GridComponent<P, S> {
+export abstract class GridCell<P extends GridCellProps = GridCellProps, S = any> extends GridComponent<P, S> {
     public constructor(props: P) {
         super(props);
 
         this.handleClicked = this.handleClicked.bind(this);
     }
+
+    protected abstract getStyleByColumn(column: GridColumn): Style;
 
     protected handleClicked() {
         if (this.props.onClick) {
@@ -28,6 +30,11 @@ export class GridCell<P extends GridCellProps = GridCellProps, S = any> extends 
     }
 
     protected get style(): Style {
-        return this.props.style;
+        const column = this.props.column;
+        const styleByColumn = this.getStyleByColumn(column);
+
+        return styleByColumn
+            ? StyleHelper.concat(this.props.style, styleByColumn)
+            : this.props.style;
     }
 }

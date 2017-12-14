@@ -2,11 +2,11 @@ import * as Enzyme from 'enzyme';
 import { expect } from 'chai';
 import * as React from 'react';
 import { GridColumn } from '../../src/components/grid/grid-column';
-import { Grid } from '../../src/components/grid/grid';
+import { Grid } from '../../src/components/grid/table/grid';
 import { SortDirection } from '../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../src/infrastructure/data/client-data-source';
 import { DataSource } from '../../src/infrastructure/data/data-source';
-//import { GridBodyRow, GridBodyRowProps } from "../../src/components/grid/grid-body-row";
+//import { GridBodyRow, GridBodyRowProps } from '../../src/components/grid/grid-body-row';
 
 export default describe('<Grid />', () => {
     describe('behaviour', () => {
@@ -27,7 +27,7 @@ export default describe('<Grid />', () => {
             });
 
             it('one click on first column', () => {
-                grid.find('th a').first().simulate('click');
+                grid.find('th').first().simulate('click');
 
                 expect(dataSource.view.sortedBy.length).to.equal(1, 'sortedBy.length');
                 expect(dataSource.view.sortedBy[0].direction).to.equal(SortDirection.Ascending, 'sortedBy[0].direction');
@@ -125,34 +125,29 @@ export default describe('<Grid />', () => {
         // })
     });
 
-    // describe('property', () => {
-    //     const cssClass = {
-    //         name: 'class0',
-    //         styles: 'content: \'value0\';'
-    //     };
+    describe('property', () => {
+        describe('body', () => {
+            it('className', () => {
+                const grid = Enzyme.mount(
+                    <Grid autoBind={true} dataSource={new ClientDataSource({ dataGetter: () => [{}] })}>
+                        <GridColumn body={{ style: { className: 'class0' } }} field="title" title="Title" />
+                    </Grid>
+                );
 
-    //     describe('body', () => {
-    //         it('className', () => {
-    //             const grid = Enzyme.mount(
-    //                 <Grid autoBind={true} dataSource={new ClientDataSource([{}])}>
-    //                     <GridColumn body={{ className: 'class0' }} field="title" title="Title" />
-    //                 </Grid>
-    //             );
+                expect(grid.find(`tbody td.class0`).length).to.equal(1);
+            });
+        });
 
-    //             expect(grid.find(`tbody td.class0`).length).to.equal(1);
-    //         });
-    //     });
+        describe('header', () => {
+            it('className', () => {
+                let grid = Enzyme.mount(
+                    <Grid autoBind={true} dataSource={new ClientDataSource({ dataGetter: () => [{}] })}>
+                        <GridColumn header={{ style: { className: 'class0' } }} field="title" title="Title" />
+                    </Grid>
+                );
 
-    //     describe('header', () => {
-    //         it('className', () => {
-    //             let grid = Enzyme.mount(
-    //                 <Grid autoBind={true} dataSource={new ClientDataSource([{}])}>
-    //                     <GridColumn header={{ className: 'class0' }} field="title" title="Title" />
-    //                 </Grid>
-    //             );
-
-    //             expect(grid.find('th.class0').length).to.equal(1);
-    //         });
-    //     });
-    // });
+                expect(grid.find('th.class0').length).to.equal(1);
+            });
+        });
+    });
 });

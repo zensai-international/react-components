@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
+import { GridColumn } from './grid-column';
 import { Style } from '../common';
 import { SortDirection } from '../../infrastructure/data/common';
 import { DataSource } from '../../infrastructure/data/data-source';
@@ -20,6 +21,10 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps, S> extends G
         super(props);
 
         this.handleSortClicked = this.handleSortClicked.bind(this);
+    }
+
+    protected getStyleByColumn(column: GridColumn): Style {
+        return column.props.header ? column.props.header.style : null;
     }
 
     protected handleSortClicked() {

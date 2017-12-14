@@ -1,4 +1,4 @@
-//export * from './components/grid';
+export * from './components/grid';
 
 export * from './infrastructure/expressions/expression-converter';
 export * from './infrastructure/css-class-name-builder';
