@@ -13,7 +13,7 @@ export enum ComparisonOperator {
 }
 
 export interface ComparisonExpression {
-    expression?: ((model: any) => boolean) | string;
+    expression?: ((item: any) => boolean) | string;
     field?: string;
     operator?: ComparisonOperator;
     value?: any;

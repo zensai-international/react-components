@@ -6,7 +6,7 @@ export default describe('ExpressionConverter', () => {
     describe('toComparison', () => {
         describe('if operator is "contain"', () => {
             const expressionConverter = new ExpressionConverter();
-            const model = { field0: 'xxxyyyzzz' };
+            const item = { field0: 'xxxyyyzzz' };
 
             function createFilterExpression(value: any): ComparisonExpression {
                 return {
@@ -21,7 +21,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
 
             it ('if result is true and value is middle part', () => {
@@ -29,7 +29,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
 
             it ('if result is true and value is middle part (upper case)', () => {
@@ -37,7 +37,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
 
             it ('if result is true and value is end part', () => {
@@ -45,7 +45,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
 
             it ('if result is false', () => {
@@ -53,7 +53,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(false);
+                expect(comparisonExpression(item)).equal(false);
             });
 
             it ('if result is false and value is null', () => {
@@ -61,13 +61,13 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(false);
+                expect(comparisonExpression(item)).equal(false);
             });
         });
 
         describe('if operator is "contain" and field is array', () => {
             const expressionConverter = new ExpressionConverter();
-            const model = { fields: [{ field0: 'xxxyyyzzz' }] };
+            const item = { fields: [{ field0: 'xxxyyyzzz' }] };
 
             function createFilterExpression(value: any): ComparisonExpression {
                 return {
@@ -82,7 +82,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
 
             it ('if result is true and value is middle part', () => {
@@ -90,7 +90,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
 
             it ('if result is true and value is end part', () => {
@@ -98,7 +98,7 @@ export default describe('ExpressionConverter', () => {
 
                 const comparisonExpression = expressionConverter.toComparison(filterExpression);
 
-                expect(comparisonExpression(model)).equal(true);
+                expect(comparisonExpression(item)).equal(true);
             });
         });
 

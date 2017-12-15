@@ -14,7 +14,7 @@ import { ExpressionVisitor } from '../expressions/expression-visitor';
 export interface ODataDataSourceProps extends DataSourceProps {
     dataGetter: (url: string) => Promise<any>;
     fieldMappings?: { [field: string]: string };
-    modelConverter?: (value: any) => any;
+    itemlConverter?: (value: any) => any;
     url: string;
 }
 
@@ -35,7 +35,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
     private _dataGetter: (url: string) => Promise<any>;
     private _fieldAccessor: FieldAccessor;
     private _fieldMappings: { [field: string]: string };
-    private _modelConverter: (value: any) => any;
+    private _itemConverter: (value: any) => any;
     private _onDataBinging: Event<any>;
     private _onDataBound: Event<any>;
     private _pageSize: number;
@@ -49,7 +49,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         this._dataGetter = props.dataGetter;
         this._fieldAccessor = props.fieldAccessor;
         this._fieldMappings = props.fieldMappings;
-        this._modelConverter = props.modelConverter;
+        this._itemConverter = props._itemConverter;
         this._pageSize = props.pageSize;
         this._state = DataSourceState.Empty;
         this._url = new UriParser().parse(props.url);
@@ -195,8 +195,8 @@ export class ODataDataSource<T = any> implements DataSource<T> {
 
     protected createView(response: any): DataView<T> {
 
-        const data = this._modelConverter
-            ? response['value'].map(x => this._modelConverter(x))
+        const data = this._itemConverter
+            ? response['value'].map(x => this._itemConverter(x))
             : response['value'] as T[];
         const result = { data: data, totalCount: this._view ? this._view.totalCount : null };
 
@@ -268,7 +268,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         this._actions[DataSourceOperation.Sort] = this.createSortAction(expressions);
     }
 
-    public update(/*model: T, field: string, value: any*/) {
+    public update(/*item: T, field: string, value: any*/) {
     }
 
     public get changeTracker(): DataSourceChangeTracker<T> {

@@ -93,13 +93,13 @@ export default describe('<Grid />', () => {
 
         //         grid = Enzyme.mount(
         //             <Grid dataSource={dataSource}>
-        //                 <GridExpandContentColumn renderDetails={(rowType: { new (): GridBodyRow<GridBodyRowProps, any> }, index: number, model: any) => {
+        //                 <GridExpandContentColumn renderDetails={(rowType: { new (): GridBodyRow<GridBodyRowProps, any> }, index: number, item: any) => {
         //                     const Row = rowType;
-        //                     const childDataSource = new ClientDataSource<any>({ dataGetter: () => model.subItems });
+        //                     const childDataSource = new ClientDataSource<any>({ dataGetter: () => item.subItems });
         //                     childDataSource.dataBind();
 
-        //                     return model.subItems.map(v =>
-        //                         <Row columns={columns} dataSource={childDataSource} style={DefaultStyle.body.dataRow} index={index} model={v} />
+        //                     return item.subItems.map(v =>
+        //                         <Row columns={columns} dataSource={childDataSource} style={DefaultStyle.body.dataRow} index={index} item={v} />
         //                     )
 
         //                 }} />

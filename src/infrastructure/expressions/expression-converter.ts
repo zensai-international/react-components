@@ -5,10 +5,10 @@ export class ExpressionConverter {
     private _fieldAccessor: FieldAccessor = new DefaultFieldAccessor();
 
     public toComparison<T>(expression: ComparisonExpression): LambdaExpression<T> {
-        return model => {
+        return item => {
             let result = null;
             let comparer = null;
-            const value = this._fieldAccessor.getValue(model, expression.field);
+            const value = this._fieldAccessor.getValue(item, expression.field);
 
             switch (expression.operator) {
                 case ComparisonOperator.Contain:

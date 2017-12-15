@@ -5,7 +5,7 @@ export enum DataSourceChangeType {
 }
 
 export interface DataSourceChange<T> {
-    model: T;
+    item: T;
     type: DataSourceChangeType;
 }
 

@@ -24,7 +24,7 @@ export class ClientDataSourceChangeTracker<T> implements DataSourceChangeTracker
                 case DataSourceChangeType.Update:
                     const update = change as DataSourceUpdate<T>;
 
-                    fieldAccessor.setValue(update.model, update.field, update.prevValue);
+                    fieldAccessor.setValue(update.item, update.field, update.prevValue);
                 break;
             }
         }

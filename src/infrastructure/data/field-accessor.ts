@@ -1,14 +1,14 @@
 const FieldSeparator = '.';
 
 export interface FieldAccessor {
-    getValue(model: any, compositeField: string): any;
-    setValue(model: any, compositeField: string, value: any);
+    getValue(item: any, compositeField: string): any;
+    setValue(item: any, compositeField: string, value: any);
 }
 
 export class DefaultFieldAccessor {
-    public getValue(model: any, compositeField: string): any {
+    public getValue(item: any, compositeField: string): any {
         const fields = compositeField.split(FieldSeparator);
-        let result = model;
+        let result = item;
 
         for (let i = 0; i < fields.length; i++) {
             const field = fields[i];
@@ -25,15 +25,15 @@ export class DefaultFieldAccessor {
         return result;
     }
 
-    public setValue(model: any, compositeField: string, value: any) {
+    public setValue(item: any, compositeField: string, value: any) {
         const fields = compositeField.split(FieldSeparator);
 
         for (let i = 0; i < (fields.length - 1); i++) {
             const field = fields[i];
-            
-            model = model[field];
+
+            item = item[field];
         }
 
-        model[fields[fields.length - 1]] = value;
+        item[fields[fields.length - 1]] = value;
     }
 }

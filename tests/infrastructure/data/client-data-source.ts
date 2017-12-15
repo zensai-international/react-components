@@ -264,8 +264,8 @@ export default describe('ClientDataSource', () => {
         describe('by one "date" field if value is string', () => {
             const typeConverter = TypeConverterProvider.instance.get(DataType.Date);
             const fieldAccessor = {
-                getValue(model: any): any {
-                    return typeConverter.convert(model.dateField);
+                getValue(item: any): any {
+                    return typeConverter.convert(item.dateField);
                 },
                 setValue: () => null
             };

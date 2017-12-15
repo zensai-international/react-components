@@ -153,14 +153,14 @@ export class ClientDataSource<T> implements DataSource<T> {
         };
     }
 
-    public update(model: T, field: string, value: any) {
-        const currentValue = this.fieldAccessor.getValue(model, field);
+    public update(item: T, field: string, value: any) {
+        const currentValue = this.fieldAccessor.getValue(item, field);
 
-        this.fieldAccessor.setValue(model, field, value);
+        this.fieldAccessor.setValue(item, field, value);
 
         this.changeTracker.changes.push({
             field: field,
-            model: model,
+            item: item,
             prevValue: currentValue,
             type: DataSourceChangeType.Update,
             value: value

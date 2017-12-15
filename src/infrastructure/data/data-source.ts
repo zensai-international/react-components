@@ -38,7 +38,7 @@ export interface DataSource<T = any> {
     filter(expression: ConditionalExpression);
     setPageIndex(value: number);
     sort(expressions: SortExpression[]);
-    update(model: T, field: string, value: any);
+    update(item: T, field: string, value: any);
 
     readonly changeTracker: DataSourceChangeTracker<T>;
     readonly fieldAccessor: FieldAccessor;
