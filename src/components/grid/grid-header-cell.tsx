@@ -29,6 +29,9 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps, S> extends G
 
     protected handleSortClicked() {
         const field = this.props.column.props.field;
+
+        if (!field) return;
+
         const dataSource = this.props.dataSource;
         let sortedBy = null;
 

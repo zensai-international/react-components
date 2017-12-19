@@ -26,6 +26,7 @@ export enum DataSourceState {
 
 export interface DataSourceProps {
     fieldAccessor?: FieldAccessor;
+    filteredBy?: ConditionalExpression;
     firstPageSize?: number;
     pageSize?: number;
     pageIndex?: number;
