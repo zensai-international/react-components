@@ -28,6 +28,7 @@ export interface GridProps {
     selectionMode?: GridSelectionMode;
     style?: GridStyle;
 
+    onDataBound?: (grid: Grid) => void;
     onBodyCellClick?: (row: GridBodyCell) => void;
     onBodyRowClick?: (row: GridBodyRow) => void;
     onItemSelect?: (item: any) => void;
@@ -112,7 +113,23 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected handleDataBound(dataSource: DataSource) {
         if (dataSource == this.props.dataSource) {
-            this.forceUpdate();
+            const expandedItems = this.state.expandedItems.filter(x => dataSource.view.data.indexOf(x) != -1);
+            const selectedItems = this.state.selectedItems.filter(x => dataSource.view.data.indexOf(x) != -1);
+            const handleDataBound = () => {
+                if (this.props.onDataBound) {
+                    this.props.onDataBound(this);
+                }
+            };
+
+            if ((expandedItems.length != this.state.expandedItems.length) || (selectedItems.length != this.state.selectedItems.length)) {
+                this.setState({
+                        expandedItems: expandedItems,
+                        selectedItems: selectedItems
+                    },
+                    handleDataBound);
+            } else {
+                this.forceUpdate(handleDataBound);
+            }
         }
     }
 
