@@ -29,8 +29,8 @@ export interface GridProps {
     style?: GridStyle;
 
     onDataBound?: (grid: Grid) => void;
-    onBodyCellClick?: (row: GridBodyCell) => void;
-    onBodyRowClick?: (row: GridBodyRow) => void;
+    onBodyCellClick?: (event: React.MouseEvent<any>, row: GridBodyCell) => void;
+    onBodyRowClick?: (event: React.MouseEvent<any>, row: GridBodyRow) => void;
     onItemSelect?: (item: any) => void;
     onItemUnselect?: (item: any) => void;
 }
@@ -79,7 +79,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         };
     }
 
-    protected handleBodyCellClick(cell: GridBodyCell) {
+    protected handleBodyCellClick(event: React.MouseEvent<any>, cell: GridBodyCell) {
         const item = cell.props.item;
 
         if (cell.props.column instanceof GridExpanderColumn) {
@@ -87,15 +87,17 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
 
         if (this.props.onBodyCellClick) {
-            this.props.onBodyCellClick(cell);
+            this.props.onBodyCellClick(event, cell);
         }
     }
 
-    protected handleBodyRowClick(row: GridBodyRow) {
-        this.changeItemSelection(row.props.item);
-
+    protected handleBodyRowClick(event: React.MouseEvent<any>, row: GridBodyRow) {
         if (this.props.onBodyRowClick) {
-            this.props.onBodyRowClick(row);
+            this.props.onBodyRowClick(event, row);
+        }
+
+        if (!event.isPropagationStopped()) {
+            this.changeItemSelection(row.props.item);
         }
     }
 

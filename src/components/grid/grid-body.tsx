@@ -15,8 +15,8 @@ export interface GridBodyProps {
     style: GridBodyStyle;
     rowTemplate: GridBodyRowTemplate;
 
-    onCellClick: (sender: any) => void;
-    onRowClick: (sender: any) => void;
+    onCellClick: (event: React.MouseEvent<any>, sender: any) => void;
+    onRowClick: (event: React.MouseEvent<any>, sender: any) => void;
 }
 
 export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent<P, S> {

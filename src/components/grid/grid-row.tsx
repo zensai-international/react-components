@@ -9,8 +9,8 @@ export interface GridRowProps {
     index: number;
     style: GridRowStyle;
 
-    onCellClick: (sender: any) => void;
-    onRowClick: (sender: any) => void;
+    onCellClick: (event: React.MouseEvent<any>, sender: any) => void;
+    onRowClick: (event: React.MouseEvent<any>, sender: any) => void;
 }
 
 export interface GridRowStyle extends Style {
@@ -24,9 +24,9 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
         this.handleClick = this.handleClick.bind(this);
     }
 
-    protected handleClick() {
+    protected handleClick(event: React.MouseEvent<any>) {
         if (this.props.onRowClick) {
-            this.props.onRowClick(this);
+            this.props.onRowClick(event, this);
         }
     }
 

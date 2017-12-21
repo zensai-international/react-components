@@ -8,7 +8,7 @@ export interface GridCellProps {
     rowIndex: number;
     style: Style;
 
-    onClick: (sender: any) => void;
+    onClick: (event: React.MouseEvent<any>, sender: any) => void;
 }
 
 export interface GridCellStyle extends Style {
@@ -23,9 +23,9 @@ export abstract class GridCell<P extends GridCellProps = GridCellProps, S = any>
 
     protected abstract getStyleByColumn(column: GridColumn): Style;
 
-    protected handleClicked() {
+    protected handleClicked(event: React.MouseEvent<any>) {
         if (this.props.onClick) {
-            this.props.onClick(this);
+            this.props.onClick(event, this);
         }
     }
 
