@@ -19,7 +19,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is start part', () => {
                 const filterExpression = createFilterExpression('xxx');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });
@@ -27,7 +27,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is middle part', () => {
                 const filterExpression = createFilterExpression('yyy');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });
@@ -35,7 +35,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is middle part (upper case)', () => {
                 const filterExpression = createFilterExpression('YYY');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });
@@ -43,7 +43,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is end part', () => {
                 const filterExpression = createFilterExpression('zzz');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });
@@ -51,7 +51,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is false', () => {
                 const filterExpression = createFilterExpression('xxxxxxxxx');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(false);
             });
@@ -59,7 +59,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is false and value is null', () => {
                 const filterExpression = createFilterExpression(null);
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(false);
             });
@@ -80,7 +80,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is start part', () => {
                 const filterExpression = createFilterExpression('xxx');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });
@@ -88,7 +88,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is middle part', () => {
                 const filterExpression = createFilterExpression('yyy');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });
@@ -96,7 +96,7 @@ export default describe('ExpressionConverter', () => {
             it ('if result is true and value is end part', () => {
                 const filterExpression = createFilterExpression('zzz');
 
-                const comparisonExpression = expressionConverter.toComparison(filterExpression);
+                const comparisonExpression = expressionConverter.convert(filterExpression);
 
                 expect(comparisonExpression(item)).equal(true);
             });

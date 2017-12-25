@@ -1,10 +1,11 @@
-import { ComparisonExpression, ComparisonOperator, LambdaExpression } from './expression';
+import { ConditionalExpression, ComparisonExpression, ComparisonOperator, LambdaExpression } from './expression';
 import { DefaultFieldAccessor, FieldAccessor } from '../data/field-accessor';
+import { LogicalExpression, LogicalOperator } from '../../index';
 
 export class ExpressionConverter {
     private _fieldAccessor: FieldAccessor = new DefaultFieldAccessor();
 
-    public toComparison<T>(expression: ComparisonExpression): LambdaExpression<T> {
+    private convertComparison<T>(expression: ComparisonExpression): LambdaExpression<T> {
         return item => {
             let result = null;
             let comparer = null;
@@ -19,6 +20,21 @@ export class ExpressionConverter {
                 case ComparisonOperator.Equal:
                     comparer = x => x == expression.value;
                     break;
+                case ComparisonOperator.Greater:
+                    comparer = x => x > expression.value;
+                    break;
+                case ComparisonOperator.GreaterOrEqual:
+                    comparer = x => x >= expression.value;
+                    break;
+                case ComparisonOperator.Less:
+                    comparer = x => x < expression.value;
+                    break;
+                case ComparisonOperator.LessOrEqual:
+                    comparer = x => x <= expression.value;
+                    break;
+                case ComparisonOperator.NotEqual:
+                    comparer = x => x != expression.value;
+                    break;
             }
 
             if (value instanceof Array) {
@@ -29,5 +45,27 @@ export class ExpressionConverter {
 
             return result;
         };
+    }
+
+    private convertLogical<T>(expression: LogicalExpression): LambdaExpression<T> {
+        const leftExpression = this.convert<T>(expression.left);
+        const rightExpression = this.convert<T>(expression.right);
+
+        switch (expression.operator) {
+            case LogicalOperator.And:
+                return x => leftExpression(x) && rightExpression(x);
+            case LogicalOperator.Or:
+                return x => leftExpression(x) || rightExpression(x);
+        }
+    }
+
+    public convert<T>(expression: ConditionalExpression): LambdaExpression<T> {
+        const logicalExpression = (expression as LogicalExpression);
+
+        if (logicalExpression.left && logicalExpression.right) {
+            return this.convertLogical(logicalExpression);
+        } else {
+            return this.convertComparison(expression as ComparisonExpression);
+        }
     }
 }

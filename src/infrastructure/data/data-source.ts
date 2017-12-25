@@ -18,6 +18,13 @@ export interface DataView<T> {
     totalCount?: number;
 }
 
+export enum DataSourceOperation {
+    Filter,
+    GetCount,
+    SetPageIndex,
+    Sort
+}
+
 export enum DataSourceState {
     Empty,
     Binding,

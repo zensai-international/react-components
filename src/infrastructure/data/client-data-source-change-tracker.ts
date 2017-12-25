@@ -1,7 +1,7 @@
 import { DataSource } from './data-source';
 import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker, DataSourceUpdate } from './data-source-change-tracker';
 
-export class ClientDataSourceChangeTracker<T> implements DataSourceChangeTracker<T> {
+export class ClientDataSourceChangeTracker<T = any> implements DataSourceChangeTracker<T> {
     private _changes: DataSourceChange<T>[];
     private _dataSource: DataSource<T>;
 

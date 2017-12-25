@@ -1,27 +1,31 @@
 import { ClientDataSourceChangeTracker } from './client-data-source-change-tracker';
 import { SortExpression } from './common';
-import { DataSource, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
+import { DataSource, DataSourceOperation, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
 import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker } from './data-source-change-tracker';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Comparer } from '../comparer';
 import { Event } from '../event';
 import { ConditionalExpression } from '../expressions/expression';
+import { ExpressionConverter } from '../expressions/expression-converter';
 
 export interface ClientDataSourceProps<T> extends DataSourceProps {
-    dataGetter: (() => Promise<T[]>) | (() => T[]);
+    dataGetter: Promise<T[]> | (() => T[]) | T[];
 }
 
-export class ClientDataSource<T> implements DataSource<T> {
+interface DataSourceOperationData<T> {
+    viewInitializer: (view: DataView<T>) => void;
+}
+
+export class ClientDataSource<T = any> implements DataSource<T> {
     private _changeTracker: DataSourceChangeTracker<T>;
     private _data: T[];
-    private _dataGetter: (() => Promise<T[]>) | (() => T[]);
+    private _dataGetter: Promise<T[]> | (() => T[]) | T[];
     private _fieldAccessor: FieldAccessor;
     private _firstPageSize: number;
     private _onDataBinging: Event<any>;
     private _onDataBound: Event<any>;
+    private _operations: { [type: number]: DataSourceOperationData<T> };
     private _pageSize: number;
-    private _setPageIndex: ((view: DataView<T>) => void);
-    private _sort: ((view: DataView<T>) => void);
     private _state: DataSourceState;
     private _view: DataView<T>;
     private _viewMode: DataViewMode;
@@ -29,6 +33,7 @@ export class ClientDataSource<T> implements DataSource<T> {
     public constructor(props: ClientDataSourceProps<T>) {
         this._fieldAccessor = props.fieldAccessor;
         this._firstPageSize = props.firstPageSize || 0;
+        this._operations = {};
         this._viewMode = props.viewMode
 
         if (props.pageSize) {
@@ -41,6 +46,12 @@ export class ClientDataSource<T> implements DataSource<T> {
         }
 
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
+        if (Array.isArray(props.dataGetter)) {
+            this._data = props.dataGetter as T[];
+            
+        } else {
+            this._dataGetter = props.dataGetter;
+        }
         this._dataGetter = props.dataGetter;
         this._onDataBinging = new Event<any>();
         this._onDataBound = new Event<any>();
@@ -81,24 +92,26 @@ export class ClientDataSource<T> implements DataSource<T> {
     }
 
     protected internalDataBind(data: T[]) {
+        const executeViewInitializer = (operation: DataSourceOperation) => {
+            if (this._operations[operation])
+            {
+                this._operations[operation].viewInitializer(this._view);
+            }
+        };
+
         this._view = this._view || {};
         this._view.data = data;
         this._view.totalCount = data.length;
 
-        if (this._sort)
-        {
-            this._sort(this._view);
-        }
-
-        if (this._setPageIndex) {
-            this._setPageIndex(this._view);
-        }
+        executeViewInitializer(DataSourceOperation.Filter);
+        executeViewInitializer(DataSourceOperation.Sort);
+        executeViewInitializer(DataSourceOperation.SetPageIndex);
     }
 
     public dataBind(): Promise<DataView<T>> {
         this.handleDataBinding();
 
-        if (!this._data && this._dataGetter && !(this._dataGetter as any).then) {
+        if (!this._data && this._dataGetter && (typeof this._dataGetter == 'function')) {
             this._data = (this._dataGetter as () => T[])();
         }
 
@@ -110,7 +123,7 @@ export class ClientDataSource<T> implements DataSource<T> {
                 resolve(this.view);
             });
         } else if (this._dataGetter) {
-            (this._dataGetter as () => Promise<T[]>)()
+            return (this._dataGetter as Promise<T[]>)
                 .then(x => {
                     this._data = x;
 
@@ -129,27 +142,39 @@ export class ClientDataSource<T> implements DataSource<T> {
             ? (value ? this.firstPageSize + this.pageSize * value : this.firstPageSize)
             : this.pageSize * (value + 1);
 
-        this._setPageIndex = x => {
-            x.pageIndex = value;
-            x.data = (this._viewMode == DataViewMode.FromFirstToCurrentPage)
-                ? x.data.slice(0, lastIndex)
-                : x.data.slice(firstIndex, lastIndex);
+        this._operations[DataSourceOperation.SetPageIndex] = {
+            viewInitializer: x => {
+                x.pageIndex = value;
+                x.data = (this._viewMode == DataViewMode.FromFirstToCurrentPage)
+                    ? x.data.slice(0, lastIndex)
+                    : x.data.slice(firstIndex, lastIndex);
+            }
         };
     }
 
     public filter(expression: ConditionalExpression) {
-        this._sort = x => {
-            x.filteredBy = expression;
-            x.data = x.data.filter(expression[0].expression)
+        this._operations[DataSourceOperation.Filter] = {
+            viewInitializer: x => {
+                x.filteredBy = expression;
+
+                if (expression) {
+                    const expressionConverter = new ExpressionConverter();
+                    const lambdaExpression = expressionConverter.convert(expression);
+
+                    x.data = x.data.filter(lambdaExpression);
+                }
+           }
         };
     }
 
     public sort(expressions: SortExpression[]) {
-        this._sort = x => {
-            x.sortedBy = expressions;
-            x.data = (expressions && (expressions.length > 0))
-                ? x.data.concat().sort(this.getComparer(expressions))
-                : x.data;
+        this._operations[DataSourceOperation.Sort] = {
+            viewInitializer: x => {
+                x.sortedBy = expressions;
+                x.data = (expressions && (expressions.length > 0))
+                    ? x.data.concat().sort(this.getComparer(expressions))
+                    : x.data;
+            }
         };
     }
 

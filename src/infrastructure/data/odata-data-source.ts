@@ -1,6 +1,6 @@
 
 import { SortExpression, SortDirection } from './common';
-import { DataSource, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
+import { DataSource, DataSourceProps, DataSourceOperation, DataSourceState, DataView, DataViewMode } from './data-source';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { DataSourcePager } from './data-source-pager';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
@@ -18,26 +18,19 @@ export interface ODataDataSourceProps extends DataSourceProps {
     url: string;
 }
 
-export interface DataSourceAction<T> {
+export interface DataSourceOperationData<T> {
     urlGenerator: (uriBuilder: UriBuilder) => void;
     viewInitializer: (response: any, view: DataView<T>) => void;
 }
 
-export enum DataSourceOperation {
-    Filter,
-    GetCount,
-    SetPageIndex,
-    Sort
-}
-
 export class ODataDataSource<T = any> implements DataSource<T> {
-    private _actions: { [type: number]: DataSourceAction<T> };
     private _dataGetter: (url: string) => Promise<any>;
     private _fieldAccessor: FieldAccessor;
     private _fieldMappings: { [field: string]: string };
     private _itemConverter: (value: any) => any;
     private _onDataBinging: Event<any>;
     private _onDataBound: Event<any>;
+    private _operations: { [type: number]: DataSourceOperationData<T> };
     private _pageSize: number;
     private _state: DataSourceState;
     private _url: Uri;
@@ -45,11 +38,11 @@ export class ODataDataSource<T = any> implements DataSource<T> {
     private _viewMode: DataViewMode;
 
     public constructor(props: ODataDataSourceProps) {
-        this._actions = [];
         this._dataGetter = props.dataGetter;
         this._fieldAccessor = props.fieldAccessor;
         this._fieldMappings = props.fieldMappings;
         this._itemConverter = props.itemConverter;
+        this._operations = {};
         this._pageSize = props.pageSize;
         this._state = DataSourceState.Empty;
         this._url = new UriParser().parse(props.url);
@@ -59,7 +52,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         this._onDataBinging = new Event<any>();
         this._onDataBound = new Event<any>();
 
-        this._actions = {
+        this._operations = {
             [DataSourceOperation.GetCount]: this.createGetCountAction()
         };
 
@@ -142,7 +135,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         }
     }
 
-    protected createFilterAction(expression: ConditionalExpression): DataSourceAction<T> {
+    protected createFilterAction(expression: ConditionalExpression): DataSourceOperationData<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => this.addFilterOperationToUrl(uriBuilder, expression),
             viewInitializer: (response: any, view: DataView<T>) => {
@@ -151,7 +144,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         };
     }
 
-    protected createGetCountAction(): DataSourceAction<T> {
+    protected createGetCountAction(): DataSourceOperationData<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => {
                 if ((this.view == null) || !this.view.totalCount) {
@@ -166,7 +159,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         };
     }
 
-    protected createSetIndexAction(value: number): DataSourceAction<T> {
+    protected createSetIndexAction(value: number): DataSourceOperationData<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => {
                 if (this.pageSize) {
@@ -187,7 +180,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         };
     }
 
-    protected createSortAction(expressions: SortExpression[]): DataSourceAction<T> {
+    protected createSortAction(expressions: SortExpression[]): DataSourceOperationData<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => this.addSortOperationToUrl(uriBuilder, expressions),
             viewInitializer: (response: any, view: DataView<T>) => {
@@ -202,8 +195,8 @@ export class ODataDataSource<T = any> implements DataSource<T> {
             : response['value'] as T[];
         const result = { data: data, totalCount: this._view ? this._view.totalCount : null };
 
-        for (let action in this._actions) {
-            this._actions[action].viewInitializer(response, result);
+        for (let operationKey in this._operations) {
+            this._operations[operationKey].viewInitializer(response, result);
         }
 
         return result;
@@ -212,8 +205,8 @@ export class ODataDataSource<T = any> implements DataSource<T> {
     protected generateUrl(): string {
         const uriBuilder = new UriBuilder(this._url);
 
-        for (let action in this._actions) {
-            this._actions[action].urlGenerator(uriBuilder);
+        for (let operationKey in this._operations) {
+            this._operations[operationKey].urlGenerator(uriBuilder);
         }
 
         return uriBuilder.build();
@@ -253,11 +246,11 @@ export class ODataDataSource<T = any> implements DataSource<T> {
             this.view.data = [];
         }
 
-        this._actions[DataSourceOperation.Filter] = this.createFilterAction(expression);
+        this._operations[DataSourceOperation.Filter] = this.createFilterAction(expression);
     }
 
     public setPageIndex(value: number) {
-        this._actions[DataSourceOperation.SetPageIndex] = this.createSetIndexAction(value);
+        this._operations[DataSourceOperation.SetPageIndex] = this.createSetIndexAction(value);
     }
 
     public sort(expressions: SortExpression[]) {
@@ -267,7 +260,7 @@ export class ODataDataSource<T = any> implements DataSource<T> {
             this.view.data = [];
         }
 
-        this._actions[DataSourceOperation.Sort] = this.createSortAction(expressions);
+        this._operations[DataSourceOperation.Sort] = this.createSortAction(expressions);
     }
 
     public update(/*item: T, field: string, value: any*/) {
