@@ -239,6 +239,9 @@ export class ODataDataSource<T = any> implements DataSource<T> {
             });
     }
 
+    public delete(item: T) {
+    }
+
     public filter(expression: ConditionalExpression) {
         this.setPageIndex(0);
 

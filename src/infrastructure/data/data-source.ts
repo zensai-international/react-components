@@ -43,6 +43,7 @@ export interface DataSourceProps {
 
 export interface DataSource<T = any> {
     dataBind(): Promise<DataView<T>>;
+    delete(item: T);
     filter(expression: ConditionalExpression);
     setPageIndex(value: number);
     sort(expressions: SortExpression[]);

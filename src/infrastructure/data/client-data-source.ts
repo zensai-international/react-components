@@ -134,6 +134,19 @@ export class ClientDataSource<T = any> implements DataSource<T> {
         }
     }
 
+    public delete(item: T) {
+        if (this._data) {
+            const index = this._data.indexOf(item);
+
+            this._data.splice(index, 1);
+
+            this.changeTracker.changes.push({
+                item: item,
+                type: DataSourceChangeType.Delete,
+            } as DataSourceChange<T>);
+        }
+    }
+
     public setPageIndex(value: number) {
         const firstIndex = this.firstPageSize
             ? (value ? this.firstPageSize + this.pageSize * (value - 1) : 0)
