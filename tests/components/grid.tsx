@@ -11,71 +11,82 @@ import { DataSource } from '../../src/infrastructure/data/data-source';
 export default describe('<Grid />', () => {
     describe('behaviour', () => {
         describe('sorting', () => {
-            let dataSource: DataSource<any>;
-            let grid;
+            let dataSource: DataSource;
+            let grid: Enzyme.ReactWrapper;
 
             beforeEach(() => {
                 dataSource = new ClientDataSource({ dataGetter: () => [] });
-                dataSource.dataBind();
 
                 grid = Enzyme.mount(
-                    <Grid dataSource={dataSource}>
-                        <GridColumn field="title" title="Title" />
-                        <GridColumn field="description" title="Description" />
+                    <Grid autoBind={true} dataSource={dataSource}>
+                        <GridColumn
+                            field="title"
+                            header={{ style: { title: { className: 'title' } } }}
+                            title="Title" />
+                        <GridColumn
+                            field="description"
+                            header={{ style: { title: { className: 'description' } } }}
+                            title="Description" />
                     </Grid>
                 );
             });
 
             it('one click on first column', () => {
-                grid.find('th').first().simulate('click');
+                grid.find('.title').simulate('click');
 
-                expect(dataSource.view.sortedBy.length).to.equal(1, 'sortedBy.length');
-                expect(dataSource.view.sortedBy[0].direction).to.equal(SortDirection.Ascending, 'sortedBy[0].direction');
-                expect(dataSource.view.sortedBy[0].field).to.equal('title', 'sortedBy[0].field');
+                const view = dataSource.view;
+
+                expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
+                expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Ascending);
+                expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('title');
             });
 
             it('one click on first column and one click by last column', () => {
-                grid.find('th a').first().simulate('click');
-                grid.find('th a').last().simulate('click');
+                grid.find('.title').simulate('click');
+                grid.find('.description').simulate('click');
 
-                expect(dataSource.view.sortedBy.length).to.equal(1, 'sortedBy.length');
-                expect(dataSource.view.sortedBy[0].direction).to.equal(SortDirection.Ascending, 'sortedBy[0].direction');
-                expect(dataSource.view.sortedBy[0].field).to.equal('description', 'sortedBy[0].field');
+                const view = dataSource.view;
+
+                expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
+                expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Ascending);
+                expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('description');
             });
 
             it('two click on first column', () => {
-                grid.find('th a')
-                    .first()
+                grid.find('.title')
                     .simulate('click')
                     .simulate('click');
 
-                expect(dataSource.view.sortedBy.length).to.equal(1, 'sortedBy.length');
-                expect(dataSource.view.sortedBy[0].direction).to.equal(SortDirection.Descending, 'sortedBy[0].direction');
-                expect(dataSource.view.sortedBy[0].field).to.equal('title', 'sortedBy[0].field');
+                const view = dataSource.view;
+
+                expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
+                expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Descending);
+                expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('title');
             });
 
             it('three click on first column', () => {
-                grid.find('th a')
-                    .first()
+                grid.find('.title')
                     .simulate('click')
                     .simulate('click')
                     .simulate('click');
 
-                expect(dataSource.view.sortedBy.length).to.equal(0, 'sortedBy.length');
+                const view = dataSource.view;
+
+                expect(view.sortedBy.length).to.equal(0, 'sortedBy.length');
             });
 
             it('two click on first column and one click on last column', () => {
-                grid.find('th a')
-                    .first()
+                grid.find('.title')
                     .simulate('click')
                     .simulate('click');
-                grid.find('th a')
-                    .last()
+                grid.find('.description')
                     .simulate('click');
 
-                expect(dataSource.view.sortedBy.length).to.equal(1, 'sortedBy.length');
-                expect(dataSource.view.sortedBy[0].direction).to.equal(SortDirection.Ascending, 'sortedBy[0].direction');
-                expect(dataSource.view.sortedBy[0].field).to.equal('description', 'sortedBy[0].field');
+                const view = dataSource.view;
+
+                expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
+                expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Ascending);
+                expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('description');
             });
         });
 
@@ -125,28 +136,29 @@ export default describe('<Grid />', () => {
         // })
     });
 
-    describe('property', () => {
+    describe('column properties', () => {
         describe('body', () => {
-            it('className', () => {
+            it('style', () => {
                 const grid = Enzyme.mount(
                     <Grid autoBind={true} dataSource={new ClientDataSource({ dataGetter: () => [{}] })}>
-                        <GridColumn body={{ style: { className: 'class0' } }} field="title" title="Title" />
+                        <GridColumn body={{ style: { className: 'body' } }} field="title" title="Title" />
                     </Grid>
                 );
 
-                expect(grid.find(`tbody td.class0`).length).to.equal(1);
+                expect(grid.find('.body').length).to.equal(1);
             });
         });
 
         describe('header', () => {
-            it('className', () => {
-                let grid = Enzyme.mount(
+            it('style', () => {
+                const grid = Enzyme.mount(
                     <Grid autoBind={true} dataSource={new ClientDataSource({ dataGetter: () => [{}] })}>
-                        <GridColumn header={{ style: { className: 'class0' } }} field="title" title="Title" />
+                        <GridColumn header={{ style: { className: 'header', title: { className: 'header-title' } } }} field="title" title="Title" />
                     </Grid>
                 );
 
-                expect(grid.find('th.class0').length).to.equal(1);
+                expect(grid.find('.header').length, 'header').to.equal(1);
+                expect(grid.find('.header > .header-title').length, 'header-title').to.equal(1);
             });
         });
     });

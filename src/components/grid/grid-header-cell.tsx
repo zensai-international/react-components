@@ -12,22 +12,22 @@ export interface GridHeaderCellProps extends GridCellProps {
 }
 
 export interface GridHeaderCellStyle extends GridCellStyle {
-    iconBySortDirection: { [direction: number]: Style };
-    title: Style;
+    iconBySortDirection?: { [direction: number]: Style };
+    title?: Style;
 }
 
-export abstract class GridHeaderCell<P extends GridHeaderCellProps, S> extends GridCell<P, S> {
+export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderCellProps, S = any> extends GridCell<P, S> {
     public constructor(props?: P) {
         super(props);
 
-        this.handleSortClicked = this.handleSortClicked.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     protected getStyleByColumn(column: GridColumn): Style {
         return column.props.header ? column.props.header.style : null;
     }
 
-    protected handleSortClicked() {
+    protected handleClick() {
         const field = this.props.column.props.field;
 
         if (!field) return;
@@ -72,17 +72,17 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps, S> extends G
         const isSortable = (columnProps.isSortable != false);
         const sortDirection = isSortable ? this.getSortDirection() : null;
         const iconClassName = sortDirection ? this.props.style.iconBySortDirection[sortDirection].className : null;
-        const titleClassName = this.props.style.title.className;
+        const titleClassName = (this.style as GridHeaderCellStyle).title.className;
 
         return isSortable && sortDirection
             ? (
-                <span className={titleClassName} onClick={this.handleSortClicked}>
+                <span className={titleClassName} onClick={this.handleClick}>
                     <span>{columnProps.title}</span>
                     <i className={iconClassName} />
                 </span>
             )
             : (
-                <span className={titleClassName} onClick={isSortable ? this.handleSortClicked : null}>
+                <span className={titleClassName} onClick={isSortable ? this.handleClick : null}>
                     {columnProps.title}
                 </span>
             );
