@@ -252,6 +252,9 @@ export class ODataDataSource<T = any> implements DataSource<T> {
         this._operations[DataSourceOperation.Filter] = this.createFilterAction(expression);
     }
 
+    public read() {
+    }
+
     public setPageIndex(value: number) {
         this._operations[DataSourceOperation.SetPageIndex] = this.createSetIndexAction(value);
     }

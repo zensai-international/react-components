@@ -122,7 +122,7 @@ export class ClientDataSource<T = any> implements DataSource<T> {
             return new Promise<DataView<T>>((resolve: (value?: any) => void) => {
                 resolve(this.view);
             });
-        } else if (this._dataGetter) {
+        } else if (this._dataGetter && (typeof this._dataGetter != 'function')) {
             return (this._dataGetter as Promise<T[]>)
                 .then(x => {
                     this._data = x;
@@ -145,6 +145,13 @@ export class ClientDataSource<T = any> implements DataSource<T> {
                 type: DataSourceChangeType.Delete,
             } as DataSourceChange<T>);
         }
+    }
+
+    public read() {
+        this._data = null;
+        this.changeTracker.apply();
+
+        this.dataBind();
     }
 
     public setPageIndex(value: number) {
