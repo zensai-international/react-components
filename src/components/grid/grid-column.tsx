@@ -1,18 +1,28 @@
 import { GridComponent } from './grid-component';
-import { GridCell } from './grid-cell';
-import { Style } from '../common';
+import { GridBodyCell } from './grid-body-cell';
+import { GridCell, GridCellStyle } from './grid-cell';
+import { GridHeaderCell, GridHeaderCellStyle } from './grid-header-cell';
 
-export interface GridCellOverwriteProps {
+export interface GridColumnCellProps {
     cellType?: { new (): GridCell };
-    style?: Style;
-    template?: (item: any, column: GridColumn, cell: GridCell) => JSX.Element | JSX.Element[] | string;
+    style?: GridCellStyle;
+}
+
+export interface GridColumnBodyCellProps extends GridColumnCellProps {
+    cellType?: { new (): GridBodyCell };
+    template?: (item: any, column: GridColumn, cell: GridBodyCell) => JSX.Element | JSX.Element[] | string;
+}
+
+export interface GridColumnHeaderCellProps extends GridColumnCellProps {
+    cellType?: { new (): GridHeaderCell };
+    style?: GridHeaderCellStyle;
+    template?: (column: GridColumn, cell: GridBodyCell) => JSX.Element | JSX.Element[] | string;
 }
 
 export interface GridColumnProps {
-    body?: GridCellOverwriteProps;
+    body?: GridColumnBodyCellProps;
     field?: string;
-    footer?: GridCellOverwriteProps;
-    header?: GridCellOverwriteProps;
+    header?: GridColumnHeaderCellProps;
     isSortable?: boolean;
     title?: string;
 }

@@ -45,7 +45,7 @@
     "build:dev": "webpack --config webpack.config.js --display-error-details --display-modules",
     "build:dev-watch": "webpack --config webpack.config.js --display-error-details --display-modules --watch",
     "build:prod": "webpack --config webpack.config.js",
-    "run:tests": "karma start karma.config.js --watch"
+    "test": "karma start karma.config.js --watch"
   },
   "version": "1.0.12"
 }
