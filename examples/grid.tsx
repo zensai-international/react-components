@@ -37,7 +37,7 @@ function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps
 
     childDataSource.dataBind();
 
-    return props.isExpandedItem
+    return props.isExpanded
         ? [<Row {...props} />].concat(item.subItems.map(x => [<Row {...props} columns={columns} item={x} />]))
         : [<Row {...props} />];
 }

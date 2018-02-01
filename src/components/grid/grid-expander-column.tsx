@@ -12,6 +12,6 @@ export class GridExpanderColumn<P extends GridColumnProps = GridColumnProps> ext
     };
 
     protected renderBody(item: any, cell: GridBodyCell): JSX.Element | JSX.Element[] | string {
-        return <a href="#">{cell.props.isExpandedItem ? '-' : '+'}</a>;
+        return <a href="#">{cell.props.isExpanded ? '-' : '+'}</a>;
     }
 }

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { GridSelection } from './grid';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
@@ -24,14 +25,14 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
         const Row = this.rowType;
         const style = this.props.style;
         const gridState = this.context.gridState;
-        const isExpandedItem = gridState.expandedItems.indexOf(item) != -1;
-        const isSelectedItem = gridState.selection && gridState.selection.selectedItems.indexOf(item) != -1;
+        const isExpanded = gridState.expandedItems.indexOf(item) != -1;
+        const isSelected = GridSelection.isSelected(gridState.selection, item);
         const rowProps = Object.assign({}, this.props, {
             children: null,
             key: `row-${index}`,
             index: index,
-            isExpandedItem: isExpandedItem,
-            isSelectedItem: isSelectedItem,
+            isExpanded: isExpanded,
+            isSelected: isSelected,
             item: item,
             style: style.row
         });
@@ -52,8 +53,8 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
         return (
             <Row {...this.props}
                 index={null}
-                isExpandedItem={null}
-                isSelectedItem={null}
+                isExpanded={null}
+                isSelected={null}
                 item={null}
                 key="row-message"
                 style={style.row}>

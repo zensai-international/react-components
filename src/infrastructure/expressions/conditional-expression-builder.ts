@@ -1,6 +1,5 @@
 import { ConditionalExpression, LogicalExpression, LogicalOperator } from './expression';
 
-// TODO: Need refactoring.
 export class ConditionalExpressionBuilder {
     private _result: ConditionalExpression;
 

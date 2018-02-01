@@ -3,8 +3,8 @@ import { GridColumn } from './grid-column';
 import { Style } from '../common';
 
 export interface GridBodyCellProps extends GridCellProps {
-    isExpandedItem: boolean;
-    isSelectedItem: boolean;
+    isExpanded: boolean;
+    isSelected: boolean;
     item: any;
 }
 

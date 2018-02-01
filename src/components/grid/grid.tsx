@@ -20,13 +20,18 @@ export interface GridSelection {
 }
 
 export const GridSelection = {
-    AllItemsSelected: {
+    SelectedAll: {
         selectedItems: null,
         unselectedItems: []
     },
-    AllItemsUnselected: {
+    UnselectedAll: {
         selectedItems: [],
         unselectedItems: null
+    },
+
+    isSelected: (selection: GridSelection, item: any) => {
+        return (selection.selectedItems && (selection.selectedItems.indexOf(item) != -1))
+            || (selection.unselectedItems && (selection.unselectedItems.indexOf(item) == -1));
     }
 }
 
@@ -78,7 +83,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         this.state = {
             expandedItems: [],
             selection: this.props.selection
-                || (this.props.selectionMode != GridSelectionMode.None) ? GridSelection.AllItemsUnselected : null
+                || (this.props.selectionMode != GridSelectionMode.None) ? GridSelection.UnselectedAll : null
         } as S;
 
         this.handleBodyCellClick = this.handleBodyCellClick.bind(this);
@@ -208,7 +213,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             const itemIndex = selection.selectedItems.indexOf(item);
 
             if (itemIndex != -1) {
-                const event = selection.selectedItems ? this.props.onItemUnselect : this.props.onItemUnselect;
+                const event = selection.selectedItems ? this.props.onItemUnselect : this.props.onItemSelect;
 
                 items.splice(itemIndex, 1);
 
@@ -218,7 +223,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
                     event(item);
                 }
             } else {
-                const event = selection.unselectedItems ? this.props.onItemUnselect : this.props.onItemUnselect;
+                const event = selection.unselectedItems ? this.props.onItemUnselect : this.props.onItemSelect;
 
                 if ((this.props.selectionMode == GridSelectionMode.Single) && items.length) {
                     items.length = 0;
