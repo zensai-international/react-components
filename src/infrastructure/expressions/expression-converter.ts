@@ -12,6 +12,11 @@ export class ExpressionConverter {
             const value = this._fieldAccessor.getValue(item, expression.field);
 
             switch (expression.operator) {
+                case ComparisonOperator.Any:
+                    comparer = (expression.value instanceof Array)
+                        ? x => x && x.some(y => (expression.value as any[]).some(z => z == y))
+                        : x => x && x.some(y => y == expression.value);
+                    break;
                 case ComparisonOperator.Contain:
                     comparer = x => (x != null)
                         && (expression.value != null)
@@ -37,11 +42,11 @@ export class ExpressionConverter {
                     break;
             }
 
-            if (value instanceof Array) {
-                result = value.some(x => comparer(x));
-            } else {
+            // if (value instanceof Array) {
+            //     result = value.some(x => comparer(x));
+            // } else {
                 result = comparer(value)
-            }
+            // }
 
             return result;
         };

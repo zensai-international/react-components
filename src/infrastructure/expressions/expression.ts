@@ -3,6 +3,7 @@ import { DataType } from '../data/common';
 export type LambdaExpression<T> = (x: T) => boolean;
 
 export enum ComparisonOperator {
+    Any,
     Contain,
     Equal,
     Greater,
