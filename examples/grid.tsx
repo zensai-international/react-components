@@ -37,8 +37,6 @@ function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps
 
     childDataSource.dataBind();
 
-    debugger;
-
     return props.isExpandedItem
         ? [<Row {...props} />].concat(item.subItems.map(x => [<Row {...props} columns={columns} item={x} />]))
         : [<Row {...props} />];
@@ -46,7 +44,7 @@ function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps
 
 ReactDom.render(
     <InfiniteScrollPager dataSource={dataSource}>
-        <table.Grid autoBind={true} bodyRowTemplate={renderBodyRow} dataSource={dataSource} selectionMode={GridSelectionMode.None}>
+        <table.Grid autoBind={true} bodyRowTemplate={renderBodyRow} dataSource={dataSource} selectionMode={GridSelectionMode.Multiple}>
             <GridSelectorColumn />
             <GridExpanderColumn />
             <GridColumn field="title" title="Title" />

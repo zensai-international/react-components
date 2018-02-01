@@ -6,10 +6,83 @@ import { Grid } from '../../src/components/grid/table/grid';
 import { SortDirection } from '../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../src/infrastructure/data/client-data-source';
 import { DataSource } from '../../src/infrastructure/data/data-source';
+import { GridSelectionMode, GridState } from '../../src/index';
 //import { GridBodyRow, GridBodyRowProps } from '../../src/components/grid/grid-body-row';
 
 export default describe('<Grid />', () => {
     describe('behaviour', () => {
+        describe('selection', () => {
+            function createGrid(selectionMode: GridSelectionMode): Enzyme.ReactWrapper<any, GridState> {
+                return Enzyme.mount(
+                    <Grid autoBind={true} dataSource={dataSource} selectionMode={selectionMode}>
+                        <GridColumn
+                            body={{ style: { className: 'title-body' } }}
+                            header={{ style: { className: 'title-header' } }}
+                            field="title"
+                            title="Title" />
+                    </Grid>
+                );
+            }
+
+            const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
+            const dataSource: DataSource = new ClientDataSource({ dataGetter: () => data });
+
+            describe('if selection mode is single', () => {
+                let grid: Enzyme.ReactWrapper<any, GridState>;
+
+                beforeEach(() => {
+                    grid = createGrid(GridSelectionMode.Single);
+                });
+
+                it('one click on first row', () => {
+                    const selectedItems = grid.state().selection.selectedItems;
+
+                    grid.find('.title-body').first().simulate('click');
+
+                    expect(selectedItems.length, 'selectedItems.length').to.equal(1);
+                    expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);
+                });
+
+                it('one click on first row and one click to last row', () => {
+                    const selectedItems = grid.state().selection.selectedItems;
+
+                    grid.find('.title-body').first().simulate('click')
+                        .find('.title-body').last().simulate('click');
+
+                    expect(selectedItems.length, 'selectedItems.length').to.equal(1);
+                    expect(selectedItems[0], 'selectedItems[0]').to.equal(data[data.length - 1]);
+                });
+            });
+
+            describe('if selection mode is multiple', () => {
+                let grid: Enzyme.ReactWrapper<any, GridState>;
+
+                beforeEach(() => {
+                    grid = createGrid(GridSelectionMode.Multiple);
+                });
+
+                it('one click on first row', () => {
+                    const selectedItems = grid.state().selection.selectedItems;
+
+                    grid.find('.title-body').first().simulate('click');
+
+                    expect(selectedItems.length, 'selectedItems.length').to.equal(1);
+                    expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);
+                });
+
+                it('one click on first row and one click to last row', () => {
+                    const selectedItems = grid.state().selection.selectedItems;
+
+                    grid.find('.title-body').first().simulate('click')
+                        .find('.title-body').last().simulate('click');
+
+                    expect(selectedItems.length, 'selectedItems.length').to.equal(2);
+                    expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);
+                    expect(selectedItems[1], 'selectedItems[1]').to.equal(data[data.length - 1]);
+                });
+            });
+        });
+
         describe('sorting', () => {
             let dataSource: DataSource;
             let grid: Enzyme.ReactWrapper;

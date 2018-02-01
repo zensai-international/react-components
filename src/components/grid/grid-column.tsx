@@ -16,7 +16,7 @@ export interface GridColumnBodyCellProps extends GridColumnCellProps {
 export interface GridColumnHeaderCellProps extends GridColumnCellProps {
     cellType?: { new (): GridHeaderCell };
     style?: GridHeaderCellStyle;
-    template?: (column: GridColumn, cell: GridBodyCell) => JSX.Element | JSX.Element[] | string;
+    template?: (column: GridColumn, cell: GridHeaderCell) => JSX.Element | JSX.Element[] | string;
 }
 
 export interface GridColumnProps {

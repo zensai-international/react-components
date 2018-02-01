@@ -14,10 +14,26 @@ export interface GridMessages {
     noItems: string;
 }
 
+export interface GridSelection {
+    selectedItems?: any[];
+    unselectedItems?: any[];
+}
+
+export const GridSelection = {
+    AllItemsSelected: {
+        selectedItems: null,
+        unselectedItems: []
+    },
+    AllItemsUnselected: {
+        selectedItems: [],
+        unselectedItems: null
+    }
+}
+
 export enum GridSelectionMode {
     None,
     Single,
-    Multi
+    Multiple
 }
 
 export interface GridProps {
@@ -25,6 +41,7 @@ export interface GridProps {
     bodyRowTemplate?: GridBodyRowTemplate;
     dataSource: DataSource;
     messages?: GridMessages;
+    selection?: GridSelection;
     selectionMode?: GridSelectionMode;
     style?: GridStyle;
 
@@ -37,7 +54,7 @@ export interface GridProps {
 
 export interface GridState {
     expandedItems?: any[];
-    selectedItems?: any[];
+    selection?: GridSelection;
 }
 
 export interface GridStyle extends Style {
@@ -60,7 +77,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
         this.state = {
             expandedItems: [],
-            selectedItems: []
+            selection: this.props.selection
+                || (this.props.selectionMode != GridSelectionMode.None) ? GridSelection.AllItemsUnselected : null
         } as S;
 
         this.handleBodyCellClick = this.handleBodyCellClick.bind(this);
@@ -115,18 +133,26 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected handleDataBound(dataSource: DataSource) {
         if (dataSource == this.props.dataSource) {
-            const expandedItems = this.state.expandedItems.filter(x => dataSource.view.data.indexOf(x) != -1);
-            const selectedItems = this.state.selectedItems.filter(x => dataSource.view.data.indexOf(x) != -1);
+            const data = dataSource.view.data;
+            const expandedItems = this.state.expandedItems.filter(x => data.indexOf(x) != -1);
+            // const selection = this.state.selection;
+            // const selectedItems = selection.selectedItems.filter(x => data.indexOf(x) != -1);
+            // const unselectedItems = selection.unselectedItems.filter(x => data.indexOf(x) != -1);
             const handleDataBound = () => {
                 if (this.props.onDataBound) {
                     this.props.onDataBound(this);
                 }
             };
 
-            if ((expandedItems.length != this.state.expandedItems.length) || (selectedItems.length != this.state.selectedItems.length)) {
+            if ((expandedItems.length != this.state.expandedItems.length)/*
+                || (selectedItems && (selectedItems.length != selection.selectedItems.length))
+                || (unselectedItems && (unselectedItems.length != selection.unselectedItems.length))*/) {
                 this.setState({
-                        expandedItems: expandedItems,
-                        selectedItems: selectedItems
+                    expandedItems: expandedItems,
+                    // selection: {
+                    //     selectedItems: selectedItems,
+                    //     unselectedItems: unselectedItems
+                    // }
                     },
                     handleDataBound);
             } else {
@@ -177,28 +203,33 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected changeItemSelection(item: any) {
         if (this.props.selectionMode != GridSelectionMode.None) {
-            const itemIndex = this.state.selectedItems.indexOf(item);
-            const selectedItems = this.state.selectedItems;
+            const selection = this.state.selection;
+            const items = selection.selectedItems || selection.unselectedItems;
+            const itemIndex = selection.selectedItems.indexOf(item);
 
             if (itemIndex != -1) {
-                selectedItems.splice(itemIndex, 1);
+                const event = selection.selectedItems ? this.props.onItemUnselect : this.props.onItemUnselect;
 
-                this.setState({ selectedItems: selectedItems });
+                items.splice(itemIndex, 1);
 
-                if (this.props.onItemUnselect) {
-                    this.props.onItemUnselect(item);
+                this.setState({ selection: selection });
+
+                if (event) {
+                    event(item);
                 }
             } else {
-                if ((this.props.selectionMode == GridSelectionMode.Single) && (selectedItems.length == 1)) {
-                    selectedItems.splice(0, 1);
+                const event = selection.unselectedItems ? this.props.onItemUnselect : this.props.onItemUnselect;
+
+                if ((this.props.selectionMode == GridSelectionMode.Single) && items.length) {
+                    items.length = 0;
                 }
 
-                selectedItems.push(item);
+                items.push(item);
 
-                this.setState({ selectedItems: selectedItems });
+                this.setState({ selection: selection });
 
-                if (this.props.onItemSelect) {
-                    this.props.onItemSelect(item);
+                if (event) {
+                    event(item);
                 }
             }
         }
@@ -234,9 +265,9 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected abstract get bodyType(): { new (): GridBody<GridBodyProps, any> };
+    protected abstract get bodyType(): { new(): GridBody<GridBodyProps, any> };
 
-    protected abstract get headerType(): { new (): GridHeader<GridHeaderProps, any> };
+    protected abstract get headerType(): { new(): GridHeader<GridHeaderProps, any> };
 
     protected get messages(): GridMessages {
         return this.props.messages;
