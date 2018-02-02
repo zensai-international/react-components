@@ -22,7 +22,7 @@ export class FilterContext {
             const expression = this._expressionByKey[key];
 
             if (expression) {
-                expressionBuilder.and(expression);
+                expressionBuilder.and(() => expression);
             }
         }
 

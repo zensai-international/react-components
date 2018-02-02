@@ -40,6 +40,8 @@ export class ExpressionConverter {
                 case ComparisonOperator.NotEqual:
                     comparer = x => x != expression.value;
                     break;
+                default:
+                    comparer = x => (expression.expression as (item: any) => boolean)(item);
             }
 
             // if (value instanceof Array) {

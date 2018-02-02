@@ -17,6 +17,7 @@ export interface ComparisonExpression {
     expression?: ((item: any) => boolean) | string;
     field?: string;
     operator?: ComparisonOperator;
+    title?: string;
     value?: any;
     valyeType?: DataType;
 }
