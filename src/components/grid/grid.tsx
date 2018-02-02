@@ -20,13 +20,17 @@ export interface GridSelection {
 }
 
 export const GridSelection = {
-    SelectedAll: {
-        selectedItems: null,
-        unselectedItems: []
+    SelectedAll: () => {
+        return {
+            selectedItems: null,
+            unselectedItems: []
+        };
     },
-    UnselectedAll: {
-        selectedItems: [],
-        unselectedItems: null
+    UnselectedAll: () => {
+        return {
+            selectedItems: [],
+            unselectedItems: null
+        };
     },
 
     isSelected: (selection: GridSelection, item: any) => {
@@ -83,7 +87,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         this.state = {
             expandedItems: [],
             selection: this.props.selection
-                || (this.props.selectionMode != GridSelectionMode.None) ? GridSelection.UnselectedAll : null
+                || ((this.props.selectionMode != GridSelectionMode.None) ? GridSelection.UnselectedAll() : null)
         } as S;
 
         this.handleBodyCellClick = this.handleBodyCellClick.bind(this);
@@ -210,7 +214,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         if (this.props.selectionMode != GridSelectionMode.None) {
             const selection = this.state.selection;
             const items = selection.selectedItems || selection.unselectedItems;
-            const itemIndex = selection.selectedItems.indexOf(item);
+            const itemIndex = items.indexOf(item);
 
             if (itemIndex != -1) {
                 const event = selection.selectedItems ? this.props.onItemUnselect : this.props.onItemSelect;
