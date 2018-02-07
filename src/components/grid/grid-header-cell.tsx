@@ -23,11 +23,62 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
         this.handleClick = this.handleClick.bind(this);
     }
 
+    protected getSortDirection(): SortDirection {
+        const field = this.props.column.props.field;
+        const dataSource = this.props.dataSource;
+        const sortedBy = (this.props.dataSource.view && dataSource.view.sortedBy)
+            ? dataSource.view.sortedBy.filter(x => x.field == field)
+            : null;
+
+        return (sortedBy != null)
+                && (sortedBy.length == 1)
+                && (sortedBy[0].field == field)
+            ? sortedBy[0].direction
+            : null;
+    }
+
     protected getStyleByColumn(column: GridColumn): Style {
         return column.props.header ? column.props.header.style : null;
     }
 
-    protected handleClick() {
+    protected handleClick(event: React.MouseEvent<any>) {
+        const props = this.props.column.props;
+
+        if ((props.isSortable != false) && props.field) {
+            this.sort();
+        }
+
+        if (this.props.onClick) {
+            this.props.onClick(event, this);
+        }
+    }
+
+    protected renderContent(): JSX.Element | JSX.Element[] | string {
+        const column = this.props.column;
+        const columnProps = column.props;
+        const isSortable = (columnProps.isSortable != false);
+        const sortDirection = isSortable ? this.getSortDirection() : null;
+        const iconClassName = sortDirection ? this.props.style.iconBySortDirection[sortDirection].className : null;
+        const titleClassName = (this.style as GridHeaderCellStyle).title.className;
+        const template = column.props.header ? column.props.header.template : null;
+
+        return template
+            ? template(column, this)
+            : ((isSortable && sortDirection)
+                ? (
+                    <span className={titleClassName}>
+                        <span>{columnProps.title}</span>
+                        <i className={iconClassName} />
+                    </span>
+                )
+                : (
+                    <span className={titleClassName}>
+                        {columnProps.title}
+                    </span>
+                ));
+    }
+
+    protected sort() {
         const field = this.props.column.props.field;
 
         if (!field) return;
@@ -51,40 +102,5 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
         }
 
         dataSource.dataBind();
-    }
-
-    protected getSortDirection(): SortDirection {
-        const field = this.props.column.props.field;
-        const dataSource = this.props.dataSource;
-        const sortedBy = (this.props.dataSource.view && dataSource.view.sortedBy)
-            ? dataSource.view.sortedBy.filter(x => x.field == field)
-            : null;
-
-        return (sortedBy != null)
-                && (sortedBy.length == 1)
-                && (sortedBy[0].field == field)
-            ? sortedBy[0].direction
-            : null;
-    }
-
-    protected renderTitle(): JSX.Element {
-        const columnProps = this.props.column.props;
-        const isSortable = (columnProps.isSortable != false);
-        const sortDirection = isSortable ? this.getSortDirection() : null;
-        const iconClassName = sortDirection ? this.props.style.iconBySortDirection[sortDirection].className : null;
-        const titleClassName = (this.style as GridHeaderCellStyle).title.className;
-
-        return isSortable && sortDirection
-            ? (
-                <span className={titleClassName} onClick={this.handleClick}>
-                    <span>{columnProps.title}</span>
-                    <i className={iconClassName} />
-                </span>
-            )
-            : (
-                <span className={titleClassName} onClick={isSortable ? this.handleClick : null}>
-                    {columnProps.title}
-                </span>
-            );
     }
 }

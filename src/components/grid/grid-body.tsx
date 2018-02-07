@@ -24,7 +24,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
     protected renderDataRow(item: any, index: number): JSX.Element | JSX.Element[] {
         const Row = this.rowType;
         const style = this.props.style;
-        const gridState = this.context.gridState;
+        const gridState = this.context.grid.state;
         const isExpanded = gridState.expandedItems.indexOf(item) != -1;
         const isSelected = GridSelection.isSelected(gridState.selection, item);
         const rowProps = Object.assign({}, this.props, {
@@ -43,7 +43,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
     }
 
     protected renderLoadingRow(): JSX.Element {
-        return this.renderMessageRow(this.context.messages.loading);
+        return this.renderMessageRow(this.context.grid.props.messages.loading);
     }
 
     protected renderMessageRow(messageContent: JSX.Element | string): JSX.Element {
@@ -80,7 +80,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
 
                 return (data.length > 0)
                     ? renderRows()
-                    : [this.renderMessageRow(this.context.messages.noItems)];
+                    : [this.renderMessageRow(this.context.grid.props.messages.noItems)];
             }
         }
     }

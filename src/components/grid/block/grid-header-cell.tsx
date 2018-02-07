@@ -6,8 +6,8 @@ export class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderCellProps,
         const className = this.style.className;
 
         return (
-            <div className={className}>
-                {this.renderTitle()}
+            <div className={className} onClick={this.handleClick}>
+                {this.renderContent()}
             </div>
         );
     }

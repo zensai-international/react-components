@@ -10,8 +10,8 @@ export interface GridHeaderProps {
     dataSource: DataSource<any>;
     style: GridHeaderStyle;
 
-    onCellClick: (sender: any) => void;
-    onRowClick: (sender: any) => void;
+    onCellClick: (event: React.MouseEvent<any>, sender: any) => void;
+    onRowClick: (event: React.MouseEvent<any>, sender: any) => void;
 }
 
 export interface GridHeaderStyle extends Style {

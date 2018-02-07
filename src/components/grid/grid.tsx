@@ -6,6 +6,7 @@ import { GridBodyCell } from './grid-body-cell';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpanderColumn } from './grid-expander-column';
 import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
+import { GridHeaderCell } from './grid-header-cell';
 import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../../src/infrastructure/data/data-source';
 
@@ -26,6 +27,7 @@ export const GridSelection = {
             unselectedItems: []
         };
     },
+
     UnselectedAll: () => {
         return {
             selectedItems: [],
@@ -33,9 +35,13 @@ export const GridSelection = {
         };
     },
 
+    isAllSelected: (selection: GridSelection) => {
+        return (selection.unselectedItems != null) && (selection.unselectedItems.length > 0);
+    },
+
     isSelected: (selection: GridSelection, item: any) => {
-        return (selection.selectedItems && (selection.selectedItems.indexOf(item) != -1))
-            || (selection.unselectedItems && (selection.unselectedItems.indexOf(item) == -1));
+        return ((selection.selectedItems != null) && (selection.selectedItems.indexOf(item) != -1))
+            || ((selection.unselectedItems != null) && (selection.unselectedItems.indexOf(item) == -1));
     }
 }
 
@@ -73,9 +79,7 @@ export interface GridStyle extends Style {
 
 export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
     public static childContextTypes = {
-        dataSource: React.PropTypes.object,
-        gridState: React.PropTypes.object,
-        messages: React.PropTypes.object
+        grid: React.PropTypes.object
     };
     public static defaultProps: Partial<GridProps> = DefultGridProps;
 
@@ -100,9 +104,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     public getChildContext(): any {
         return {
-            dataSource: this.props.dataSource,
-            gridState: this.state,
-            messages: this.messages
+            grid: this
         };
     }
 
@@ -128,7 +130,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected handleHeaderCellClick(cell: any) {
+    protected handleHeaderCellClick(event: React.MouseEvent<any>, cell: GridHeaderCell) {
     }
 
     protected handleHeaderRowClick() {
@@ -285,7 +287,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     public get columns(): GridColumn<GridColumnProps>[] {
         return this._columns = this._columns
             || React.Children.toArray(this.props.children)
-                .map(x => new (x as any).type((x as any).props))
+                .map(x => new (x as any).type((x as any).props, this.getChildContext()))
                 .filter(x => x instanceof GridColumn) as any;
     }
 }

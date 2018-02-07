@@ -18,12 +18,12 @@ export abstract class GridCell<P extends GridCellProps = GridCellProps, S = any>
     public constructor(props: P) {
         super(props);
 
-        this.handleClicked = this.handleClicked.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     protected abstract getStyleByColumn(column: GridColumn): Style;
 
-    protected handleClicked(event: React.MouseEvent<any>) {
+    protected handleClick(event: React.MouseEvent<any>) {
         if (this.props.onClick) {
             this.props.onClick(event, this);
         }
