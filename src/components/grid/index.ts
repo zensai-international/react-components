@@ -9,6 +9,7 @@ export * from './grid-header-cell';
 export * from './grid-header-row';
 export * from './grid-header';
 export * from './grid-row';
+export * from './grid-selector';
 export * from './grid-selector-column';
 
 export * from './block/index';

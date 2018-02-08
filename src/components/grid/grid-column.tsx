@@ -22,6 +22,7 @@ export interface GridColumnHeaderCellProps extends GridColumnCellProps {
 export interface GridColumnProps {
     body?: GridColumnBodyCellProps;
     field?: string;
+    filterType?: number;
     header?: GridColumnHeaderCellProps;
     isFilterable?: boolean;
     isSortable?: boolean;

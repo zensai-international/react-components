@@ -43,7 +43,7 @@ export interface DataSourceProps {
 }
 
 export interface DataSource<T = any> {
-    dataBind(): Promise<DataView<T>>;
+    dataBind(disableEvents?: boolean): Promise<DataView<T>>;
     delete(item: T);
     filter(expression: ConditionalExpression);
     read();

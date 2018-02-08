@@ -16,6 +16,11 @@ export class ExpressionConverter {
                     comparer = (expression.value instanceof Array)
                         ? x => x && x.some(y => (expression.value as any[]).some(z => z == y))
                         : x => x && x.some(y => y == expression.value);
+
+                    if (!(value instanceof Array)) {
+                        comparer = (oldComparer => y => oldComparer([y]))(comparer);
+                    }
+
                     break;
                 case ComparisonOperator.Contain:
                     comparer = x => (x != null)

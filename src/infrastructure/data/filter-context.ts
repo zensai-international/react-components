@@ -58,4 +58,13 @@ export class FilterContext {
     public get onChange(): Event<ConditionalExpression> {
         return this._onChange;
     }
+
+    public static clone(source: FilterContext): FilterContext {
+        const result = new FilterContext();
+
+        result._expressionByKey = Object.assign({}, source._expressionByKey);
+        result._expression = result.buildResultExpression();
+
+        return result;
+    }
 }

@@ -48,7 +48,6 @@ export class ClientDataSource<T = any> implements DataSource<T> {
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
         if (Array.isArray(props.dataGetter)) {
             this._data = props.dataGetter as T[];
-            
         } else {
             this._dataGetter = props.dataGetter;
         }
@@ -79,16 +78,20 @@ export class ClientDataSource<T = any> implements DataSource<T> {
         return result;
     }
 
-    protected handleDataBinding() {
+    protected handleDataBinding(disableEvents: boolean) {
         this._state = DataSourceState.Binding;
 
-        this.onDataBinding.trigger(this, {});
+        if (disableEvents != true) {
+            this.onDataBinding.trigger(this, {});
+        }
     }
 
-    protected handleDataBound() {
+    protected handleDataBound(disableEvents: boolean) {
         this._state = DataSourceState.Bound;
 
-        this.onDataBound.trigger(this, {});
+        if (disableEvents != true) {
+            this.onDataBound.trigger(this, {});
+        }
     }
 
     protected internalDataBind(data: T[]) {
@@ -109,8 +112,8 @@ export class ClientDataSource<T = any> implements DataSource<T> {
         executeViewInitializer(DataSourceOperation.SetPageIndex);
     }
 
-    public dataBind(): Promise<DataView<T>> {
-        this.handleDataBinding();
+    public dataBind(disableEvents?: boolean): Promise<DataView<T>> {
+        this.handleDataBinding(disableEvents);
 
         if (!this._data && this._dataGetter && (typeof this._dataGetter == 'function')) {
             this._data = (this._dataGetter as () => T[])();
@@ -118,7 +121,7 @@ export class ClientDataSource<T = any> implements DataSource<T> {
 
         if (this._data) {
             this.internalDataBind(this._data);
-            this.handleDataBound();
+            this.handleDataBound(disableEvents);
 
             return new Promise<DataView<T>>((resolve: (value?: any) => void) => {
                 resolve(this.view);
@@ -129,7 +132,7 @@ export class ClientDataSource<T = any> implements DataSource<T> {
                     this._data = x;
 
                     this.internalDataBind(x);
-                    this.handleDataBound();
+                    this.handleDataBound(disableEvents);
                 })
                 .then(() => this.view);
         }
