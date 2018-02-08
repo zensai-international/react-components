@@ -23,7 +23,7 @@ export interface DataSourceOperationData<T> {
     viewInitializer: (response: any, view: DataView<T>) => void;
 }
 
-export class ODataDataSource<T = any> implements DataSource<T> {
+export class ODataDataSource<T = {}> implements DataSource<T> {
     private _dataGetter: (url: string) => Promise<any>;
     private _fieldAccessor: FieldAccessor;
     private _fieldMappings: { [field: string]: string };

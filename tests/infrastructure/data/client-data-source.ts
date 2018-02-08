@@ -29,7 +29,7 @@ export default describe('ClientDataSource', () => {
             const dataGetter = new Promise((resolve: (value?: any) => void) => {
                 resolve(data);
             });
-            const dataSource = new ClientDataSource({ dataGetter: dataGetter });
+            const dataSource = new ClientDataSource<{ field: string }>({ dataGetter: dataGetter });
 
             dataSource.dataBind();
 

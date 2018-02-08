@@ -42,7 +42,7 @@ export interface DataSourceProps {
     viewMode?: DataViewMode;
 }
 
-export interface DataSource<T = any> {
+export interface DataSource<T = {}> {
     dataBind(disableEvents?: boolean): Promise<DataView<T>>;
     delete(item: T);
     filter(expression: ConditionalExpression);

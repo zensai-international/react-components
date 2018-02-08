@@ -16,7 +16,7 @@ interface DataSourceOperationData<T> {
     viewInitializer: (view: DataView<T>) => void;
 }
 
-export class ClientDataSource<T = any> implements DataSource<T> {
+export class ClientDataSource<T = {}> implements DataSource<T> {
     private _changeTracker: DataSourceChangeTracker<T>;
     private _data: T[];
     private _dataGetter: Promise<T[]> | (() => T[]) | T[];
