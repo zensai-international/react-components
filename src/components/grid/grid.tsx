@@ -9,39 +9,98 @@ import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell } from './grid-header-cell';
 import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../../src/infrastructure/data/data-source';
+import { FilterContext } from '../../../src/infrastructure/data/filter-context';
+import { ConditionalExpression } from '../../../src/infrastructure/expressions/expression';
 
 export interface GridMessages {
     loading: string;
     noItems: string;
 }
 
-export interface GridSelection {
-    selectedItems?: any[];
-    unselectedItems?: any[];
-}
+export class GridSelector {
+    private _grid: Grid;
 
-export const GridSelection = {
-    SelectedAll: () => {
-        return {
-            selectedItems: null,
-            unselectedItems: []
-        };
-    },
+    public constructor(grid: Grid) {
+        this._grid = grid;
+    }
 
-    UnselectedAll: () => {
-        return {
-            selectedItems: [],
-            unselectedItems: null
-        };
-    },
+    public selectOrUnselect(item: any) {
+        const grid = this._grid;
+        const gridProps = grid.props;
 
-    isAllSelected: (selection: GridSelection) => {
-        return (selection.unselectedItems != null) && (selection.unselectedItems.length > 0);
-    },
+        if (gridProps.selectionMode != GridSelectionMode.None) {
+            const selectedItems = grid.state.selectedItems;
+            const itemIndex = selectedItems.indexOf(item);
 
-    isSelected: (selection: GridSelection, item: any) => {
-        return ((selection.selectedItems != null) && (selection.selectedItems.indexOf(item) != -1))
-            || ((selection.unselectedItems != null) && (selection.unselectedItems.indexOf(item) == -1));
+            if (itemIndex != -1) {
+                selectedItems.splice(itemIndex, 1);
+
+                grid.setState({ selectedItems: selectedItems }, () => {
+                    if (gridProps.onUnselect) {
+                        gridProps.onUnselect(grid, [item]);
+                    }
+                });
+            } else {
+                if ((gridProps.selectionMode == GridSelectionMode.Single) && selectedItems.length) {
+                    selectedItems.length = 0;
+                }
+
+                selectedItems.push(item);
+
+                grid.setState({ selectedItems: selectedItems }, () => {
+                    if (gridProps.onSelect) {
+                        gridProps.onSelect(grid, [item]);
+                    }
+                });
+            }
+        }
+    }
+
+    public isAllItemsSelected(): boolean {
+        const dataSource = this._grid.props.dataSource;
+
+        if (dataSource.state != DataSourceState.Bound) {
+            return false;
+        }
+
+        const allItems = dataSource.view.allData || dataSource.view.data;
+
+        return (allItems.length > 0) && (this._grid.state.selectedItems.length == allItems.length);
+    }
+
+    public selectAll() {
+        const dataSource = this._grid.props.dataSource;
+
+        if (dataSource.state == DataSourceState.Bound) {
+            const allItems = (dataSource.view.allData || dataSource.view.data).map(x => x);
+            const grid = this._grid;
+
+            grid.setState({ selectedItems: allItems }, () => {
+                if (grid.props.onSelect) {
+                    grid.props.onSelect(grid, grid.state.selectedItems);
+                }
+            });
+        }
+    }
+
+    public selectOrUnselectAll() {
+        if (this.isAllItemsSelected()) {
+            this.unselectAll();
+        } else {
+            this.selectAll();
+        }
+    }
+
+    public unselectAll() {
+        const grid = this._grid;
+
+        if (grid.state.selectedItems.length != 0) {
+            grid.setState({ selectedItems: [] }, () => {
+                if (grid.props.onUnselect) {
+                    grid.props.onUnselect(grid, grid.state.selectedItems);
+                }
+            });
+        }
     }
 }
 
@@ -56,20 +115,20 @@ export interface GridProps {
     bodyRowTemplate?: GridBodyRowTemplate;
     dataSource: DataSource;
     messages?: GridMessages;
-    selection?: GridSelection;
+    selectedItems?: any[];
     selectionMode?: GridSelectionMode;
     style?: GridStyle;
 
-    onDataBound?: (grid: Grid) => void;
+    onDataBound?: (sender: Grid) => void;
     onBodyCellClick?: (event: React.MouseEvent<any>, row: GridBodyCell) => void;
     onBodyRowClick?: (event: React.MouseEvent<any>, row: GridBodyRow) => void;
-    onItemSelect?: (item: any) => void;
-    onItemUnselect?: (item: any) => void;
+    onSelect?: (sender: Grid, items: any[]) => void;
+    onUnselect?: (sender: Grid, items: any[]) => void;
 }
 
 export interface GridState {
     expandedItems?: any[];
-    selection?: GridSelection;
+    selectedItems?: any[];
 }
 
 export interface GridStyle extends Style {
@@ -84,22 +143,27 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     public static defaultProps: Partial<GridProps> = DefultGridProps;
 
     private _columns: GridColumn<GridColumnProps>[];
+    private _filterContext: FilterContext;
+    private _selector: GridSelector;
 
     public constructor(props: P) {
         super(props);
 
+        this._filterContext = new FilterContext();
+        this._selector = new GridSelector(this);
+
         this.state = {
             expandedItems: [],
-            selection: this.props.selection
-                || ((this.props.selectionMode != GridSelectionMode.None) ? GridSelection.UnselectedAll() : null)
+            selectedItems: this.props.selectedItems || []
         } as S;
 
         this.handleBodyCellClick = this.handleBodyCellClick.bind(this);
         this.handleBodyRowClick = this.handleBodyRowClick.bind(this);
-        this.handleHeaderCellClick = this.handleHeaderCellClick.bind(this);
-        this.handleHeaderRowClick = this.handleHeaderRowClick.bind(this);
         this.handleDataBinding = this.handleDataBinding.bind(this);
         this.handleDataBound = this.handleDataBound.bind(this);
+        this.handleFilterContextChange = this.handleFilterContextChange.bind(this);
+        this.handleHeaderCellClick = this.handleHeaderCellClick.bind(this);
+        this.handleHeaderRowClick = this.handleHeaderRowClick.bind(this);
     }
 
     public getChildContext(): any {
@@ -126,14 +190,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
 
         if (!event.isPropagationStopped()) {
-            this.changeItemSelection(row.props.item);
+            this.selector.selectOrUnselect(row.props.item);
         }
-    }
-
-    protected handleHeaderCellClick(event: React.MouseEvent<any>, cell: GridHeaderCell) {
-    }
-
-    protected handleHeaderRowClick() {
     }
 
     protected handleDataBinding(dataSource: DataSource) {
@@ -170,6 +228,19 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
                 this.forceUpdate(handleDataBound);
             }
         }
+    }
+
+    protected handleFilterContextChange(expression: ConditionalExpression) {
+        const dataSource = this.props.dataSource;
+
+        dataSource.filter(expression);
+        dataSource.dataBind();
+    }
+
+    protected handleHeaderCellClick(event: React.MouseEvent<any>, cell: GridHeaderCell) {
+    }
+
+    protected handleHeaderRowClick() {
     }
 
     protected renderHeader(): JSX.Element {
@@ -212,40 +283,6 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         this.setState({ expandedItems });
     }
 
-    protected changeItemSelection(item: any) {
-        if (this.props.selectionMode != GridSelectionMode.None) {
-            const selection = this.state.selection;
-            const items = selection.selectedItems || selection.unselectedItems;
-            const itemIndex = items.indexOf(item);
-
-            if (itemIndex != -1) {
-                const event = selection.selectedItems ? this.props.onItemUnselect : this.props.onItemSelect;
-
-                items.splice(itemIndex, 1);
-
-                this.setState({ selection: selection });
-
-                if (event) {
-                    event(item);
-                }
-            } else {
-                const event = selection.unselectedItems ? this.props.onItemUnselect : this.props.onItemSelect;
-
-                if ((this.props.selectionMode == GridSelectionMode.Single) && items.length) {
-                    items.length = 0;
-                }
-
-                items.push(item);
-
-                this.setState({ selection: selection });
-
-                if (event) {
-                    event(item);
-                }
-            }
-        }
-    }
-
     protected setDataSource(dataSource: DataSource) {
         if ((this.props.autoBind != false) && (dataSource.state == DataSourceState.Empty)) {
             dataSource.dataBind();
@@ -258,7 +295,20 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     public componentWillMount() {
+        this.filterContext.onChange.on(this.handleFilterContextChange);
+
         this.setDataSource(this.props.dataSource);
+    }
+
+    public componentWillUnmount() {
+        const dataSource = this.props.dataSource;
+
+        if (dataSource) {
+            dataSource.onDataBinding.off(this.handleDataBinding);
+            dataSource.onDataBound.off(this.handleDataBound);
+        }
+
+        this.filterContext.onChange.off(this.handleFilterContextChange);
     }
 
     public componentWillUpdate() {
@@ -280,14 +330,22 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected abstract get headerType(): { new(): GridHeader<GridHeaderProps, any> };
 
-    protected get messages(): GridMessages {
-        return this.props.messages;
-    }
-
     public get columns(): GridColumn<GridColumnProps>[] {
         return this._columns = this._columns
             || React.Children.toArray(this.props.children)
                 .map(x => new (x as any).type((x as any).props, this.getChildContext()))
                 .filter(x => x instanceof GridColumn) as any;
+    }
+
+    public get filterContext(): FilterContext {
+        return this._filterContext;
+    }
+
+    public get messages(): GridMessages {
+        return this.props.messages;
+    }
+
+    public get selector(): GridSelector {
+        return this._selector;
     }
 }

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { GridSelection } from './grid';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridBodyCell } from './grid-body-cell';
 import { GridHeaderCell } from './grid-header-cell';
@@ -17,27 +16,12 @@ export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> ext
         title: ''
     };
 
-    public constructor(props: P, context: any) {
-        super(props, context);
-
-        this.handleSelectOrUnselectAll = this.handleSelectOrUnselectAll.bind(this);
-    }
-
-    protected handleSelectOrUnselectAll() {
-        const selection = GridSelection.isAllSelected(this.context.grid.state.selection)
-            ? GridSelection.UnselectedAll()
-            : GridSelection.SelectedAll();
-
-        this.context.grid.setState({ selection: selection });
-    }
-
     protected renderHeaderContent(cell: GridHeaderCell): JSX.Element | JSX.Element[] | string {
         const grid = cell.context.grid;
-        debugger;
-        const isAllSelected = GridSelection.isAllSelected(grid.state.selection);
+        const isAllItemsSelected = grid.selector.isAllItemsSelected();
 
         return (grid.props.selectionMode == GridSelectionMode.Multiple)
-            ? <input checked={isAllSelected} onClick={this.handleSelectOrUnselectAll} type="checkbox" />
+            ? <input checked={isAllItemsSelected} onClick={() => grid.selector.selectOrUnselectAll()} type="checkbox" />
             : null;
     }
 

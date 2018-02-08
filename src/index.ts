@@ -1,3 +1,4 @@
+export * from './components/common';
 export * from './components/grid/index';
 export * from './components/pager/infinite-scroll-pager';
 

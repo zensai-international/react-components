@@ -10,6 +10,7 @@ export enum DataViewMode {
 }
 
 export interface DataView<T> {
+    allData?: T[];
     data?: T[];
     filteredBy?: ConditionalExpression;
     mode?: DataViewMode;

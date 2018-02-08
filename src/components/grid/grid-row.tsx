@@ -24,14 +24,16 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
         this.handleClick = this.handleClick.bind(this);
     }
 
+    protected abstract getCellTypeByColumn(column: GridColumn): { new(): GridCell<GridCellProps, any> };
+
     protected handleClick(event: React.MouseEvent<any>) {
         if (this.props.onRowClick) {
             this.props.onRowClick(event, this);
         }
     }
 
-    protected renderCell(column: GridColumn<GridColumnProps>, index: number): JSX.Element {
-        const Cell = column.props.body ? column.props.body.cellType || this.cellType : this.cellType;
+    protected renderCell(column: GridColumn, index: number): JSX.Element {
+        const Cell = this.getCellTypeByColumn(column) || this.cellType;
         const key = `${this.props.index}_${index}`;
         const style = this.props.style.cell;
 

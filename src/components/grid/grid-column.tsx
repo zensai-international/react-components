@@ -23,6 +23,7 @@ export interface GridColumnProps {
     body?: GridColumnBodyCellProps;
     field?: string;
     header?: GridColumnHeaderCellProps;
+    isFilterable?: boolean;
     isSortable?: boolean;
     title?: string;
 }

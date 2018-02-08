@@ -55,7 +55,7 @@ export class FilterContext {
         return this._expression;
     }
 
-    public get onChange(): Event<any> {
+    public get onChange(): Event<ConditionalExpression> {
         return this._onChange;
     }
 }

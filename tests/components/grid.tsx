@@ -35,7 +35,7 @@ export default describe('<Grid />', () => {
                 });
 
                 it('one click on first row', () => {
-                    const selectedItems = grid.state().selection.selectedItems;
+                    const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click');
 
@@ -44,7 +44,7 @@ export default describe('<Grid />', () => {
                 });
 
                 it('one click on first row and one click to last row', () => {
-                    const selectedItems = grid.state().selection.selectedItems;
+                    const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click')
                         .find('.title-body').last().simulate('click');
@@ -62,7 +62,7 @@ export default describe('<Grid />', () => {
                 });
 
                 it('one click on first row', () => {
-                    const selectedItems = grid.state().selection.selectedItems;
+                    const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click');
 
@@ -71,7 +71,7 @@ export default describe('<Grid />', () => {
                 });
 
                 it('one click on first row and one click to last row', () => {
-                    const selectedItems = grid.state().selection.selectedItems;
+                    const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click')
                         .find('.title-body').last().simulate('click');

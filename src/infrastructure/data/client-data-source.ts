@@ -100,6 +100,7 @@ export class ClientDataSource<T = any> implements DataSource<T> {
         };
 
         this._view = this._view || {};
+        this._view.allData = data;
         this._view.data = data;
         this._view.totalCount = data.length;
 
@@ -181,6 +182,7 @@ export class ClientDataSource<T = any> implements DataSource<T> {
                     const expressionConverter = new ExpressionConverter();
                     const lambdaExpression = expressionConverter.convert(expression);
 
+                    x.allData = x.allData.filter(lambdaExpression);
                     x.data = x.data.filter(lambdaExpression);
                 }
            }

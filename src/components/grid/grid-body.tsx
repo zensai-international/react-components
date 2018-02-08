@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { GridSelection } from './grid';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
@@ -26,7 +25,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
         const style = this.props.style;
         const gridState = this.context.grid.state;
         const isExpanded = gridState.expandedItems.indexOf(item) != -1;
-        const isSelected = GridSelection.isSelected(gridState.selection, item);
+        const isSelected = gridState.selectedItems.indexOf(item) != -1;
         const rowProps = Object.assign({}, this.props, {
             children: null,
             key: `row-${index}`,
@@ -80,7 +79,7 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
 
                 return (data.length > 0)
                     ? renderRows()
-                    : [this.renderMessageRow(this.context.grid.props.messages.noItems)];
+                    : [this.renderMessageRow(this.context.grid.messages.noItems)];
             }
         }
     }
