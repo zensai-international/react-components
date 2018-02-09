@@ -1,8 +1,16 @@
+const PossibleChars: string = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
 export class CssClassNameGenerator {
     private readonly _byKey: { [key: string]: string } = {};
 
     public generate(): string {
-        return '--' + ('00000000' + (Math.random() * Math.pow(36, 8) << 0).toString(36)).slice(-8);
+        let result = '__';
+        
+        for (let i = 0; i < 10; i++) {
+            result += PossibleChars.charAt(Math.floor(Math.random() * PossibleChars.length));
+        }
+
+        return result;
     }
 
     public generateByKey(key: string): string {
