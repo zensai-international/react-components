@@ -19,7 +19,6 @@ export interface GridMessages {
 }
 
 export enum GridSelectionMode {
-    None,
     Single,
     Multiple
 }
@@ -117,31 +116,13 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected handleDataBound(dataSource: DataSource) {
         if (dataSource == this.props.dataSource) {
-            const data = dataSource.view.data;
-            const expandedItems = this.state.expandedItems.filter(x => data.indexOf(x) != -1);
-            // const selection = this.state.selection;
-            // const selectedItems = selection.selectedItems.filter(x => data.indexOf(x) != -1);
-            // const unselectedItems = selection.unselectedItems.filter(x => data.indexOf(x) != -1);
             const handleDataBound = () => {
                 if (this.props.onDataBound) {
                     this.props.onDataBound(this);
                 }
             };
 
-            if ((expandedItems.length != this.state.expandedItems.length)/*
-                || (selectedItems && (selectedItems.length != selection.selectedItems.length))
-                || (unselectedItems && (unselectedItems.length != selection.unselectedItems.length))*/) {
-                this.setState({
-                    expandedItems: expandedItems,
-                    // selection: {
-                    //     selectedItems: selectedItems,
-                    //     unselectedItems: unselectedItems
-                    // }
-                    },
-                    handleDataBound);
-            } else {
-                this.forceUpdate(handleDataBound);
-            }
+            this.forceUpdate(handleDataBound);
         }
     }
 

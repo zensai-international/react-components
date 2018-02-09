@@ -11,7 +11,7 @@ export class GridSelector {
         const grid = this._grid;
         const gridProps = grid.props;
 
-        if (gridProps.selectionMode != GridSelectionMode.None) {
+        if (gridProps.selectionMode != null) {
             const selectedItems = grid.state.selectedItems;
             const itemIndex = selectedItems.indexOf(item);
 
