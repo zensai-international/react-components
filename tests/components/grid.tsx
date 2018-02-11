@@ -10,7 +10,7 @@ import { GridSelectionMode, GridState } from '../../src/index';
 //import { GridBodyRow, GridBodyRowProps } from '../../src/components/grid/grid-body-row';
 
 export default describe('<Grid />', () => {
-    describe('behaviour', () => {
+    describe('behavior', () => {
         describe('selection', () => {
             function createGrid(selectionMode: GridSelectionMode): Enzyme.ReactWrapper<any, GridState> {
                 return Enzyme.mount(
@@ -47,7 +47,7 @@ export default describe('<Grid />', () => {
                     const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click')
-                        .find('.title-body').last().simulate('click');
+                    grid.find('.title-body').last().simulate('click');
 
                     expect(selectedItems.length, 'selectedItems.length').to.equal(1);
                     expect(selectedItems[0], 'selectedItems[0]').to.equal(data[data.length - 1]);
@@ -74,7 +74,7 @@ export default describe('<Grid />', () => {
                     const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click')
-                        .find('.title-body').last().simulate('click');
+                    grid.find('.title-body').last().simulate('click');
 
                     expect(selectedItems.length, 'selectedItems.length').to.equal(2);
                     expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);

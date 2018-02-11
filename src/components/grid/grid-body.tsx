@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
-import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
+import { GridBodyRow, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
 import { Style } from '../common';
 import { DataSource, DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
 
@@ -19,7 +19,7 @@ export interface GridBodyProps {
     onRowClick: (event: React.MouseEvent<any>, sender: any) => void;
 }
 
-export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent<P, S> {
+export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> extends GridComponent<P, S> {
     protected renderDataRow(item: any, index: number): JSX.Element | JSX.Element[] {
         const Row = this.rowType;
         const style = this.props.style;
@@ -84,5 +84,5 @@ export abstract class GridBody<P extends GridBodyProps, S> extends GridComponent
         }
     }
 
-    protected abstract get rowType(): { new(): GridBodyRow<GridBodyRowProps, any> };
+    protected abstract get rowType(): { new(): GridBodyRow };
 }

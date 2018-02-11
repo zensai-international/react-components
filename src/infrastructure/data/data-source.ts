@@ -9,14 +9,25 @@ export enum DataViewMode {
     FromFirstToCurrentPage
 }
 
-export interface DataView<T> {
-    allData?: T[];
+export interface DataViewPage {
+    index?: number;
+    size?: number;
+}
+
+export interface DataView<T = {}> {
     data?: T[];
     filteredBy?: ConditionalExpression;
     mode?: DataViewMode;
-    pageIndex?: number;
+    page?: DataViewPage;
     sortedBy?: SortExpression[];
     totalCount?: number;
+}
+
+export interface DataViewProps {
+    filteredBy?: ConditionalExpression;
+    mode?: DataViewMode;
+    page?: DataViewPage;
+    sortedBy?: SortExpression[];
 }
 
 export enum DataSourceOperation {
@@ -34,18 +45,14 @@ export enum DataSourceState {
 
 export interface DataSourceProps {
     fieldAccessor?: FieldAccessor;
-    filteredBy?: ConditionalExpression;
-    firstPageSize?: number;
-    pageSize?: number;
-    pageIndex?: number;
-    sortedBy?: SortExpression[];
-    viewMode?: DataViewMode;
+    view?: DataViewProps;
 }
 
 export interface DataSource<T = {}> {
-    dataBind(disableEvents?: boolean): Promise<DataView<T>>;
+    dataBind(): Promise<DataView<T>>;
     delete(item: T);
     filter(expression: ConditionalExpression);
+    getView(props: DataViewProps): DataView<T>;
     read();
     setPageIndex(value: number);
     sort(expressions: SortExpression[]);
@@ -53,10 +60,9 @@ export interface DataSource<T = {}> {
 
     readonly changeTracker: DataSourceChangeTracker<T>;
     readonly fieldAccessor: FieldAccessor;
-    readonly firstPageSize: number;
-    readonly pageSize: number;
     readonly state: DataSourceState;
     readonly view: DataView<T>;
+    readonly viewProps: DataViewProps;
 
     readonly onDataBinding: Event<DataSource>;
     readonly onDataBound: Event<DataSource>;

@@ -1,6 +1,6 @@
 
 import { SortExpression, SortDirection } from './common';
-import { DataSource, DataSourceProps, DataSourceOperation, DataSourceState, DataView, DataViewMode } from './data-source';
+import { DataSource, DataSourceProps, DataSourceOperation, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { DataSourcePager } from './data-source-pager';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
@@ -28,14 +28,13 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     private _fieldAccessor: FieldAccessor;
     private _fieldMappings: { [field: string]: string };
     private _itemConverter: (value: any) => any;
-    private _onDataBinging: Event<any>;
+    private _onDataBinding: Event<any>;
     private _onDataBound: Event<any>;
     private _operations: { [type: number]: DataSourceOperationData<T> };
-    private _pageSize: number;
     private _state: DataSourceState;
     private _url: Uri;
     private _view: DataView<T>;
-    private _viewMode: DataViewMode;
+    private _viewProps: DataViewProps;
 
     public constructor(props: ODataDataSourceProps) {
         this._dataGetter = props.dataGetter;
@@ -43,25 +42,26 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         this._fieldMappings = props.fieldMappings;
         this._itemConverter = props.itemConverter;
         this._operations = {};
-        this._pageSize = props.pageSize;
         this._state = DataSourceState.Empty;
         this._url = new UriParser().parse(props.url);
         this._view = null;
-        this._viewMode = props.viewMode || DataViewMode.CurrentPage;
+        this._viewProps = Object.assign({ page: { } }, props.view);
 
-        this._onDataBinging = new Event<any>();
+        this._onDataBinding = new Event<any>();
         this._onDataBound = new Event<any>();
 
         this._operations = {
             [DataSourceOperation.GetCount]: this.createGetCountAction()
         };
 
-        this.setPageIndex(props.pageIndex || 0);
-        if (props.filteredBy) {
-            this.filter(props.filteredBy);
-        }
-        if (props.sortedBy) {
-            this.sort(props.sortedBy);
+        if (this._viewProps.page) {
+            this.setPageIndex(this._viewProps.page.index || 0);
+            if (this._viewProps.filteredBy) {
+                this.filter(this._viewProps.filteredBy);
+            }
+            if (this._viewProps.sortedBy) {
+                this.sort(this._viewProps.sortedBy);
+            }
         }
     }
 
@@ -160,9 +160,11 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     }
 
     protected createSetIndexAction(value: number): DataSourceOperationData<T> {
+        const page = this._viewProps.page;
+
         return {
             urlGenerator: (uriBuilder: UriBuilder) => {
-                if (this.pageSize) {
+                if (page.size) {
                     const pager = new DataSourcePager(this);
                     const nextPage = pager.getPageInfo(value);
 
@@ -171,11 +173,14 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 }
             },
             viewInitializer: (response: any, view: DataView<T>) => {
-                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (this._view.pageIndex == (value -1))
+                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (page.index == (value -1))
                     ? this._view.data.concat(view.data)
                     : view.data;
-                view.mode = this._viewMode;
-                view.pageIndex = value;
+                view.mode = this._viewProps.mode;
+                view.page = {
+                    index: value,
+                    size: page.size
+                };
             }
         };
     }
@@ -193,7 +198,10 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         const data = this._itemConverter
             ? response['value'].map(x => this._itemConverter(x))
             : response['value'] as T[];
-        const result = { data: data, totalCount: this._view ? this._view.totalCount : null };
+        const result = {
+            data: data,
+            totalCount: this._view ? this._view.totalCount : null
+        };
 
         for (let operationKey in this._operations) {
             this._operations[operationKey].viewInitializer(response, result);
@@ -242,6 +250,10 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     public delete(item: T) {
     }
 
+    public getView(props: DataViewProps): DataView<T> {
+        throw new Error('Method not implemented.');
+    }
+
     public filter(expression: ConditionalExpression) {
         this.setPageIndex(0);
 
@@ -280,14 +292,6 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         return this._fieldAccessor = this._fieldAccessor || new DefaultFieldAccessor();
     }
 
-    public get firstPageSize(): number {
-        return null;
-    }
-
-    public get pageSize(): number {
-        return this._pageSize;
-    }
-
     public get state(): DataSourceState {
         return this._state;
     }
@@ -296,8 +300,12 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         return this._view;
     }
 
+    public get viewProps(): DataViewProps {
+        return this._viewProps;
+    }
+
     public get onDataBinding(): Event<any> {
-        return this._onDataBinging;
+        return this._onDataBinding;
     }
 
     public get onDataBound(): Event<any> {

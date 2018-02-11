@@ -29,5 +29,5 @@ export interface GridColumnProps {
     title?: string;
 }
 
-export class GridColumn<P extends GridColumnProps = GridColumnProps> extends GridComponent<P, any> {
+export class GridColumn<P extends GridColumnProps = GridColumnProps, S = {}> extends GridComponent<P, S> {
 }

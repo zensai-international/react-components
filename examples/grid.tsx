@@ -22,7 +22,13 @@ function getData(count: number): any[] {
 }
 
 const data = getData(1000);
-const dataSource = new ClientDataSource({ dataGetter: () => data, pageSize: 50, viewMode: DataViewMode.FromFirstToCurrentPage });
+const dataSource = new ClientDataSource({
+    dataGetter: () => data,
+    view: {
+        mode: DataViewMode.FromFirstToCurrentPage,
+        page: { size: 50 }
+    }
+});
 
 function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps): JSX.Element[] {
     const Row = rowType;

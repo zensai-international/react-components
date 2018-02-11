@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { DefultGridProps } from './default-grid-pros';
-import { GridBody, GridBodyProps, GridBodyStyle } from './grid-body';
+import { DefaultGridProps } from './default-grid-pros';
+import { GridBody, GridBodyStyle } from './grid-body';
 import { GridBodyRow, GridBodyRowTemplate } from './grid-body-row';
 import { GridBodyCell } from './grid-body-cell';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpanderColumn } from './grid-expander-column';
-import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
+import { GridHeader, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
 import { Style } from '../common';
@@ -27,6 +27,7 @@ export interface GridProps {
     autoBind?: boolean;
     bodyRowTemplate?: GridBodyRowTemplate;
     dataSource: DataSource;
+    filterContext?: FilterContext;
     messages?: GridMessages;
     selectedItems?: any[];
     selectionMode?: GridSelectionMode;
@@ -46,24 +47,26 @@ export interface GridState {
 }
 
 export interface GridStyle extends Style {
-    body?: GridBodyStyle;
-    header?: GridHeaderStyle;
+    body: GridBodyStyle;
+    header: GridHeaderStyle;
 }
 
 export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
     public static childContextTypes = {
-        grid: React.PropTypes.object
+        filterContext: React.PropTypes.object,
+        grid: React.PropTypes.object,
+        spinnerType: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.func])
     };
-    public static defaultProps: Partial<GridProps> = DefultGridProps;
+    public static defaultProps: Partial<GridProps> = DefaultGridProps;
 
     private _columns: GridColumn<GridColumnProps>[];
-    private _filterContext: FilterContext;
+    private readonly _filterContext: FilterContext;
     private _selector: GridSelector;
 
     public constructor(props: P) {
         super(props);
 
-        this._filterContext = new FilterContext();
+        this._filterContext = this.props.filterContext || new FilterContext();
         this._selector = new GridSelector(this);
 
         this.state = {
@@ -82,7 +85,9 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     public getChildContext(): any {
         return {
-            grid: this
+            filterContext: this._filterContext,
+            grid: this,
+            spinnerType: this.spinnerType
         };
     }
 
@@ -193,7 +198,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     public componentWillMount() {
-        this.filterContext.onChange.on(this.handleFilterContextChange);
+        this._filterContext.onChange.on(this.handleFilterContextChange);
 
         this.setDataSource(this.props.dataSource);
     }
@@ -206,7 +211,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             dataSource.onDataBound.off(this.handleDataBound);
         }
 
-        this.filterContext.onChange.off(this.handleFilterContextChange);
+        this._filterContext.onChange.off(this.handleFilterContextChange);
     }
 
     public componentWillUpdate() {
@@ -224,19 +229,19 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected abstract get bodyType(): { new(): GridBody<GridBodyProps, any> };
+    protected abstract get bodyType(): { new(): GridBody };
 
-    protected abstract get headerType(): { new(): GridHeader<GridHeaderProps, any> };
+    protected abstract get headerType(): { new(): GridHeader };
+
+    protected get spinnerType(): { new(): React.Component } | React.SFC {
+        return () => <span>{this.messages.loading}</span>;
+    }
 
     public get columns(): GridColumn<GridColumnProps>[] {
         return this._columns = this._columns
             || React.Children.toArray(this.props.children)
                 .map(x => new (x as any).type((x as any).props, this.getChildContext()))
                 .filter(x => x instanceof GridColumn) as any;
-    }
-
-    public get filterContext(): FilterContext {
-        return this._filterContext;
     }
 
     public get messages(): GridMessages {

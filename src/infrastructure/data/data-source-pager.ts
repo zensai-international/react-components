@@ -1,4 +1,4 @@
-import { DataSource } from './data-source';
+import { DataSource, DataViewPage } from './data-source';
 
 export interface PageInfo {
     firstIndex: number;
@@ -19,36 +19,44 @@ export class DataSourcePager {
         this._dataSource = dataSource;
     }
 
+    private getDataViewPage(): DataViewPage {
+        return this.dataSource.view ? this.dataSource.view.page : this.dataSource.viewProps.page;
+    }
+
     public getPageCount(): number {
-        return this.dataSource.pageSize
-            ? Math.ceil(this.dataSource.firstPageSize
-                ? ((this.dataSource.view.totalCount - this.dataSource.firstPageSize) / this.dataSource.pageSize + 1)
-                : (this.dataSource.view.totalCount / this.dataSource.pageSize))
+        const page = this.getDataViewPage();
+
+        return page.size
+            ? Math.ceil(this.dataSource.view.totalCount / page.size)
             : 1;
     }
 
     protected getPageIndex(pageType: PageType) {
+        const page = this.getDataViewPage();
+
         switch (pageType) {
             case PageType.First: return 0;
             case PageType.Last: return this.getPageCount() - 1;
-            case PageType.Next: return this.dataSource.view.pageIndex + 1;
-            case PageType.Previous: return this.dataSource.view.pageIndex - 1;
+            case PageType.Next: return page.index + 1;
+            case PageType.Previous: return page.index - 1;
         }
     }
 
     public canMoveToPage(pageType: PageType): boolean {
         const nextPageIndex = this.getPageIndex(pageType);
+        const page = this.dataSource.view.page;
         const pageCount = this.getPageCount();
 
-        return (nextPageIndex >= 0) && (nextPageIndex < pageCount) && (nextPageIndex != this.dataSource.view.pageIndex);
+        return (nextPageIndex >= 0) && (nextPageIndex < pageCount) && (nextPageIndex != page.index);
     }
 
     public getPageInfo(pageIndex: number): PageInfo {
-        const lastPageIndex = (pageIndex + 1) * this.dataSource.pageSize - 1;
+        const page = this.getDataViewPage();
+        const lastPageIndex = (pageIndex + 1) * page.size - 1;
         const totalCount = this.dataSource.view ? this.dataSource.view.totalCount : null;
 
         return {
-            firstIndex: pageIndex * this.dataSource.pageSize,
+            firstIndex: pageIndex * page.size,
             lastIndex: ((totalCount == null) || (lastPageIndex < totalCount))
                 ? lastPageIndex
                 : (totalCount > 0) ? (totalCount - 1) : 0

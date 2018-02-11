@@ -1,10 +1,29 @@
 import { Grid, GridSelectionMode } from './grid';
+import { DataSourcePager } from '../../infrastructure/data/data-source-pager';
 
 export class GridSelector {
     private _grid: Grid;
 
     public constructor(grid: Grid) {
         this._grid = grid;
+    }
+
+    private getAllItems(): any[] {
+        const dataSource = this._grid.props.dataSource;
+
+        if (!dataSource.view) {
+            return null;
+        }
+
+        const pager = new DataSourcePager(dataSource);
+
+        return (pager.getPageCount() > 1)
+            ? dataSource.getView({
+                    filteredBy: dataSource.view.filteredBy,
+                    sortedBy: dataSource.view.sortedBy
+                })
+                .data
+            : dataSource.view.data;
     }
 
     public selectOrUnselect(item: any) {
@@ -40,22 +59,15 @@ export class GridSelector {
     }
 
     public isAllItemsSelected(): boolean {
-        const dataSource = this._grid.props.dataSource;
+        const allItems = this.getAllItems();
 
-        if (!dataSource.view) {
-            return false;
-        }
-
-        const allItems = dataSource.view.allData || dataSource.view.data;
-
-        return (allItems.length > 0) && (this._grid.state.selectedItems.length == allItems.length);
+        return (allItems != null) && (allItems.length > 0) && (this._grid.state.selectedItems.length == allItems.length);
     }
 
     public selectAll() {
-        const dataSource = this._grid.props.dataSource;
+        const allItems = this.getAllItems();
 
-        if (dataSource.view) {
-            const allItems = (dataSource.view.allData || dataSource.view.data).map(x => x);
+        if (allItems != null) {
             const grid = this._grid;
 
             grid.setState({ selectedItems: allItems }, () => {

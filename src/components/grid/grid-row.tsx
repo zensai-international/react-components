@@ -71,5 +71,5 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
             : this.renderCells();
     }
 
-    protected abstract get cellType(): { new(): GridCell<GridCellProps, any> }
+    protected abstract get cellType(): { new(): GridCell }
 }

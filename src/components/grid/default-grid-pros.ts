@@ -1,6 +1,6 @@
 import { GridProps } from './grid';
 
-export const DefultGridProps: Partial<GridProps> = {
+export const DefaultGridProps: Partial<GridProps> = {
     messages: {
         loading: '',
         noItems: ''
@@ -25,6 +25,7 @@ export const DefultGridProps: Partial<GridProps> = {
                 className: '',
                 cell: {
                     className: '',
+                    filterIcon: (isFiltered: boolean) => ({ className: '' }),
                     iconBySortDirection: {
                         [1]: { className: '' },
                         [2]: { className: '' }

@@ -36,7 +36,7 @@ function getPageData(): () => Promise<any> {
 
 export default describe('ODataDataSource', () => {
     describe('dataBind', () => {
-        it('default behaviour', async () => {
+        it('default behavior', async () => {
             const dataSource = new ODataDataSource<any>({ dataGetter: getData, url: serviceUrl });
             
             expect(dataSource.view, 'view').to.be.null;
@@ -72,7 +72,7 @@ export default describe('ODataDataSource', () => {
             const dataGetter = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource<any>({
                 dataGetter: dataGetter,
-                pageSize: 1,
+                view: { page: { size: 1 } },
                 url: serviceUrl
             });
 
@@ -81,6 +81,7 @@ export default describe('ODataDataSource', () => {
                 const generatedUrl = `${serviceUrl}?$count=true&$skip=${pageIndex}&$top=1`;
 
                 dataSource.setPageIndex(pageIndex);
+
                 await dataSource.dataBind();
 
                 expect(dataGetter.withArgs(generatedUrl).calledOnce, generatedUrl).to.be.true;
@@ -88,12 +89,11 @@ export default describe('ODataDataSource', () => {
         });
 
         describe('if "DataViewMode" is "CurrentPage"', () => {
-            it('default behaviour', async () => {
+            it('default behavior', async () => {
                 const dataSource = new ODataDataSource<any>({ dataGetter: getData, url: serviceUrl });
-
                 const view = await dataSource.dataBind();
 
-                expect(view.pageIndex, 'pageIndex').to.equal(0);
+                expect(view.page.index, 'page.index').to.equal(0);
                 expect(view.data.length, 'data.length').to.equal(totalCount);
             });
 
@@ -101,31 +101,32 @@ export default describe('ODataDataSource', () => {
                 const dataSource = new ODataDataSource<any>({
                     dataGetter: getPageData(),
                     url: serviceUrl,
-                    viewMode: DataViewMode.CurrentPage
+                    view: { mode: DataViewMode.CurrentPage }
                 });
 
                 await dataSource.dataBind();
                 dataSource.setPageIndex(1);
+
                 const view = await dataSource.dataBind();
 
-                expect(view.pageIndex, 'pageIndex').to.equal(1);
-                expect(view.data.length, 'view.data.length').to.equal(1);
+                expect(view.page.index, 'page.index').to.equal(1);
+                expect(view.data.length, 'data.length').to.equal(1);
 
-                expect(view.data[0].field, 'view.data[0].field').to.equal('value1');
+                expect(view.data[0].field, 'data[0].field').to.equal('value1');
             });
         });
 
         describe('if "DataViewMode" is "FromFirstToCurrentPage"', () => {
-            it('default behaviour', async () => {
+            it('default behavior', async () => {
                 const dataSource = new ODataDataSource<any>({
                     dataGetter: getData,
                     url: serviceUrl,
-                    viewMode: DataViewMode.FromFirstToCurrentPage
+                    view: { mode: DataViewMode.FromFirstToCurrentPage }
                 });
 
                 const view = await dataSource.dataBind();
 
-                expect(view.pageIndex, 'pageIndex').to.equal(0);
+                expect(view.page.index, 'page.index').to.equal(0);
                 expect(view.data.length, 'data.length').to.equal(totalCount);
             });
 
@@ -133,14 +134,15 @@ export default describe('ODataDataSource', () => {
                 const dataSource = new ODataDataSource<any>({
                     dataGetter: getPageData(),
                     url: serviceUrl,
-                    viewMode: DataViewMode.FromFirstToCurrentPage
+                    view: { mode: DataViewMode.FromFirstToCurrentPage }
                 });
 
                 await dataSource.dataBind();
                 dataSource.setPageIndex(1);
+
                 const view = await dataSource.dataBind();
 
-                expect(view.pageIndex, 'pageIndex').to.equal(1);
+                expect(view.page.index, 'page.index').to.equal(1);
                 expect(view.data.length, 'view.data.length').to.equal(2);
 
                 expect(view.data[0].field, 'view.data[0].field').to.equal('value0');
@@ -150,11 +152,13 @@ export default describe('ODataDataSource', () => {
     });
 
     describe('sort', () => {
-        it('default behaviour', async () => {
+        it('default behavior', async () => {
             const dataSource = new ODataDataSource({
                 dataGetter: getData,
-                sortedBy: [{ direction: SortDirection.Ascending, field: 'field' }],
-                url: serviceUrl
+                url: serviceUrl,
+                view: {
+                    sortedBy: [{ direction: SortDirection.Ascending, field: 'field' }],
+                }
             });
 
             const view = await dataSource.dataBind();
@@ -169,6 +173,7 @@ export default describe('ODataDataSource', () => {
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
+
             const view = await dataSource.dataBind();
 
             expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
@@ -183,6 +188,7 @@ export default describe('ODataDataSource', () => {
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, fieldMappings: fieldMappings, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
+
             await dataSource.dataBind();
 
             expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20asc`)).to.be.true;
@@ -193,6 +199,7 @@ export default describe('ODataDataSource', () => {
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
+
             const view = await dataSource.dataBind();
 
             expect(view.sortedBy.length, 'sortedBy.length').to.equal(1);
@@ -207,6 +214,7 @@ export default describe('ODataDataSource', () => {
             const dataSource = new ODataDataSource({ dataGetter: dataGetter, fieldMappings: fieldMappings, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
+
             await dataSource.dataBind();
 
             expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20desc`)).to.be.true;
@@ -215,16 +223,19 @@ export default describe('ODataDataSource', () => {
         it('if page size is 1 and page index is 1', async () => {
             const dataSource = new ODataDataSource<any>({
                 dataGetter: getPageData(),
-                pageIndex: 1,
-                url: serviceUrl,
-                viewMode: DataViewMode.FromFirstToCurrentPage
+                view: {
+                    mode: DataViewMode.FromFirstToCurrentPage,
+                    page: { index: 1 }
+                },
+                url: serviceUrl
             });
 
-            await dataSource.dataBind();
+            dataSource.dataBind();
             dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
+
             const view = await dataSource.dataBind();
 
-            expect(view.pageIndex, 'pageIndex').to.equal(0);
+            expect(view.page.index, 'page.index').to.equal(0);
             expect(view.data.length, 'view.data.length').to.equal(1);
         });
     });
