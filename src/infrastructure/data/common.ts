@@ -17,6 +17,10 @@ export enum DataType {
     Number
 }
 
+export interface GroupExpression {
+    fields: string[];
+}
+
 export enum SortDirection {
     Ascending = 1 << 0,
     Descending = 1 << 1

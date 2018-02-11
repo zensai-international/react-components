@@ -1,5 +1,5 @@
 
-import { SortExpression, SortDirection } from './common';
+import { GroupExpression, SortDirection, SortExpression } from './common';
 import { DataSource, DataSourceProps, DataSourceOperation, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { DataSourcePager } from './data-source-pager';
@@ -251,6 +251,10 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     }
 
     public getView(props: DataViewProps): DataView<T> {
+        throw new Error('Method not implemented.');
+    }
+
+    public group(expression: GroupExpression) {
         throw new Error('Method not implemented.');
     }
 

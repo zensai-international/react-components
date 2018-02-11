@@ -56,6 +56,24 @@ export default describe('ClientDataSource', () => {
         expect(view.data[0].field).to.equal('value0');
     });
 
+    it('group', async () => {
+        const data = [
+            { field0: '00', field1: '01' }, { field0: '00', field1: '01' },
+            { field0: '10', field1: '11' }, { field0: '10', field1: '11' }
+        ];
+        const dataSource = new ClientDataSource({ dataGetter: () => data });
+
+        dataSource.group({ fields: ['field0', 'field1'] });
+
+        const view = await dataSource.dataBind();
+
+        expect(view.data.length).to.equal(2);
+        expect(view.data[0].field0, 'view.data[0].field0').to.equal('00');
+        expect(view.data[0].field1, 'view.data[0].field0').to.equal('01');
+        expect(view.data[1].field0, 'view.data[0].field0').to.equal('10');
+        expect(view.data[1].field1, 'view.data[0].field0').to.equal('11');
+    });
+
     describe('setPageIndex', () => {
         describe('if "DataViewMode" is "CurrentPage"', () => {
             const data = [

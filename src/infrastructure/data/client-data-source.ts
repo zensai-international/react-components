@@ -1,13 +1,12 @@
 import { ClientDataSourceChangeTracker } from './client-data-source-change-tracker';
-import { SortExpression } from './common';
-import { DataSource, DataSourceOperation, DataSourceProps, DataSourceState, DataView, DataViewMode } from './data-source';
+import { GroupExpression, SortExpression } from './common';
+import { DataSource, DataSourceOperation, DataSourceProps, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
 import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker } from './data-source-change-tracker';
 import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Comparer } from '../comparer';
 import { Event } from '../event';
 import { ConditionalExpression } from '../expressions/expression';
 import { ExpressionConverter } from '../expressions/expression-converter';
-import { DataViewProps } from '../../index';
 
 export type ViewInitializer<T> = (view: DataView<T>) => void;
 
@@ -64,6 +63,30 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                 const lambdaExpression = expressionConverter.convert(expression);
 
                 x.data = x.data.filter(lambdaExpression);
+            }
+        };
+    }
+
+    protected createGroupOperation(expression: GroupExpression): ViewInitializer<T> {
+        return x => {
+            x.groupedBy = expression;
+
+            if (expression) {
+                const groups = [];
+
+                for (const item of x.data) {
+                    let group = groups.find(x => expression.fields.every(y => item[y] == x[y]));
+
+                    if (group == null) {
+                        group = {};
+
+                        expression.fields.forEach(x => group[x] = item[x]);
+
+                        groups.push(group);
+                    }
+                }
+
+                x.data = groups;
             }
         };
     }
@@ -150,6 +173,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
         executeViewInitializer(DataSourceOperation.Filter);
         executeViewInitializer(DataSourceOperation.Sort);
+        executeViewInitializer(DataSourceOperation.Group);
         executeViewInitializer(DataSourceOperation.SetPageIndex);
     }
 
@@ -199,6 +223,10 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
     public filter(expression: ConditionalExpression) {
         this._operations[DataSourceOperation.Filter] = this.createFilterOperation(expression);
+    }
+
+    public group(expression: GroupExpression) {
+        this._operations[DataSourceOperation.Group] = this.createGroupOperation(expression);
     }
 
     public getView(props: DataViewProps): DataView<T> {

@@ -1,4 +1,4 @@
-import { SortExpression } from './common';
+import { GroupExpression, SortExpression } from './common';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { FieldAccessor } from './field-accessor';
 import { Event } from '../event';
@@ -17,6 +17,7 @@ export interface DataViewPage {
 export interface DataView<T = {}> {
     data?: T[];
     filteredBy?: ConditionalExpression;
+    groupedBy?: GroupExpression;
     mode?: DataViewMode;
     page?: DataViewPage;
     sortedBy?: SortExpression[];
@@ -33,6 +34,7 @@ export interface DataViewProps {
 export enum DataSourceOperation {
     Filter,
     GetCount,
+    Group,
     SetPageIndex,
     Sort
 }
@@ -53,6 +55,7 @@ export interface DataSource<T = {}> {
     delete(item: T);
     filter(expression: ConditionalExpression);
     getView(props: DataViewProps): DataView<T>;
+    group(expression: GroupExpression);
     read();
     setPageIndex(value: number);
     sort(expressions: SortExpression[]);
