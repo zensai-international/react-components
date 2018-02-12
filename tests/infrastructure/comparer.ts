@@ -43,24 +43,27 @@ export default describe('Comparer', () => {
                 { x: null, y: true, result: -1 },
                 { x: null, y: false, result: -1 },
                 { x: null, y: null, result: 0 }
+            ].forEach((testCase, i) => {
+                const result = comparer.compare(testCase.x, testCase.y);
+
+                expect(result).to.equal(testCase.result, `${i} - x: ${testCase.x}, y: ${testCase.y}`);
+            });
+        });
+
+        it('if string values', () => {
+            [
+                { x: null, y: null, result: 0 },
+                { x: 'value0', y: 'value0', result: 0 },
+                { x: 'VALUE0', y: 'value0', result: 0 },
+                { x: 'value0', y: 'value1', result: -1 },
+                { x: 'value0', y: null, result: 1 },
+                { x: 'value1', y: 'value0', result: 1 },
+                { x: null, y: 'value1', result: -1 }
             ].forEach(testCase => {
                 const result = comparer.compare(testCase.x, testCase.y);
 
                 expect(result).to.equal(testCase.result, `x: ${testCase.x}, y: ${testCase.y}`);
             });
         });
-
-        it('if string values', () => {
-            [
-                { x: 'value0', y: 'value0', result: 0 },
-                { x: 'VALUE0', y: 'value0', result: 0 },
-                { x: 'value0', y: 'value1', result: -1 },
-                { x: 'value1', y: 'value0', result: 1 }
-            ].forEach(testCase => {
-                const result = comparer.compare(testCase.x, testCase.y);
-
-                expect(result).to.equal(testCase.result, `x: ${testCase.x}, y: ${testCase.y}`);
-            });
-        })
     });
 });

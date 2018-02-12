@@ -12,16 +12,18 @@ export class Comparer {
     }
 
     public compare(x: any, y: any, direction: SortDirection = SortDirection.Ascending): number {
-        let xValue = Comparer.toComparedValue(x);
-        let yValue = Comparer.toComparedValue(y);
+        const xValue = Comparer.toComparedValue(x);
+        const yValue = Comparer.toComparedValue(y);
 
+        if ((xValue == null) && (yValue != null)) return (direction == SortDirection.Ascending) ? -1 : 1;
+        if ((xValue != null) && (yValue == null)) return (direction == SortDirection.Ascending) ? 1 : -1;
         if (xValue > yValue) return (direction == SortDirection.Ascending) ? 1 : -1;
         if (xValue < yValue) return (direction == SortDirection.Ascending) ? -1 : 1;
 
         return 0;
     }
 
-    public combine(...comparers: (() => number)[]): number {
+    public combine(comparers: (() => number)[]): number {
         let result = 0;
 
         for (let i = 0; i < comparers.length; i++) {
