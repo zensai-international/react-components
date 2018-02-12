@@ -26,6 +26,7 @@ export interface DataView<T = {}> {
 
 export interface DataViewProps {
     filteredBy?: ConditionalExpression;
+    groupedBy?: GroupExpression;
     mode?: DataViewMode;
     page?: DataViewPage;
     sortedBy?: SortExpression[];

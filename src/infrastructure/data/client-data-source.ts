@@ -28,19 +28,8 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
     public constructor(props: ClientDataSourceProps<T>) {
         this._fieldAccessor = props.fieldAccessor;
-        this._operations = {};
         this._viewProps = Object.assign({ mode: DataViewMode.CurrentPage, page: { } }, props.view);
-
-        if (this._viewProps) {
-            if (this._viewProps.page && this._viewProps.page.size) {
-                this.setPageIndex(props.view.page.index || 0);
-            }
-
-            if (this._viewProps.sortedBy) {
-                this.sort(this._viewProps.sortedBy);
-            }
-        }
-
+        this._operations = this.createOperations(this._viewProps);
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
         if (Array.isArray(props.dataGetter)) {
             this._data = props.dataGetter as T[];
@@ -103,7 +92,10 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         return {
             [DataSourceOperation.Filter]: props.filteredBy ? this.createFilterOperation(props.filteredBy) : null,
             [DataSourceOperation.Sort]: props.sortedBy ? this.createSortOperation(props.sortedBy) : null,
-            [DataSourceOperation.SetPageIndex]: props.page ? this.createSetPageIndexOperation(props, props.page.index) : null
+            [DataSourceOperation.Group]: props.groupedBy ? this.createGroupOperation(props.groupedBy) : null,
+            [DataSourceOperation.SetPageIndex]: (props.page && props.page.size)
+                ? this.createSetPageIndexOperation(props, props.page.index || 0)
+                : null
         };
     }
 

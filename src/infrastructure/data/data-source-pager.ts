@@ -20,7 +20,7 @@ export class DataSourcePager {
     }
 
     private getDataViewPage(): DataViewPage {
-        return this.dataSource.view ? this.dataSource.view.page : this.dataSource.viewProps.page;
+        return (this.dataSource.view ? this.dataSource.view.page : this.dataSource.viewProps.page) || {};
     }
 
     public getPageCount(): number {

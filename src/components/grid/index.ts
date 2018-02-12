@@ -4,6 +4,7 @@ export * from './grid-body-row';
 export * from './grid-body';
 export * from './grid-cell';
 export * from './grid-column';
+export * from './grid-column-filter';
 export * from './grid-expander-column';
 export * from './grid-header-cell';
 export * from './grid-header-row';

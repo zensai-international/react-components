@@ -34,6 +34,12 @@ export interface GridColumnFilterByValueListState {
 }
 
 export abstract class GridColumnFilterByValueList<P extends GridColumnFilterProps = GridColumnFilterProps, S extends GridColumnFilterByValueListState = GridColumnFilterByValueListState> extends GridColumnFilter<P, S> {
+    public constructor(props: P) {
+        super(props);
+
+        this.state = { values: null } as S;
+    }
+
     protected async getDataView(): Promise<DataView> {
         const grid = this.context.grid;
         const filterContext = this.context.filterContext;
@@ -42,6 +48,7 @@ export abstract class GridColumnFilterByValueList<P extends GridColumnFilterProp
 
         return dataSource.getView({
             filteredBy: filterContext.build([field]),
+            groupedBy: { fields: [field] },
             sortedBy: [{ direction: SortDirection.Ascending, field: field }]
         });
     }
