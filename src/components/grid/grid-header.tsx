@@ -3,11 +3,9 @@ import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridHeaderRow, GridHeaderRowStyle } from './grid-header-row';
 import { Style } from '../common';
-import { DataSource } from '../../infrastructure/data/data-source';
 
 export interface GridHeaderProps {
     columns: GridColumn<GridColumnProps>[];
-    dataSource: DataSource<any>;
     style: GridHeaderStyle;
 
     onCellClick: (event: React.MouseEvent<any>, sender: any) => void;

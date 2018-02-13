@@ -144,13 +144,13 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     protected handleHeaderRowClick() {
     }
 
-    protected renderHeader(): JSX.Element {
+    protected renderHeader(): JSX.Element | JSX.Element[] {
         const Header = this.headerType;
         const headerStyle = this.props.style.header;
 
         return (this.props.showHeader != false)
             ? (
-                <Header {...this.props}
+                <Header
                     columns={this.columns}
                     onCellClick={this.handleHeaderCellClick}
                     onRowClick={this.handleHeaderRowClick}
@@ -159,12 +159,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             : null;
     }
 
-    protected renderBody(): JSX.Element {
+    protected renderBody(): JSX.Element | JSX.Element[] {
         const Body = this.bodyType;
         const bodyStyle = this.props.style.body;
 
         return (
-            <Body {...this.props}
+            <Body
                 columns={this.columns}
                 onCellClick={this.handleBodyCellClick}
                 onRowClick={this.handleBodyRowClick}

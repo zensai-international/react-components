@@ -3,7 +3,7 @@ import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridBodyRow, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
 import { Style } from '../common';
-import { DataSource, DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
+import { DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
 
 export interface GridBodyStyle extends Style {
     row: GridBodyRowStyle;
@@ -11,7 +11,6 @@ export interface GridBodyStyle extends Style {
 
 export interface GridBodyProps {
     columns: GridColumn<GridColumnProps>[];
-    dataSource: DataSource;
     style: GridBodyStyle;
     rowTemplate: GridBodyRowTemplate;
 
@@ -63,11 +62,11 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
     }
 
     protected renderRows(): JSX.Element[] {
-        const dataSource = this.props.dataSource;
+        const dataSource = this.context.grid.props.dataSource;
         const data = dataSource.view ? dataSource.view.data : [];
         const renderRows = () => data.map((x, i) => this.renderDataRow(x, i)) as JSX.Element[];
 
-        switch (this.props.dataSource.state) {
+        switch (dataSource.state) {
             case DataSourceState.Empty:
                 return [this.renderLoadingRow()];
             case DataSourceState.Binding:
@@ -75,7 +74,7 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
                     ? renderRows().concat([this.renderLoadingRow()])
                     : [this.renderLoadingRow()];
             case DataSourceState.Bound: {
-                const data = this.props.dataSource.view.data;
+                const data = dataSource.view.data;
 
                 return (data.length > 0)
                     ? renderRows()

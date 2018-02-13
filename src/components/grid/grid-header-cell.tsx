@@ -4,10 +4,8 @@ import { GridColumn } from './grid-column';
 import { GridColumnFilter } from './grid-column-filter';
 import { Style } from '../common';
 import { SortDirection } from '../../infrastructure/data/common';
-import { DataSource } from '../../infrastructure/data/data-source';
 
 export interface GridHeaderCellProps extends GridCellProps {
-    dataSource: DataSource<any>;
     style: GridHeaderCellStyle;
     title?: GridHeaderCellStyle;
 }
@@ -34,8 +32,8 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
 
     protected getSortDirection(): SortDirection {
         const field = this.props.column.props.field;
-        const dataSource = this.props.dataSource;
-        const sortedBy = (this.props.dataSource.view && dataSource.view.sortedBy)
+        const dataSource = this.context.grid.props.dataSource;
+        const sortedBy = (dataSource.view && dataSource.view.sortedBy)
             ? dataSource.view.sortedBy.filter(x => x.field == field)
             : null;
 
@@ -62,7 +60,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
 
             if (!field) return;
     
-            const dataSource = this.props.dataSource;
+            const dataSource = this.context.grid.props.dataSource;
             let sortedBy = null;
     
             if (dataSource.view && dataSource.view.sortedBy) {
