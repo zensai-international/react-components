@@ -19,7 +19,7 @@ export class UriParser {
 
         return result;
     }
-    
+
     public parse(uri: string): Uri {
         const obj = parse(uri);
         const protocol = obj.protocol ? obj.protocol.slice(0, obj.protocol.length - 1).toUpperCase() as string : null;

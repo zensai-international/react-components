@@ -18,7 +18,7 @@ export class StyleHelper {
             className: className
         };
 
-        for (let propertyName in x) {
+        for (const propertyName in x) {
             if ((x[propertyName] || y[propertyName]) && (propertyName != 'className')) {
                 result[propertyName] = StyleHelper.concat(x[propertyName], y[propertyName]);
             }

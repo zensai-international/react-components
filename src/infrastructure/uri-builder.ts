@@ -27,7 +27,7 @@ export class UriBuilder {
     private static getQuery(queryParameters: { [name: string]: string }): string {
         let result = '';
 
-        for (let queryParameterName in queryParameters) {
+        for (const queryParameterName in queryParameters) {
             result = result ? (result + '&') : '?';
             result += `${queryParameterName}=${queryParameters[queryParameterName]}`;
         }
@@ -48,7 +48,7 @@ export class UriBuilder {
 
     public addQueryParameters(parameters: { [name: string]: string }): UriBuilder {
         if (parameters) {
-            for (let parameterName in parameters) {
+            for (const parameterName in parameters) {
                 this.addQueryParameter(parameterName, parameters[parameterName]);
             }
         }
