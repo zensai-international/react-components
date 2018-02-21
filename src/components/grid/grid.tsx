@@ -227,6 +227,10 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
             this.setDataSource(nextProps.dataSource);
         }
+
+        if (this.props.selectedItems != nextProps.selectedItems) {
+            this.setState({ selectedItems: nextProps.selectedItems });
+        }
     }
 
     protected abstract get bodyType(): { new(): GridBody };
