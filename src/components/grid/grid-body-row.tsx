@@ -21,6 +21,12 @@ export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps,
         return column.props.body ? column.props.body.cellType : null;
     }
 
+    public shouldComponentUpdate(nextProps: P): boolean {
+        return (this.props.isExpanded != nextProps.isExpanded)
+            || (this.props.isSelected != nextProps.isSelected)
+            || (this.props.item != nextProps.item);
+    }
+
     protected get style(): Style {
         return this.props.isSelected
             ? StyleHelper.concat(this.props.style, this.props.style.ifSelected)

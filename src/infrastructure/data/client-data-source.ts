@@ -171,7 +171,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
     public dataBind(): Promise<DataView<T>> {
         const createView = () => {
-            this._view = this.createInitialView(this._data, this._operations);
+            this._view = this.createInitialView(this._data, this.viewProps);
             this.runOperations(this._view, this._operations);
         };
 

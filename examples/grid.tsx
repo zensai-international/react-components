@@ -21,12 +21,12 @@ function getData(count: number): any[] {
     return result;
 }
 
-const data = getData(1000);
+const data = getData(10000);
 const dataSource = new ClientDataSource({
     dataGetter: () => data,
     view: {
         mode: DataViewMode.FromFirstToCurrentPage,
-        page: { size: 50 }
+        page: { size: 100 }
     }
 });
 

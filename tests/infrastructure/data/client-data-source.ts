@@ -93,6 +93,7 @@ export default describe('ClientDataSource', () => {
 
                 const view = await dataSource.dataBind();
 
+                expect(view.mode, 'mode').to.equal(DataViewMode.CurrentPage);
                 expect(view.page.index, 'page.index').to.equal(0);
                 expect(view.data.length, 'data.length').to.equal(1);
             });
@@ -136,6 +137,7 @@ export default describe('ClientDataSource', () => {
 
                 const view = await dataSource.dataBind();
 
+                expect(view.mode, 'mode').to.equal(DataViewMode.FromFirstToCurrentPage);
                 expect(view.page.index, 'page.index').to.equal(0);
                 expect(view.data.length, 'data.length').to.equal(1);
             });
