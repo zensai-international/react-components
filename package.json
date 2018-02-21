@@ -47,5 +47,5 @@
     "build:prod": "webpack --config webpack.config.js",
     "test": "karma start karma.config.js --watch"
   },
-  "version": "1.0.19"
+  "version": "1.0.20"
 }
