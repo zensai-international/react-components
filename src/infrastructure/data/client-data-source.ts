@@ -64,12 +64,12 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                 const groups = [];
 
                 for (const item of x.data) {
-                    let group = groups.find(x => expression.fields.every(y => item[y] == x[y]));
+                    let group = groups.find(x => expression.fields.every(y => this.fieldAccessor.getValue(item, y) == this.fieldAccessor.getValue(x, y)));
 
                     if (group == null) {
                         group = {};
 
-                        expression.fields.forEach(x => group[x] = item[x]);
+                        expression.fields.forEach(x => group[x] = this.fieldAccessor.getValue(item, x));
 
                         groups.push(group);
                     }
