@@ -69,7 +69,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                     if (group == null) {
                         group = {};
 
-                        expression.fields.forEach(x => group[x] = this.fieldAccessor.getValue(item, x));
+                        expression.fields.forEach(x => this.fieldAccessor.setValue(group, x, this.fieldAccessor.getValue(item, x)));
 
                         groups.push(group);
                     }

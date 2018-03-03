@@ -31,6 +31,10 @@ export class DefaultFieldAccessor {
         for (let i = 0; i < (fields.length - 1); i++) {
             const field = fields[i];
 
+            if ((item[field] == null) && ((fields.length - 1) != i)) {
+                item[field] = {};
+            }
+
             item = item[field];
         }
 
