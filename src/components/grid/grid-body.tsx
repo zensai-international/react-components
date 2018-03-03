@@ -4,6 +4,7 @@ import { GridComponent } from './grid-component';
 import { GridBodyRow, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
 import { Style } from '../common';
 import { DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
+import { ObjectHelper } from '../../infrastructure/helpers/object-helper';
 
 export interface GridBodyStyle extends Style {
     row: GridBodyRowStyle;
@@ -40,11 +41,17 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
             : <Row {...rowProps} />;
     }
 
-    protected renderLoadingRow(): JSX.Element {
-        return this.renderMessageRow(this.context.grid.props.messages.loading);
+    protected renderEmptyRow(): JSX.Element {
+        return this.renderRow(this.context.grid.messages.noItems);
     }
 
-    protected renderMessageRow(messageContent: JSX.Element | string): JSX.Element {
+    protected renderSpinnerRow(): JSX.Element {
+        const Spinner = this.context.spinnerType;
+
+        return this.renderRow(<Spinner />);
+    }
+
+    protected renderRow(content: JSX.Element | string): JSX.Element {
         const Row = this.rowType;
         const style = this.props.style;
 
@@ -56,7 +63,7 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
                 item={null}
                 key="row-message"
                 style={style.row}>
-                <span>{messageContent}</span>
+                {ObjectHelper.isString(content) ? <span>{content}</span> : content}
             </Row>
         );
     }
@@ -68,17 +75,17 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
 
         switch (dataSource.state) {
             case DataSourceState.Empty:
-                return [this.renderLoadingRow()];
+                return [this.renderSpinnerRow()];
             case DataSourceState.Binding:
                 return (dataSource.view && (dataSource.view.mode == DataViewMode.FromFirstToCurrentPage))
-                    ? renderRows().concat([this.renderLoadingRow()])
-                    : [this.renderLoadingRow()];
+                    ? renderRows().concat([this.renderSpinnerRow()])
+                    : [this.renderSpinnerRow()];
             case DataSourceState.Bound: {
                 const data = dataSource.view.data;
 
                 return (data.length > 0)
                     ? renderRows()
-                    : [this.renderMessageRow(this.context.grid.messages.noItems)];
+                    : [this.renderEmptyRow()];
             }
         }
     }

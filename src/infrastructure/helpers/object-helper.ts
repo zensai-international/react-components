@@ -14,4 +14,8 @@ export class ObjectHelper {
     public static isFunction(object: any) {
         return typeof object == 'function';
     }
+
+    public static isString(object: any) {
+        return typeof object == 'string';
+    }
 }
