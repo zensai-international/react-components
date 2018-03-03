@@ -68,9 +68,9 @@ export default describe('ClientDataSource', () => {
 
         expect(view.data.length).to.equal(2);
         expect(view.data[0].field0, 'view.data[0].field0').to.equal('00');
-        expect(view.data[0].field1, 'view.data[0].field0').to.equal('01');
-        expect(view.data[1].field0, 'view.data[0].field0').to.equal('10');
-        expect(view.data[1].field1, 'view.data[0].field0').to.equal('11');
+        expect(view.data[0].field1, 'view.data[0].field1').to.equal('01');
+        expect(view.data[1].field0, 'view.data[1].field0').to.equal('10');
+        expect(view.data[1].field1, 'view.data[1].field1').to.equal('11');
     });
 
     describe('setPageIndex', () => {
