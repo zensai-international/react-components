@@ -37,7 +37,7 @@ function getPageData(): () => Promise<any> {
 export default describe('ODataDataSource', () => {
     describe('dataBind', () => {
         it('default behavior', async () => {
-            const dataSource = new ODataDataSource<any>({ dataGetter: getData, url: serviceUrl });
+            const dataSource = new ODataDataSource<any>({ data: getData, url: serviceUrl });
             
             expect(dataSource.view, 'view').to.be.null;
             expect(dataSource.state, 'state').to.equal(DataSourceState.Empty);
@@ -55,23 +55,23 @@ export default describe('ODataDataSource', () => {
         });
 
         it(`generated url depends on call times`, async () => {
-            const dataGetter = sinon.promise().resolves(serviceResult);
-            const dataSource = new ODataDataSource<any>({ dataGetter: dataGetter, url: serviceUrl });
+            const data = sinon.promise().resolves(serviceResult);
+            const dataSource = new ODataDataSource<any>({ data: data, url: serviceUrl });
 
             await dataSource.dataBind();
             await dataSource.dataBind();
 
-            expect(dataGetter.withArgs(`${serviceUrl}?$count=true`).calledOnce).to.be.true;
-            expect(dataGetter.withArgs(serviceUrl).calledOnce).to.be.true;
+            expect(data.withArgs(`${serviceUrl}?$count=true`).calledOnce).to.be.true;
+            expect(data.withArgs(serviceUrl).calledOnce).to.be.true;
         });
     });
 
     describe('setPageIndex', () => {
         it(`if page index is x generated url must be '${serviceUrl}?$count=true&$skip=x&$top=1'`, async () => {
             const testCases = [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }];
-            const dataGetter = sinon.promise().resolves(getData);
+            const data = sinon.promise().resolves(getData);
             const dataSource = new ODataDataSource<any>({
-                dataGetter: dataGetter,
+                data: data,
                 view: { page: { size: 1 } },
                 url: serviceUrl
             });
@@ -84,13 +84,13 @@ export default describe('ODataDataSource', () => {
 
                 await dataSource.dataBind();
 
-                expect(dataGetter.withArgs(generatedUrl).calledOnce, generatedUrl).to.be.true;
+                expect(data.withArgs(generatedUrl).calledOnce, generatedUrl).to.be.true;
             }
         });
 
         describe('if "DataViewMode" is "CurrentPage"', () => {
             it('default behavior', async () => {
-                const dataSource = new ODataDataSource<any>({ dataGetter: getData, url: serviceUrl });
+                const dataSource = new ODataDataSource<any>({ data: getData, url: serviceUrl });
                 const view = await dataSource.dataBind();
 
                 expect(view.page.index, 'page.index').to.equal(0);
@@ -99,7 +99,7 @@ export default describe('ODataDataSource', () => {
 
             it('if page index is 1', async () => {
                 const dataSource = new ODataDataSource<any>({
-                    dataGetter: getPageData(),
+                    data: getPageData(),
                     url: serviceUrl,
                     view: { mode: DataViewMode.CurrentPage }
                 });
@@ -119,7 +119,7 @@ export default describe('ODataDataSource', () => {
         describe('if "DataViewMode" is "FromFirstToCurrentPage"', () => {
             it('default behavior', async () => {
                 const dataSource = new ODataDataSource<any>({
-                    dataGetter: getData,
+                    data: getData,
                     url: serviceUrl,
                     view: { mode: DataViewMode.FromFirstToCurrentPage }
                 });
@@ -132,7 +132,7 @@ export default describe('ODataDataSource', () => {
 
             it('if page size is 1', async () => {
                 const dataSource = new ODataDataSource<any>({
-                    dataGetter: getPageData(),
+                    data: getPageData(),
                     url: serviceUrl,
                     view: { mode: DataViewMode.FromFirstToCurrentPage }
                 });
@@ -154,7 +154,7 @@ export default describe('ODataDataSource', () => {
     describe('sort', () => {
         it('default behavior', async () => {
             const dataSource = new ODataDataSource({
-                dataGetter: getData,
+                data: getData,
                 url: serviceUrl,
                 view: {
                     sortedBy: [{ direction: SortDirection.Ascending, field: 'field' }],
@@ -169,8 +169,8 @@ export default describe('ODataDataSource', () => {
         });
 
         it ('ascending sorting by one field', async () => {
-            const dataGetter = sinon.promise().resolves(getData);
-            const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
+            const data = sinon.promise().resolves(getData);
+            const dataSource = new ODataDataSource({ data: data, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
 
@@ -180,23 +180,23 @@ export default describe('ODataDataSource', () => {
             expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Ascending);
             expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('field');
 
-            expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=field%20asc`)).to.be.true;
+            expect(data.calledWith(`${serviceUrl}?$count=true&$orderby=field%20asc`)).to.be.true;
         });
 
         it ('ascending sorting by one field if there is field mapping', async () => {
-            const dataGetter = sinon.promise().resolves(getData);
-            const dataSource = new ODataDataSource({ dataGetter: dataGetter, fieldMappings: fieldMappings, url: serviceUrl });
+            const data = sinon.promise().resolves(getData);
+            const dataSource = new ODataDataSource({ data: data, fieldMappings: fieldMappings, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
 
             await dataSource.dataBind();
 
-            expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20asc`)).to.be.true;
+            expect(data.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20asc`)).to.be.true;
         });
 
         it ('descending sorting by one field', async () => {
-            const dataGetter = sinon.promise().resolves(getData);
-            const dataSource = new ODataDataSource({ dataGetter: dataGetter, url: serviceUrl });
+            const data = sinon.promise().resolves(getData);
+            const dataSource = new ODataDataSource({ data: data, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
 
@@ -206,23 +206,23 @@ export default describe('ODataDataSource', () => {
             expect(view.sortedBy[0].direction, 'sortedBy[0].direction').to.equal(SortDirection.Descending);
             expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('field');
 
-            expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=field%20desc`)).to.be.true;
+            expect(data.calledWith(`${serviceUrl}?$count=true&$orderby=field%20desc`)).to.be.true;
         });
 
         it ('descending sorting by one field if there is field mapping', async () => {
-            const dataGetter = sinon.promise().resolves(getData);
-            const dataSource = new ODataDataSource({ dataGetter: dataGetter, fieldMappings: fieldMappings, url: serviceUrl });
+            const data = sinon.promise().resolves(getData);
+            const dataSource = new ODataDataSource({ data: data, fieldMappings: fieldMappings, url: serviceUrl });
 
             dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
 
             await dataSource.dataBind();
 
-            expect(dataGetter.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20desc`)).to.be.true;
+            expect(data.calledWith(`${serviceUrl}?$count=true&$orderby=mappedField%20desc`)).to.be.true;
         });
 
         it('if page size is 1 and page index is 1', async () => {
             const dataSource = new ODataDataSource<any>({
-                dataGetter: getPageData(),
+                data: getPageData(),
                 view: {
                     mode: DataViewMode.FromFirstToCurrentPage,
                     page: { index: 1 }

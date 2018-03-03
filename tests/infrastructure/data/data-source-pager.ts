@@ -5,7 +5,7 @@ import { DataSourcePager, PageType } from '../../../src/infrastructure/data/data
 export default describe('DataSourcePager', () => {
     function createPager(pageSize?: number) {
         const dataSource = new ClientDataSource({
-            dataGetter: () => [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
+            data: () => [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
             view: { page: { index: 2, size: pageSize || 2 } }
         });
         dataSource.dataBind();
@@ -114,7 +114,7 @@ export default describe('DataSourcePager', () => {
 
         it('if data source is empty', () => {
             const dataSource = new ClientDataSource({
-                dataGetter: () => [],
+                data: () => [],
                 view: { page: { index: 0, size: 2 } }
             });
             const pager = new DataSourcePager(dataSource);

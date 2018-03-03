@@ -25,7 +25,7 @@ export default describe('<Grid />', () => {
             }
 
             const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
-            const dataSource: DataSource = new ClientDataSource({ dataGetter: () => data });
+            const dataSource: DataSource = new ClientDataSource({ data: () => data });
 
             describe('if selection mode is single', () => {
                 let grid: Enzyme.ReactWrapper<any, GridState>;
@@ -88,7 +88,7 @@ export default describe('<Grid />', () => {
             let grid: Enzyme.ReactWrapper;
 
             beforeEach(() => {
-                dataSource = new ClientDataSource({ dataGetter: () => [] });
+                dataSource = new ClientDataSource({ data: () => [] });
 
                 grid = Enzyme.mount(
                     <Grid autoBind={true} dataSource={dataSource}>
@@ -213,7 +213,7 @@ export default describe('<Grid />', () => {
         describe('body', () => {
             it('style', () => {
                 const grid = Enzyme.mount(
-                    <Grid autoBind={true} dataSource={new ClientDataSource({ dataGetter: () => [{}] })}>
+                    <Grid autoBind={true} dataSource={new ClientDataSource({ data: () => [{}] })}>
                         <GridColumn body={{ style: { className: 'body' } }} field="title" title="Title" />
                     </Grid>
                 );
@@ -225,7 +225,7 @@ export default describe('<Grid />', () => {
         describe('header', () => {
             it('style', () => {
                 const grid = Enzyme.mount(
-                    <Grid autoBind={true} dataSource={new ClientDataSource({ dataGetter: () => [{}] })}>
+                    <Grid autoBind={true} dataSource={new ClientDataSource({ data: () => [{}] })}>
                         <GridColumn header={{ style: { className: 'header', title: { className: 'header-title' } } }} field="title" title="Title" />
                     </Grid>
                 );

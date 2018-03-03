@@ -12,7 +12,7 @@ import { ConditionalExpression, ComparisonExpression, ComparisonOperator, Logica
 import { ExpressionVisitor } from '../expressions/expression-visitor';
 
 export interface ODataDataSourceProps extends DataSourceProps {
-    dataGetter: (url: string) => Promise<any>;
+    data: (url: string) => Promise<any>;
     fieldMappings?: { [field: string]: string };
     itemConverter?: (value: any) => any;
     url: string;
@@ -24,7 +24,7 @@ export interface DataSourceOperationData<T> {
 }
 
 export class ODataDataSource<T = {}> implements DataSource<T> {
-    private _dataGetter: (url: string) => Promise<any>;
+    private _data: (url: string) => Promise<any>;
     private _fieldAccessor: FieldAccessor;
     private _fieldMappings: { [field: string]: string };
     private _itemConverter: (value: any) => any;
@@ -37,7 +37,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     private _viewProps: DataViewProps;
 
     public constructor(props: ODataDataSourceProps) {
-        this._dataGetter = props.dataGetter;
+        this._data = props.data;
         this._fieldAccessor = props.fieldAccessor;
         this._fieldMappings = props.fieldMappings;
         this._itemConverter = props.itemConverter;
@@ -160,7 +160,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     }
 
     protected createSetIndexAction(value: number): DataSourceOperationData<T> {
-        const page = this._viewProps.page;
+        const page = this.viewProps.page;
 
         return {
             urlGenerator: (uriBuilder: UriBuilder) => {
@@ -173,10 +173,10 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 }
             },
             viewInitializer: (response: any, view: DataView<T>) => {
-                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (page.index == (value -1))
+                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (this._view.page.index == (value - 1))
                     ? this._view.data.concat(view.data)
                     : view.data;
-                view.mode = this._viewProps.mode;
+                view.mode = this.viewProps.mode;
                 view.page = {
                     index: value,
                     size: page.size
@@ -237,7 +237,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
 
         const generatedUrl = this.generateUrl();
 
-        return this._dataGetter(generatedUrl)
+        return this._data(generatedUrl)
             .then(x => {
                 this._view = this.createView(x);
 

@@ -23,7 +23,7 @@ function getData(count: number): any[] {
 
 const data = getData(10000);
 const dataSource = new ClientDataSource({
-    dataGetter: () => data,
+    data: () => data,
     view: {
         mode: DataViewMode.FromFirstToCurrentPage,
         page: { size: 100 }
@@ -39,7 +39,7 @@ function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps
         new GridColumn({ field: 'description', title: 'description' })
     ];
     const item = props.item;
-    const childDataSource = new ClientDataSource<any>({ dataGetter: () => item.subItems });
+    const childDataSource = new ClientDataSource<any>({ data: () => item.subItems });
 
     childDataSource.dataBind();
 

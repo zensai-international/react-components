@@ -7,40 +7,38 @@ import { Comparer } from '../comparer';
 import { Event } from '../event';
 import { ConditionalExpression } from '../expressions/expression';
 import { ExpressionConverter } from '../expressions/expression-converter';
+import { ObjectHelper } from '../helpers/object-helper';
 
 export type ViewInitializer<T> = (view: DataView<T>) => void;
 
 export interface ClientDataSourceProps<T> extends DataSourceProps {
-    dataGetter: Promise<T[]> | (() => T[]) | T[];
+    data: Promise<T[]> | (() => T[]) | T[];
 }
 
 export class ClientDataSource<T = {}> implements DataSource<T> {
     private _changeTracker: DataSourceChangeTracker<T>;
     private _data: T[];
-    private _dataGetter: Promise<T[]> | (() => T[]) | T[];
     private _fieldAccessor: FieldAccessor;
     private _onDataBinding: Event<any>;
     private _onDataBound: Event<any>;
     private _operations: { [type: number]: ViewInitializer<T> };
     private _state: DataSourceState;
     private _view: DataView<T>;
-    private _viewProps: DataViewProps;
+    private _props: ClientDataSourceProps<T>;
 
     public constructor(props: ClientDataSourceProps<T>) {
         this._fieldAccessor = props.fieldAccessor;
-        this._viewProps = Object.assign({ mode: DataViewMode.CurrentPage, page: { } }, props.view);
-        this._operations = this.createOperations(this._viewProps);
+        this._props = Object.assign({}, props, { view: Object.assign({ mode: DataViewMode.CurrentPage, page: { } }, props.view) });
+        this._operations = this.createOperations(this._props.view);
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
-        if (Array.isArray(props.dataGetter)) {
-            this._data = props.dataGetter as T[];
-        } else {
-            this._dataGetter = props.dataGetter;
-        }
-        this._dataGetter = props.dataGetter;
         this._onDataBinding = new Event<any>();
         this._onDataBound = new Event<any>();
         this._state = DataSourceState.Empty;
         this._view = null;
+
+        if (Array.isArray(props.data)) {
+            this._data = props.data as T[];
+        }
     }
 
     protected createFilterOperation(expression: ConditionalExpression): ViewInitializer<T> {
@@ -171,29 +169,31 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
     public dataBind(): Promise<DataView<T>> {
         const createView = () => {
-            this._view = this.createInitialView(this._data, this.viewProps);
-            this.runOperations(this._view, this._operations);
+            const result = this.createInitialView(this._data, this.viewProps);
+            this.runOperations(result, this._operations);
+
+            return result;
         };
 
         this.handleDataBinding();
 
-        if (!this._data && this._dataGetter && (typeof this._dataGetter == 'function')) {
-            this._data = (this._dataGetter as () => T[])();
+        if (!this._data && this._props.data && ObjectHelper.isFunction(this._props.data)) {
+            this._data = (this._props.data as () => T[])();
         }
 
         if (this._data) {
-            createView();
+            this._view = createView();
             this.handleDataBound();
 
             return new Promise<DataView<T>>((resolve: (value?: any) => void) => {
                 resolve(this.view);
             });
-        } else if (this._dataGetter && (typeof this._dataGetter != 'function')) {
-            return (this._dataGetter as Promise<T[]>)
+        } else if (this._props.data && !ObjectHelper.isFunction(this._props.data)) {
+            return (this._props.data as Promise<T[]>)
                 .then(x => {
                     this._data = x;
 
-                    createView();
+                    this._view = createView();
                     this.handleDataBound();
                 })
                 .then(() => this.view);
@@ -238,7 +238,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
     }
 
     public setPageIndex(value: number) {
-        this._operations[DataSourceOperation.SetPageIndex] = this.createSetPageIndexOperation(this._viewProps, value);
+        this._operations[DataSourceOperation.SetPageIndex] = this.createSetPageIndexOperation(this.viewProps, value);
     }
 
     public sort(expressions: SortExpression[]) {
@@ -276,7 +276,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
     }
 
     public get viewProps(): DataViewProps {
-        return this._viewProps;
+        return this._props.view;
     }
 
     public get onDataBinding(): Event<any> {

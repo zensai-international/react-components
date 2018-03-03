@@ -9,7 +9,7 @@ export default describe('ClientDataSource', () => {
     describe('dataBind', () => {
         it('default behavior', async () => {
             const data = [{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }];
-            const dataSource = new ClientDataSource({ dataGetter: () => data });
+            const dataSource = new ClientDataSource({ data: () => data });
 
             expect(dataSource.view).to.be.null;
             expect(dataSource.state, 'state').to.equal(DataSourceState.Empty);
@@ -24,12 +24,11 @@ export default describe('ClientDataSource', () => {
             expect(view.data[2].field).to.equal('value2');
         });
 
-        it('if dataGetter is promise', async () => {
-            const data = [{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }];
-            const dataGetter = new Promise((resolve: (value?: any) => void) => {
-                resolve(data);
+        it('if data is promise', async () => {
+            const data = new Promise((resolve: (value?: any) => void) => {
+                resolve([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
             });
-            const dataSource = new ClientDataSource<{ field: string }>({ dataGetter: dataGetter });
+            const dataSource = new ClientDataSource<{ field: string }>({ data: data });
 
             dataSource.dataBind();
 
@@ -46,7 +45,7 @@ export default describe('ClientDataSource', () => {
 
     it('filter', async () => {
         const data = [{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }];
-        const dataSource = new ClientDataSource({ dataGetter: () => data });
+        const dataSource = new ClientDataSource({ data: () => data });
 
         dataSource.filter({ field: 'field', operator: ComparisonOperator.Equal, value: 'value0' });
 
@@ -61,7 +60,7 @@ export default describe('ClientDataSource', () => {
             { field0: '00', field1: '01' }, { field0: '00', field1: '01' },
             { field0: '10', field1: '11' }, { field0: '10', field1: '11' }
         ];
-        const dataSource = new ClientDataSource({ dataGetter: () => data });
+        const dataSource = new ClientDataSource({ data: () => data });
 
         dataSource.group({ fields: ['field0', 'field1'] });
 
@@ -87,7 +86,7 @@ export default describe('ClientDataSource', () => {
 
             it('default behavior', async () => {
                 const dataSource = new ClientDataSource({
-                    dataGetter: () => data,
+                    data: () => data,
                     view: { page: { size: 1 } }
                 });
 
@@ -102,7 +101,7 @@ export default describe('ClientDataSource', () => {
                 [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }]
                     .forEach(async x => {
                         const dataSource = new ClientDataSource({
-                            dataGetter: () => data,
+                            data: () => data,
                             view: { page: { size: 1 } }
                         });
 
@@ -129,7 +128,7 @@ export default describe('ClientDataSource', () => {
 
             it('default behavior', async () => {
                 const dataSource = new ClientDataSource({
-                    dataGetter: () => data,
+                    data: () => data,
                     view: {
                         mode: DataViewMode.FromFirstToCurrentPage,
                         page: { size: 1 }
@@ -146,7 +145,7 @@ export default describe('ClientDataSource', () => {
                 [{ pageIndex: 0 }, { pageIndex: 1 }, { pageIndex: 2 }]
                     .forEach(async x => {
                         const dataSource = new ClientDataSource({
-                            dataGetter: () => data,
+                            data: () => data,
                             view: {
                                 mode: DataViewMode.FromFirstToCurrentPage,
                                 page: { size: 1 }
@@ -170,7 +169,7 @@ export default describe('ClientDataSource', () => {
     describe('sort', () => {
         describe('default behavior', () => {
             it('ascending sorting by one field', async () => {
-                const dataSource = new ClientDataSource({ dataGetter: () => [] });
+                const dataSource = new ClientDataSource({ data: () => [] });
 
                 dataSource.sort([{ direction: SortDirection.Ascending, field: 'field' }]);
 
@@ -182,7 +181,7 @@ export default describe('ClientDataSource', () => {
             });
 
             it('descending sorting by one field', async () => {
-                const dataSource = new ClientDataSource({ dataGetter: () => [] });
+                const dataSource = new ClientDataSource({ data: () => [] });
 
                 dataSource.sort([{ direction: SortDirection.Descending, field: 'field' }]);
 
@@ -203,7 +202,7 @@ export default describe('ClientDataSource', () => {
 
             it('ascending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x });
+                    const dataSource = new ClientDataSource({ data: () => x });
 
                     dataSource.sort([{ direction: SortDirection.Ascending, field: 'booleanField' }]);
 
@@ -217,7 +216,7 @@ export default describe('ClientDataSource', () => {
 
             it('descending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x });
+                    const dataSource = new ClientDataSource({ data: () => x });
 
                     dataSource.sort([{ direction: SortDirection.Descending, field: 'booleanField' }])
 
@@ -239,7 +238,7 @@ export default describe('ClientDataSource', () => {
 
             it('ascending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x });
+                    const dataSource = new ClientDataSource({ data: () => x });
 
                     dataSource.sort([{ direction: SortDirection.Ascending, field: 'numberField' }])
 
@@ -253,7 +252,7 @@ export default describe('ClientDataSource', () => {
 
             it('descending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x });
+                    const dataSource = new ClientDataSource({ data: () => x });
 
                     dataSource.sort([{ direction: SortDirection.Descending, field: 'numberField' }])
 
@@ -275,7 +274,7 @@ export default describe('ClientDataSource', () => {
 
             it('ascending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x });
+                    const dataSource = new ClientDataSource({ data: () => x });
 
                     dataSource.sort([{ direction: SortDirection.Ascending, field: 'stringField' }]);
                     dataSource.dataBind();
@@ -290,7 +289,7 @@ export default describe('ClientDataSource', () => {
 
             it('descending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x });
+                    const dataSource = new ClientDataSource({ data: () => x });
 
                     dataSource.sort([{ direction: SortDirection.Descending, field: 'stringField' }]);
 
@@ -319,7 +318,7 @@ export default describe('ClientDataSource', () => {
 
             it('ascending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x, fieldAccessor: fieldAccessor });
+                    const dataSource = new ClientDataSource({ data: () => x, fieldAccessor: fieldAccessor });
 
                     dataSource.sort([{ direction: SortDirection.Ascending, field: 'dateField' }]);
 
@@ -333,7 +332,7 @@ export default describe('ClientDataSource', () => {
 
             it('descending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ dataGetter: () => x, fieldAccessor: fieldAccessor });
+                    const dataSource = new ClientDataSource({ data: () => x, fieldAccessor: fieldAccessor });
 
                     dataSource.sort([{ direction: SortDirection.Descending, field: 'dateField' }]);
 
@@ -348,7 +347,7 @@ export default describe('ClientDataSource', () => {
 
         describe('clear previous sorting', async () => {
             const data = [{ stringField: 'value0' }, { stringField: 'value1' }, { stringField: 'value2' }];
-            const dataSource = new ClientDataSource({ dataGetter: () => data });
+            const dataSource = new ClientDataSource({ data: () => data });
 
             dataSource.sort([{ direction: SortDirection.Descending, field: 'stringField' }]);
             dataSource.dataBind();
