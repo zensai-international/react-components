@@ -11,7 +11,7 @@ import { ObjectHelper } from '../helpers/object-helper';
 
 export type ViewInitializer<T> = (view: DataView<T>) => void;
 
-export interface ClientDataSourceProps<T> extends DataSourceProps {
+export interface ClientDataSourceProps<T = {}> extends DataSourceProps {
     data: Promise<T[]> | (() => T[]) | T[];
 }
 

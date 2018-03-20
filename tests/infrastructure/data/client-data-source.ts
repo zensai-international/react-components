@@ -361,4 +361,7 @@ export default describe('ClientDataSource', () => {
             expect(view.data[2].stringField).to.equal('value2');
         });
     });
+
+    describe('update', () => {
+    });
 });
