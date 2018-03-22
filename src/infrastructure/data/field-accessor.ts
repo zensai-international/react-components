@@ -13,7 +13,7 @@ export class DefaultFieldAccessor {
         for (let i = 0; i < fields.length; i++) {
             const field = fields[i];
 
-            if (result instanceof Array) {
+            if ((result instanceof Array) && !result.hasOwnProperty(field)) {
                 result = result.map(x => x[field]);
             } else {
                 result = result[field];

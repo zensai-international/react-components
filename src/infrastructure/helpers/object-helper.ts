@@ -11,11 +11,11 @@ export class ObjectHelper {
         return result;
     }
 
-    public static isFunction(object: any) {
+    public static isFunction(object: any): boolean {
         return typeof object == 'function';
     }
 
-    public static isString(object: any) {
+    public static isString(object: any): boolean {
         return typeof object == 'string';
     }
 }

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
-import { GridColumn, GridColumnProps } from './grid-column';
+import { GridColumn } from './grid-column';
 import { GridComponent } from './grid-component';
 import { Style } from '../common';
 
 export interface GridRowProps {
-    columns: GridColumn<GridColumnProps>[];
+    columns: GridColumn[] | JSX.Element[];
     index: number;
     style: GridRowStyle;
 
@@ -49,7 +49,7 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
     }
 
     protected renderCells(): JSX.Element[] {
-        return this.props.columns.map((x, i) => this.renderCell(x, i));
+        return (this.props.columns as any[]).map((x, i) => this.renderCell(x, i)); // TODO: Remove any.
     }
 
     protected renderContent(): JSX.Element | JSX.Element[] {
