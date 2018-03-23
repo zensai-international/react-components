@@ -10,6 +10,7 @@ export interface GridBodyRowStyle extends GridRowStyle {
 export type GridBodyRowTemplate = (rowType: { new (): GridBodyRow }, rowProps: GridBodyRowProps) => JSX.Element | JSX.Element[];
 
 export interface GridBodyRowProps extends GridRowProps {
+    isExpandable: boolean;
     isExpanded: boolean;
     isSelected: boolean;
     item: any;

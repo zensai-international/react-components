@@ -12,6 +12,10 @@ export class GridExpanderColumn<P extends GridColumnProps = GridColumnProps> ext
     };
 
     protected renderBody(item: any, cell: GridBodyCell): JSX.Element | JSX.Element[] | string {
-        return <a href="#">{cell.props.isExpanded ? '-' : '+'}</a>;
+        const rowProps = cell.props.rowProps;
+
+        return (rowProps.isExpandable != false)
+            ? <a href="#">{rowProps.isExpanded ? '-' : '+'}</a>
+            : null;
     }
 }

@@ -30,6 +30,7 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
             children: null,
             key: `row-${index}`,
             index: index,
+            isExpandable: null,
             isExpanded: isExpanded,
             isSelected: isSelected,
             item: item,
@@ -58,6 +59,7 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         return (
             <Row {...this.props}
                 index={null}
+                isExpandable={null}
                 isExpanded={null}
                 isSelected={null}
                 item={null}

@@ -4,6 +4,7 @@ import { GridBody, GridBodyStyle } from './grid-body';
 import { GridBodyRow, GridBodyRowTemplate } from './grid-body-row';
 import { GridBodyCell } from './grid-body-cell';
 import { GridColumn, GridColumnProps } from './grid-column';
+import { GridExpander } from './grid-expander';
 import { GridExpanderColumn } from './grid-expander-column';
 import { GridHeader, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell } from './grid-header-cell';
@@ -60,12 +61,14 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     public static defaultProps: Partial<GridProps> = DefaultGridProps;
 
     private _columns: GridColumn<GridColumnProps>[];
+    private readonly _expander: GridExpander;
     private readonly _filterContext: FilterContext;
-    private _selector: GridSelector;
+    private readonly _selector: GridSelector;
 
     public constructor(props: P) {
         super(props);
 
+        this._expander = new GridExpander(this);
         this._filterContext = this.props.filterContext || new FilterContext();
         this._selector = new GridSelector(this);
 
@@ -92,10 +95,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     protected handleBodyCellClick(event: React.MouseEvent<any>, cell: GridBodyCell) {
-        const item = cell.props.item;
+        const item = cell.props.rowProps.item;
 
         if (cell.props.column instanceof GridExpanderColumn) {
-            this.changeItemExpansion(item);
+            this.expander.expandOrCollapse(item);
+
+            event.stopPropagation();
         }
 
         if (this.props.onBodyCellClick) {
@@ -173,19 +178,6 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         );
     }
 
-    protected changeItemExpansion(item: any) {
-        const index = this.state.expandedItems.indexOf(item);
-        const expandedItems = this.state.expandedItems;
-
-        if (index != -1) {
-            expandedItems.splice(index, 1);
-        } else {
-            expandedItems.push(item);
-        }
-
-        this.setState({ expandedItems });
-    }
-
     protected setDataSource(dataSource: DataSource) {
         if ((this.props.autoBind != false) && (dataSource.state == DataSourceState.Empty)) {
             dataSource.dataBind();
@@ -246,6 +238,10 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             || React.Children.toArray(this.props.children)
                 .map(x => new (x as any).type((x as any).props, this.getChildContext()))
                 .filter(x => x instanceof GridColumn) as any;
+    }
+
+    public get expander(): GridExpander {
+        return this._expander;
     }
 
     public get messages(): GridMessages {

@@ -38,11 +38,11 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
         const style = this.props.style.cell;
 
         return (
-            <Cell {...this.props}
+            <Cell
                 column={column}
                 columnIndex={index}
                 key={key}
-                rowIndex={this.props.index}
+                rowProps={this.props}
                 onClick={this.props.onCellClick}
                 style={style} />
         );
@@ -58,11 +58,11 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
 
         return this.props.children
             ? (
-                <Cell {...this.props}
+                <Cell
                     column={null}
                     columnIndex={null}
                     key={null}
-                    rowIndex={this.props.index}
+                    rowProps={this.props}
                     onClick={null}
                     style={style}>
                     {this.props.children}

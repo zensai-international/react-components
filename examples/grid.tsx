@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { GridColumn, GridBodyRow, GridBodyRowProps, GridEmptyColumn, GridExpanderColumn, GridSelectionMode, GridSelectorColumn, table } from '../src/components/grid/index';
+import { GridColumn, GridBodyRow, GridBodyRowProps, GridExpanderColumn, GridSelectionMode, GridSelectorColumn, table } from '../src/components/grid/index';
 import { InfiniteScrollPager } from '../src/components/pager/infinite-scroll-pager';
 import { ClientDataSource } from '../src/infrastructure/data/client-data-source';
 import { DataViewMode } from '../src/infrastructure/data/data-source';
@@ -32,16 +32,10 @@ const dataSource = new ClientDataSource({
 
 function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps): JSX.Element[] {
     const Row = rowType;
-    const columns = [
-        <GridEmptyColumn />,
-        <GridEmptyColumn />,
-        <GridColumn field='title' title='Title' />,
-        <GridColumn field='description' title='description' />
-    ];
     const item = props.item;
 
     return props.isExpanded
-        ? [<Row {...props} />].concat(item.subItems.map(x => [<Row {...props} columns={columns} item={x} />]))
+        ? [<Row {...props} />].concat(item.subItems.map(x => [<Row {...props} isExpandable={false} item={x} />]))
         : [<Row {...props} />];
 }
 

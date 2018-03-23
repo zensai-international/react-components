@@ -1,11 +1,12 @@
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
+import { GridRowProps } from './grid-row';
 import { Style, StyleHelper } from '../common';
 
 export interface GridCellProps {
     column: GridColumn<GridColumnProps>;
     columnIndex: number;
-    rowIndex: number;
+    rowProps: GridRowProps;
     style: Style;
 
     onClick: (event: React.MouseEvent<any>, sender: any) => void;
