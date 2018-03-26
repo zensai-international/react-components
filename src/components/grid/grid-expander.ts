@@ -20,4 +20,8 @@ export class GridExpander {
 
         this._grid.setState({ expandedItems });
     }
+
+    public isExpanded(item: any): boolean {
+        return (this._grid.state.expandedItems.indexOf(item) != -1);
+    }
 }

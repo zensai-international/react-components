@@ -18,10 +18,10 @@ export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> ext
 
     protected renderHeaderContent(cell: GridHeaderCell): JSX.Element | JSX.Element[] | string {
         const grid = cell.context.grid;
-        const isAllItemsSelected = grid.selector.isAllItemsSelected();
+        const isAllSelected = grid.selector.isAllSelected();
 
         return (grid.props.selectionMode == GridSelectionMode.Multiple)
-            ? <input checked={isAllItemsSelected} onClick={() => grid.selector.selectOrUnselectAll()} type="checkbox" />
+            ? <input checked={isAllSelected} onClick={() => grid.selector.selectOrUnselectAll()} type="checkbox" />
             : null;
     }
 

@@ -52,6 +52,12 @@ export interface GridStyle extends Style {
     header: GridHeaderStyle;
 }
 
+export interface GridContext {
+    filterContext: FilterContext;
+    grid: Grid;
+    spinnerType: { new(): React.Component };
+}
+
 export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
     public static childContextTypes = {
         filterContext: React.PropTypes.object,

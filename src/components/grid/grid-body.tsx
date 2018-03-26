@@ -23,9 +23,9 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
     protected renderDataRow(item: any, index: number): JSX.Element | JSX.Element[] {
         const Row = this.rowType;
         const style = this.props.style;
-        const gridState = this.context.grid.state;
-        const isExpanded = gridState.expandedItems.indexOf(item) != -1;
-        const isSelected = gridState.selectedItems.indexOf(item) != -1;
+        const grid = this.context.grid;
+        const isExpanded = grid.expander.isExpanded(item);
+        const isSelected = grid.selector.isSelected(item);
         const rowProps = Object.assign({}, this.props, {
             children: null,
             key: `row-${index}`,
@@ -38,7 +38,7 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         });
 
         return this.props.rowTemplate
-            ? this.props.rowTemplate(Row, rowProps)
+            ? this.props.rowTemplate(Row, rowProps, this.context)
             : <Row {...rowProps} />;
     }
 

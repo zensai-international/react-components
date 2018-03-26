@@ -1,3 +1,4 @@
+import { GridContext } from './grid';
 import { GridCell } from './grid-cell';
 import { GridColumn } from './grid-column';
 import { GridRow, GridRowProps, GridRowStyle } from './grid-row';
@@ -7,7 +8,7 @@ export interface GridBodyRowStyle extends GridRowStyle {
     ifSelected: Style;
 }
 
-export type GridBodyRowTemplate = (rowType: { new (): GridBodyRow }, rowProps: GridBodyRowProps) => JSX.Element | JSX.Element[];
+export type GridBodyRowTemplate = (rowType: { new (): GridBodyRow }, rowProps: GridBodyRowProps, gridContext?: GridContext) => JSX.Element | JSX.Element[];
 
 export interface GridBodyRowProps extends GridRowProps {
     isExpandable: boolean;

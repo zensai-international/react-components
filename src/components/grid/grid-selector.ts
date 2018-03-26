@@ -58,10 +58,14 @@ export class GridSelector {
         }
     }
 
-    public isAllItemsSelected(): boolean {
+    public isAllSelected(): boolean {
         const allItems = this.getAllItems();
 
         return (allItems != null) && (allItems.length > 0) && (this._grid.state.selectedItems.length == allItems.length);
+    }
+
+    public isSelected(item: any): boolean {
+        return (this._grid.state.selectedItems.indexOf(item) != -1);
     }
 
     public selectAll() {
@@ -79,7 +83,7 @@ export class GridSelector {
     }
 
     public selectOrUnselectAll() {
-        if (this.isAllItemsSelected()) {
+        if (this.isAllSelected()) {
             this.unselectAll();
         } else {
             this.selectAll();
