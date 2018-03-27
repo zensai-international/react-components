@@ -14,7 +14,7 @@ export class DefaultFieldAccessor {
             const field = fields[i];
 
             if ((result instanceof Array) && !result.hasOwnProperty(field)) {
-                result = result.map(x => x[field]);
+                result = result.map(x => x ? x[field] : null);
             } else {
                 result = result[field];
             }

@@ -10,9 +10,9 @@ import { GridHeader, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
 import { Style } from '../common';
-import { DataSource, DataSourceState } from '../../../src/infrastructure/data/data-source';
-import { FilterContext } from '../../../src/infrastructure/data/filter-context';
-import { ConditionalExpression } from '../../../src/infrastructure/expressions/expression';
+import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
+import { FilterContext } from '../../infrastructure/data/filter-context';
+import { ConditionalExpression } from '../../infrastructure/expressions/expression';
 
 export interface GridMessages {
     loading: string;
