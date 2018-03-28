@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
+import { ClientDataSourceProvider } from '../src/components/data/client-data-source-provider';
 import { GridColumn, GridBodyRow, GridBodyRowProps, GridExpanderColumn, GridSelectionMode, GridSelectorColumn, table } from '../src/components/grid/index';
 import { InfiniteScrollPager } from '../src/components/pager/infinite-scroll-pager';
-import { ClientDataSource } from '../src/infrastructure/data/client-data-source';
-import { DataViewMode } from '../src/infrastructure/data/data-source';
+import { DataSource, DataViewMode } from '../src/infrastructure/data/index';
 
 function getData(count: number): any[] {
     const result = [];
@@ -21,15 +21,6 @@ function getData(count: number): any[] {
     return result;
 }
 
-const data = getData(10000);
-const dataSource = new ClientDataSource({
-    data: () => data,
-    view: {
-        mode: DataViewMode.FromFirstToCurrentPage,
-        page: { size: 100 }
-    }
-});
-
 function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps): JSX.Element[] {
     const Row = rowType;
     const item = props.item;
@@ -40,17 +31,22 @@ function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps
 }
 
 ReactDom.render(
-    <InfiniteScrollPager dataSource={dataSource}>
-        <table.Grid autoBind={true} bodyRowTemplate={renderBodyRow} dataSource={dataSource} selectionMode={GridSelectionMode.Multiple}>
-            <GridSelectorColumn />
-            <GridExpanderColumn />
-            <GridColumn field="title" title="Title" />
-            <GridColumn field="description" title="Description" />
-            <GridColumn
-                isSortable={false}
-                body={{ template: (x) => (<a href="#">{x.title}</a>) }}
-                title="Link" />
-        </table.Grid>
-    </InfiniteScrollPager>,
+    <ClientDataSourceProvider data={() => getData(10000)} view={{ mode: DataViewMode.FromFirstToCurrentPage, page: { size: 100 }}}>
+        {
+            (dataSource: DataSource) =>
+                <InfiniteScrollPager dataSource={dataSource}>
+                    <table.Grid autoBind={true} bodyRowTemplate={renderBodyRow} dataSource={dataSource} selectionMode={GridSelectionMode.Multiple}>
+                        <GridSelectorColumn />
+                        <GridExpanderColumn />
+                        <GridColumn field="title" title="Title" />
+                        <GridColumn field="description" title="Description" />
+                        <GridColumn
+                            isSortable={false}
+                            body={{ template: (x) => (<a href="#">{x.title}</a>) }}
+                            title="Link" />
+                    </table.Grid>
+                </InfiniteScrollPager>
+        }
+    </ClientDataSourceProvider>,
     document.getElementById('grid')
 );
