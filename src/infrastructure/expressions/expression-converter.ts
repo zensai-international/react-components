@@ -5,7 +5,7 @@ import { LogicalExpression, LogicalOperator } from '../../index';
 export class ExpressionConverter {
     private _fieldAccessor: FieldAccessor = new DefaultFieldAccessor();
 
-    private convertComparison<T>(expression: ComparisonExpression): LambdaExpression<T> {
+    private convertComparison<T = {}>(expression: ComparisonExpression): LambdaExpression<T> {
         return item => {
             let result = null;
             let comparer = null;
@@ -49,17 +49,17 @@ export class ExpressionConverter {
                     comparer = x => (expression.expression as (item: any) => boolean)(item);
             }
 
-            // if (value instanceof Array) {
-            //     result = value.some(x => comparer(x));
-            // } else {
+            if (value instanceof Array) {
+                 result = value.some(x => comparer(x));
+            } else {
                 result = comparer(value)
-            // }
+            }
 
             return result;
         };
     }
 
-    private convertLogical<T>(expression: LogicalExpression): LambdaExpression<T> {
+    private convertLogical<T = {}>(expression: LogicalExpression): LambdaExpression<T> {
         const leftExpression = this.convert<T>(expression.left);
         const rightExpression = this.convert<T>(expression.right);
 
@@ -71,7 +71,11 @@ export class ExpressionConverter {
         }
     }
 
-    public convert<T>(expression: ConditionalExpression): LambdaExpression<T> {
+    public convert<T = {}>(expression: ConditionalExpression): LambdaExpression<T> {
+        if (!expression) {
+            return () => true;
+        }
+
         const logicalExpression = (expression as LogicalExpression);
 
         if (logicalExpression.left && logicalExpression.right) {

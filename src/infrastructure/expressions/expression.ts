@@ -1,6 +1,6 @@
 import { DataType } from '../data/common';
 
-export type LambdaExpression<T> = (x: T) => boolean;
+export type LambdaExpression<T = {}> = (x: T) => boolean;
 
 export enum ComparisonOperator {
     Any,
@@ -19,7 +19,7 @@ export interface ComparisonExpression {
     operator?: ComparisonOperator;
     title?: string;
     value?: any;
-    valyeType?: DataType;
+    valueType?: DataType;
 }
 
 export enum LogicalOperator {

@@ -13,17 +13,19 @@ export class ConditionalExpressionBuilder {
     private add(expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression, operator: LogicalOperator, next?: (builder: ConditionalExpressionBuilder) => void): ConditionalExpressionBuilder {
         let expression = expressionBuilder(this._comparisonExpressionBuilder)
 
-        if (next) {
-            const builder = new ConditionalExpressionBuilder(expression);
+        if (expression != null) {
+            if (next) {
+                const builder = new ConditionalExpressionBuilder(expression);
 
-            next(builder);
+                next(builder);
 
-            expression = builder.build();
+                expression = builder.build();
+            }
+
+            this._result = this._result
+                ? ({ left: this._result, operator: operator, right: expression } as LogicalExpression)
+                : expression;
         }
-
-        this._result = this._result
-            ? ({ left: this._result, operator: operator, right: expression } as LogicalExpression)
-            : expression;
 
         return this;
     }
