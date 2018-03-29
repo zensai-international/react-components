@@ -18,7 +18,7 @@ export interface GridBodyRowProps extends GridRowProps {
     style: GridBodyRowStyle;
 }
 
-export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = any> extends GridRow<P, S> {
+export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = {}> extends GridRow<P, S> {
     protected getCellTypeByColumn(column: GridColumn): { new(): GridCell } {
         return column.props.body ? column.props.body.cellType : null;
     }

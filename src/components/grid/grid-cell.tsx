@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridRowProps } from './grid-row';
@@ -16,15 +17,9 @@ export interface GridCellStyle extends Style {
 }
 
 export abstract class GridCell<P extends GridCellProps = GridCellProps, S = any> extends GridComponent<P, S> {
-    public constructor(props: P) {
-        super(props);
-
-        this.handleClick = this.handleClick.bind(this);
-    }
-
     protected abstract getStyleByColumn(column: GridColumn): Style;
 
-    protected handleClick(event: React.MouseEvent<any>) {
+    protected handleClick = (event: React.MouseEvent<any>) => {
         if (this.props.onClick) {
             this.props.onClick(event, this);
         }

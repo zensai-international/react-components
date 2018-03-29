@@ -33,8 +33,6 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
         super(props);
 
         this.state = { isLoading: false };
-        
-        this.handleScroll = this.handleScroll.bind(this);
     }
 
     protected attachEvents() {
@@ -47,7 +45,7 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
         window.removeEventListener('resize', this.handleScroll);
     }
 
-    protected handleScroll() {
+    protected handleScroll = () => {
         if ((this.props.dataSource.state != DataSourceState.Binding) && isElementVisible(this._visibilityDetector)) {
             const dataSourcePager = new DataSourcePager(this.props.dataSource);
             dataSourcePager.moveToPage(PageType.Next);
