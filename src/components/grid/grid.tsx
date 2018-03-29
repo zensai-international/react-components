@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { DefaultGridProps } from './default-grid-pros';
 import { GridBody, GridBodyStyle } from './grid-body';
-import { GridBodyRow, GridBodyRowTemplate } from './grid-body-row';
-import { GridBodyCell } from './grid-body-cell';
+import { GridBodyCell, GridBodyCellProps } from './grid-body-cell';
+import { GridBodyRow, GridBodyRowTemplate, GridBodyRowProps } from './grid-body-row';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpander } from './grid-expander';
 import { GridExpanderColumn } from './grid-expander-column';
 import { GridHeader, GridHeaderStyle } from './grid-header';
-import { GridHeaderCell } from './grid-header-cell';
+import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellState } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
 import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
@@ -82,14 +82,6 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             expandedItems: [],
             selectedItems: this.props.selectedItems || []
         } as S;
-
-        this.handleBodyCellClick = this.handleBodyCellClick.bind(this);
-        this.handleBodyRowClick = this.handleBodyRowClick.bind(this);
-        this.handleDataBinding = this.handleDataBinding.bind(this);
-        this.handleDataBound = this.handleDataBound.bind(this);
-        this.handleFilterContextChange = this.handleFilterContextChange.bind(this);
-        this.handleHeaderCellClick = this.handleHeaderCellClick.bind(this);
-        this.handleHeaderRowClick = this.handleHeaderRowClick.bind(this);
     }
 
     public getChildContext(): any {
@@ -100,7 +92,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         };
     }
 
-    protected handleBodyCellClick(event: React.MouseEvent<any>, cell: GridBodyCell) {
+    protected handleBodyCellClick = (event: React.MouseEvent<any>, cell: GridBodyCell<GridBodyCellProps>) => {
         const item = cell.props.rowProps.item;
 
         if (cell.props.column instanceof GridExpanderColumn) {
@@ -114,7 +106,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected handleBodyRowClick(event: React.MouseEvent<any>, row: GridBodyRow) {
+    protected handleBodyRowClick = (event: React.MouseEvent<any>, row: GridBodyRow<GridBodyRowProps>) => {
         if (this.props.onBodyRowClick) {
             this.props.onBodyRowClick(event, row);
         }
@@ -124,13 +116,13 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected handleDataBinding(dataSource: DataSource) {
+    protected handleDataBinding = (dataSource: DataSource) => {
         if (dataSource == this.props.dataSource) {
             this.forceUpdate();
         }
     }
 
-    protected handleDataBound(dataSource: DataSource) {
+    protected handleDataBound = (dataSource: DataSource) => {
         if (dataSource == this.props.dataSource) {
             const handleDataBound = () => {
                 if (this.props.onDataBound) {
@@ -142,17 +134,17 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected handleFilterContextChange(expression: ConditionalExpression) {
+    protected handleFilterContextChange = (expression: ConditionalExpression) => {
         const dataSource = this.props.dataSource;
 
         dataSource.filter(expression);
         dataSource.dataBind();
     }
 
-    protected handleHeaderCellClick(event: React.MouseEvent<any>, cell: GridHeaderCell) {
+    protected handleHeaderCellClick = (event: React.MouseEvent<any>, cell: GridHeaderCell<GridHeaderCellProps, GridHeaderCellState>) => {
     }
 
-    protected handleHeaderRowClick() {
+    protected handleHeaderRowClick = () => {
     }
 
     protected renderHeader(): JSX.Element | JSX.Element[] {
