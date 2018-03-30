@@ -147,7 +147,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     protected handleHeaderRowClick = () => {
     }
 
-    protected renderHeader(): JSX.Element | JSX.Element[] {
+    protected renderHeader(): React.ReactNode {
         const Header = this.headerType;
         const headerStyle = this.props.style.header;
 
@@ -162,7 +162,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             : null;
     }
 
-    protected renderBody(): JSX.Element | JSX.Element[] {
+    protected renderBody(): React.ReactNode {
         const Body = this.bodyType;
         const bodyStyle = this.props.style.body;
 

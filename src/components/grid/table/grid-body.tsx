@@ -3,7 +3,7 @@ import { GridBodyRow } from './grid-body-row';
 import { GridBody as GridBodyBase, GridBodyProps } from '../grid-body';
 
 export class GridBody<P extends GridBodyProps = GridBodyProps, S = any> extends GridBodyBase<P, S> {
-    protected renderMessageRow(messageContent: JSX.Element | string): JSX.Element {
+    protected renderMessageRow(messageContent: React.ReactNode): React.ReactNode {
         const className = this.props.style.row.className;
 
         return (

@@ -10,13 +10,13 @@ export interface GridColumnCellProps {
 
 export interface GridColumnBodyCellProps extends GridColumnCellProps {
     cellType?: { new (): GridBodyCell };
-    template?: (item: any, column: GridColumn, cell: GridBodyCell) => JSX.Element | JSX.Element[] | string;
+    template?: (item: any, column: GridColumn, cell: GridBodyCell) => React.ReactNode;
 }
 
 export interface GridColumnHeaderCellProps extends GridColumnCellProps {
     cellType?: { new (): GridHeaderCell };
     style?: GridHeaderCellStyle;
-    template?: (column: GridColumn, cell: GridHeaderCell) => JSX.Element | JSX.Element[] | string;
+    template?: (column: GridColumn, cell: GridHeaderCell) => React.ReactNode;
 }
 
 export interface GridColumnProps {

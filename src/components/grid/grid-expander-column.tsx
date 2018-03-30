@@ -11,7 +11,7 @@ export class GridExpanderColumn<P extends GridColumnProps = GridColumnProps> ext
         title: ''
     };
 
-    protected renderBody(item: any, cell: GridBodyCell): JSX.Element | JSX.Element[] | string {
+    protected renderBody(item: any, cell: GridBodyCell): React.ReactNode {
         const rowProps = cell.props.rowProps;
 
         return (rowProps.isExpandable != false)

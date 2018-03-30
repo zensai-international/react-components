@@ -16,7 +16,7 @@ export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> ext
         title: ''
     };
 
-    protected renderHeaderContent(cell: GridHeaderCell): JSX.Element | JSX.Element[] | string {
+    protected renderHeaderContent(cell: GridHeaderCell): React.ReactNode {
         const grid = cell.context.grid;
         const isAllSelected = grid.selector.isAllSelected();
 
@@ -25,7 +25,7 @@ export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> ext
             : null;
     }
 
-    protected renderBodyContent(item: any, cell: GridBodyCell): JSX.Element | JSX.Element[] | string {
+    protected renderBodyContent(item: any, cell: GridBodyCell): React.ReactNode {
         return <input checked={cell.props.rowProps.isSelected} type="checkbox" />;
     }
 }

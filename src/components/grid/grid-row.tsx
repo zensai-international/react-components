@@ -26,7 +26,7 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
         }
     }
 
-    protected renderCell(column: GridColumn, index: number): JSX.Element {
+    protected renderCell(column: GridColumn, index: number): React.ReactNode {
         const Cell = this.getCellTypeByColumn(column) || this.cellType;
         const key = `${this.props.index}_${index}`;
         const style = this.props.style.cell;
@@ -42,11 +42,11 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
         );
     }
 
-    protected renderCells(): JSX.Element[] {
+    protected renderCells(): React.ReactNode {
         return (this.props.columns as any[]).map((x, i) => this.renderCell(x, i)); // TODO: Remove any.
     }
 
-    protected renderContent(): JSX.Element | JSX.Element[] {
+    protected renderContent(): React.ReactNode {
         const Cell = this.cellType;
         const style = this.props.style.cell;
 

@@ -20,7 +20,7 @@ export interface GridBodyProps {
 }
 
 export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> extends GridComponent<P, S> {
-    protected renderDataRow(item: any, index: number): JSX.Element | JSX.Element[] {
+    protected renderDataRow(item: any, index: number): React.ReactNode {
         const Row = this.rowType;
         const style = this.props.style;
         const grid = this.context.grid;
@@ -42,17 +42,17 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
             : <Row {...rowProps} />;
     }
 
-    protected renderEmptyRow(): JSX.Element {
+    protected renderEmptyRow(): React.ReactNode {
         return this.renderRow(this.context.grid.messages.noItems);
     }
 
-    protected renderSpinnerRow(): JSX.Element {
+    protected renderSpinnerRow(): React.ReactNode {
         const Spinner = this.context.spinnerType;
 
         return this.renderRow(<Spinner />);
     }
 
-    protected renderRow(content: JSX.Element | string): JSX.Element {
+    protected renderRow(content: React.ReactNode): React.ReactNode {
         const Row = this.rowType;
         const style = this.props.style;
 
@@ -70,10 +70,10 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         );
     }
 
-    protected renderRows(): JSX.Element[] {
+    protected renderRows(): React.ReactNode {
         const dataSource = this.context.grid.props.dataSource;
         const data = dataSource.view ? dataSource.view.data : [];
-        const renderRows = () => data.map((x, i) => this.renderDataRow(x, i)) as JSX.Element[];
+        const renderRows = () => data.map((x, i) => this.renderDataRow(x, i)) as React.ReactNode[];
 
         switch (dataSource.state) {
             case DataSourceState.Empty:

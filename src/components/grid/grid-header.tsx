@@ -17,7 +17,7 @@ export interface GridHeaderStyle extends Style {
 }
 
 export abstract class GridHeader<P extends GridHeaderProps = GridHeaderProps, S = any> extends GridComponent<P, S> {
-    protected renderRows(): JSX.Element[] {
+    protected renderRows(): React.ReactNode {
         const Row = this.rowType;
         const rowStyle = this.props.style.row;
 

@@ -85,7 +85,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
         }
     }
 
-    protected renderContent(): JSX.Element | JSX.Element[] | string {
+    protected renderContent(): React.ReactNode {
         const column = this.props.column;
         const columnProps = column.props;
         const isSortable = (columnProps.isSortable != false);
@@ -115,7 +115,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
         return Filter ? <Filter column={column} expression={expression} /> : null;
     }
 
-    protected renderFilterIcon(): JSX.Element {
+    protected renderFilterIcon(): React.ReactNode {
         const column = this.props.column;
         const columnProps = column.props;
         const isFilterable = (columnProps.isFilterable == true);
