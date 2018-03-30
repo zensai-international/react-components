@@ -73,7 +73,6 @@ export function createConfirm<P extends ConfirmationDialogProps = ConfirmationDi
             const resultProps = (props ? Object.assign({}, props, requiredProps) : requiredProps) as any;
 
             ConfirmationDialog.render(dialog(resultProps));
-        })
-        .catch(x => x);
+        });
     };
 }
