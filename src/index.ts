@@ -1,5 +1,6 @@
 export * from './components/common';
 export * from './components/data/index';
+export * from './components/dialogs/confirmation-dialog';
 export * from './components/grid/index';
 export * from './components/pager/infinite-scroll-pager';
 
