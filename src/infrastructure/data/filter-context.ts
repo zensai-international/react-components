@@ -3,11 +3,11 @@ import { ConditionalExpression } from '../expressions/expression';
 import { ConditionalExpressionBuilder } from '../expressions/conditional-expression-builder';
 
 export class FilterContext {
-    private _expressionByKey: Map<any, ConditionalExpression>;
+    private _expressionByKey: { [key: number]: ConditionalExpression };
     private _onChange: Event<ConditionalExpression>;
 
     public constructor() {
-        this._expressionByKey = new Map();
+        this._expressionByKey = {};
 
         this._onChange = new Event<ConditionalExpression>();
     }
@@ -19,7 +19,7 @@ export class FilterContext {
     }
 
     public add(key: any, expression: ConditionalExpression) {
-        this._expressionByKey.set(key, expression);
+        this._expressionByKey[key] = expression;
 
         this.handleChange();
     }
@@ -42,18 +42,14 @@ export class FilterContext {
 
     public delete(keys: any[]) {
         for (const key of keys) {
-            this._expressionByKey.delete(key);
+            this._expressionByKey[key] = null;
         }
 
         this.handleChange();
     }
 
     public get(key: any): ConditionalExpression {
-        return this._expressionByKey.get(key);
-    }
-
-    public get expressionKeys(): any {
-        return Array.from(this._expressionByKey.keys());
+        return this._expressionByKey[key];
     }
 
     public get onChange(): Event<ConditionalExpression> {
