@@ -11,6 +11,7 @@ import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellState } from './grid
 import { GridSelector } from './grid-selector';
 import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
+import { DataSourceChange, DataSourceChangeType } from '../../infrastructure/data/data-source-change-tracker';
 import { FilterContext } from '../../infrastructure/data/filter-context';
 import { ConditionalExpression } from '../../infrastructure/expressions/expression';
 
@@ -134,6 +135,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
+    protected handleDataSourceChange = (sender: {}, change: DataSourceChange) => {
+        if ((change.type == DataSourceChangeType.Delete) && this.selector.isSelected(change.item)) {
+            this.selector.unselect(change.item);
+        }
+    }
+
     protected handleFilterContextChange = (expression: ConditionalExpression) => {
         const dataSource = this.props.dataSource;
 
@@ -184,6 +191,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         if (dataSource) {
             dataSource.onDataBinding.on(this.handleDataBinding);
             dataSource.onDataBound.on(this.handleDataBound);
+            dataSource.changeTracker.onChange.on(this.handleDataSourceChange);
         }
     }
 
@@ -199,6 +207,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         if (dataSource) {
             dataSource.onDataBinding.off(this.handleDataBinding);
             dataSource.onDataBound.off(this.handleDataBound);
+            dataSource.changeTracker.onChange.off(this.handleDataSourceChange);
         }
 
         this._filterContext.onChange.off(this.handleFilterContextChange);

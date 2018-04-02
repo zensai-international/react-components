@@ -1,13 +1,27 @@
 import { DataSource } from './data-source';
 import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker, DataSourceUpdate } from './data-source-change-tracker';
+import { Event } from '../event';
 
 export class ClientDataSourceChangeTracker<T = {}> implements DataSourceChangeTracker<T> {
     private _changes: DataSourceChange<T>[];
     private _dataSource: DataSource<T>;
+    private readonly _onChange = new Event<DataSourceChange<T>>();
 
     public constructor(dataSource: DataSource<T>) {
-        this._changes = [];
+        this._changes = this.createChanges();
         this._dataSource = dataSource;
+    }
+
+    protected createChanges(): DataSourceChange<T>[] {
+        return new Proxy([], {
+            set: (target: DataSourceChange<T>[], property: PropertyKey, value: any, receiver: any): boolean => {
+                target[property] = value;
+
+                this.onChange.trigger(this, value);
+
+                return true;
+            }
+        });
     }
 
     public apply() {
@@ -38,5 +52,9 @@ export class ClientDataSourceChangeTracker<T = {}> implements DataSourceChangeTr
 
     public get changes(): DataSourceChange<T>[] {
         return this._changes;
+    }
+
+    public get onChange(): Event<DataSourceChange<T>> {
+        return this._onChange;
     }
 }

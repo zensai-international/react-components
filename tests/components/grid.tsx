@@ -2,7 +2,7 @@ import * as Enzyme from 'enzyme';
 import { expect } from 'chai';
 import * as React from 'react';
 import { GridColumn } from '../../src/components/grid/grid-column';
-import { Grid } from '../../src/components/grid/table/grid';
+import { Grid, GridProps } from '../../src/components/grid/table/grid';
 import { SortDirection } from '../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../src/infrastructure/data/client-data-source';
 import { DataSource } from '../../src/infrastructure/data/data-source';
@@ -12,9 +12,9 @@ import { GridSelectionMode, GridState } from '../../src/index';
 export default describe('<Grid />', () => {
     describe('behavior', () => {
         describe('selection', () => {
-            function createGrid(selectionMode: GridSelectionMode): Enzyme.ReactWrapper<any, GridState> {
-                return Enzyme.mount(
-                    <Grid autoBind={true} dataSource={dataSource} selectionMode={selectionMode}>
+            function createGrid(props: Partial<GridProps>): Enzyme.ReactWrapper<GridProps, GridState> {
+                return Enzyme.mount<GridProps>(
+                    <Grid {...props} autoBind={true} dataSource={dataSource}>
                         <GridColumn
                             body={{ style: { className: 'title-body' } }}
                             header={{ style: { className: 'title-header' } }}
@@ -31,7 +31,7 @@ export default describe('<Grid />', () => {
                 let grid: Enzyme.ReactWrapper<any, GridState>;
 
                 beforeEach(() => {
-                    grid = createGrid(GridSelectionMode.Single);
+                    grid = createGrid({ selectionMode: GridSelectionMode.Single });
                 });
 
                 it('one click on first row', () => {
@@ -58,7 +58,7 @@ export default describe('<Grid />', () => {
                 let grid: Enzyme.ReactWrapper<any, GridState>;
 
                 beforeEach(() => {
-                    grid = createGrid(GridSelectionMode.Multiple);
+                    grid = createGrid({ selectionMode: GridSelectionMode.Multiple });
                 });
 
                 it('one click on first row', () => {
@@ -80,6 +80,16 @@ export default describe('<Grid />', () => {
                     expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);
                     expect(selectedItems[1], 'selectedItems[1]').to.equal(data[data.length - 1]);
                 });
+            });
+
+            it('if selected item was deleted', () => {
+                const item = data[0];
+                const grid = createGrid({ selectedItems: [item] });
+                const dataSource = grid.props().dataSource;
+
+                dataSource.delete(item);
+                
+                expect(grid.state().selectedItems.length, 'selectedItems.length').to.equal(0);
             });
         });
 

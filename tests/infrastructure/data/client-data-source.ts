@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import * as sinon from 'sinon';
 import { DataType, SortDirection } from '../../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../../src/infrastructure/data/client-data-source';
 import { DataSourceState, DataViewMode } from '../../../src/infrastructure/data/data-source';
@@ -41,6 +42,21 @@ export default describe('ClientDataSource', () => {
             expect(view.data[1].field).to.equal('value1');
             expect(view.data[2].field).to.equal('value2');
         });
+    });
+
+    it('delete', async () => {
+        const item = { field: 'value0' };
+        const handleDelete = sinon.spy();
+        const dataSource = new ClientDataSource({ data: () => [item] });
+
+        dataSource.changeTracker.onChange.on(handleDelete);
+
+        await dataSource.dataBind();
+        dataSource.delete(item);
+        const view = await dataSource.dataBind();
+
+        expect(view.totalCount, 'totalCount').to.equal(0);
+        expect(handleDelete.called, 'called').is.true;
     });
 
     it('filter', async () => {
@@ -208,9 +224,9 @@ export default describe('ClientDataSource', () => {
 
                     const view = await dataSource.dataBind();
 
-                    expect(view.data[0].booleanField).to.equal(null);
-                    expect(view.data[1].booleanField).to.equal(false);
-                    expect(view.data[2].booleanField).to.equal(true);
+                    expect(view.data[0].booleanField).is.null;
+                    expect(view.data[1].booleanField).is.false;
+                    expect(view.data[2].booleanField).is.true;
                 });
             });
 
@@ -222,9 +238,9 @@ export default describe('ClientDataSource', () => {
 
                     const view = await dataSource.dataBind();
 
-                    expect(view.data[0].booleanField).to.equal(true);
-                    expect(view.data[1].booleanField).to.equal(false);
-                    expect(view.data[2].booleanField).to.equal(null);
+                    expect(view.data[0].booleanField).is.true;
+                    expect(view.data[1].booleanField).is.false;
+                    expect(view.data[2].booleanField).is.null;
                 });
             });
         });

@@ -23,3 +23,5 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         return GridHeader;
     }
 }
+
+export * from '../grid';

@@ -26,7 +26,31 @@ export class GridSelector {
             : dataSource.view.data;
     }
 
-    public selectOrUnselect(item: any) {
+    public select(item: any) {
+        const grid = this._grid;
+        const gridProps = grid.props;
+
+        if (gridProps.selectionMode != null) {
+            const selectedItems = grid.state.selectedItems;
+            const itemIndex = selectedItems.indexOf(item);
+
+            if (itemIndex == -1) {
+                if ((gridProps.selectionMode == GridSelectionMode.Single) && selectedItems.length) {
+                    selectedItems.length = 0;
+                }
+
+                selectedItems.push(item);
+
+                grid.setState({ selectedItems: selectedItems }, () => {
+                    if (gridProps.onSelect) {
+                        gridProps.onSelect(grid, [item]);
+                    }
+                });
+            }
+        }
+    }
+
+    public unselect(item: any) {
         const grid = this._grid;
         const gridProps = grid.props;
 
@@ -42,19 +66,15 @@ export class GridSelector {
                         gridProps.onUnselect(grid, [item]);
                     }
                 });
-            } else {
-                if ((gridProps.selectionMode == GridSelectionMode.Single) && selectedItems.length) {
-                    selectedItems.length = 0;
-                }
-
-                selectedItems.push(item);
-
-                grid.setState({ selectedItems: selectedItems }, () => {
-                    if (gridProps.onSelect) {
-                        gridProps.onSelect(grid, [item]);
-                    }
-                });
             }
+        }
+    }
+
+    public selectOrUnselect(item: any) {
+        if (this.isSelected(item)) {
+            this.unselect(item);
+        } else {
+            this.select(item);
         }
     }
 
