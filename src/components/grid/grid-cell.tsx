@@ -16,7 +16,7 @@ export interface GridCellProps {
 export interface GridCellStyle extends Style {
 }
 
-export abstract class GridCell<P extends GridCellProps = GridCellProps, S = any> extends GridComponent<P, S> {
+export abstract class GridCell<P extends GridCellProps = GridCellProps, S = {}> extends GridComponent<P, S> {
     protected abstract getStyleByColumn(column: GridColumn): Style;
 
     protected handleClick = (event: React.MouseEvent<any>) => {

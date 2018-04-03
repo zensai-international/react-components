@@ -15,7 +15,7 @@ export default describe('<Grid />', () => {
 
                 return Enzyme.mount(
                     <Grid
-                        bodyTemplate={(rowType: { new (): GridBodyRow }, props: GridBodyRowProps) => {
+                        bodyRowTemplate={(rowType: { new (): GridBodyRow }, props: GridBodyRowProps) => {
                             const Row = rowType;
 
                             return <Row {...props} isExpandable={isExpandable} />
