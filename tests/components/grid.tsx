@@ -10,7 +10,7 @@ export default describe('<Grid />', () => {
         describe('expansion', () =>{
             const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
 
-            function createGrid(isExpandable: boolean = true): Enzyme.ReactWrapper<GridProps, GridState> {
+            function createGrid(isExpandable: boolean = null): Enzyme.ReactWrapper<GridProps, GridState> {
                 const dataSource: DataSource = new ClientDataSource({ data: () => data.map(x => x) });
 
                 return Enzyme.mount(
