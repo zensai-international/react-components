@@ -1,16 +1,63 @@
 import * as Enzyme from 'enzyme';
 import { expect } from 'chai';
 import * as React from 'react';
-import { GridColumn } from '../../src/components/grid/grid-column';
-import { Grid, GridProps } from '../../src/components/grid/table/grid';
-import { SortDirection } from '../../src/infrastructure/data/common';
-import { ClientDataSource } from '../../src/infrastructure/data/client-data-source';
-import { DataSource } from '../../src/infrastructure/data/data-source';
-import { GridSelectionMode, GridState } from '../../src/index';
-//import { GridBodyRow, GridBodyRowProps } from '../../src/components/grid/grid-body-row';
+import { ClientDataSource, DataSource, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src/index';
+
+const Grid = table.Grid;
 
 export default describe('<Grid />', () => {
     describe('behavior', () => {
+        describe('expansion', () =>{
+            const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
+
+            function createGrid(isExpandable: boolean = true): Enzyme.ReactWrapper<GridProps, GridState> {
+                const dataSource: DataSource = new ClientDataSource({ data: () => data.map(x => x) });
+
+                return Enzyme.mount(
+                    <Grid
+                        bodyTemplate={(rowType: { new (): GridBodyRow }, props: GridBodyRowProps) => {
+                            const Row = rowType;
+
+                            return <Row {...props} isExpandable={isExpandable} />
+                        }}
+                        dataSource={dataSource}>
+                        <GridExpanderColumn body={{ style: { className: 'expander' } }} />
+                        <GridColumn field="title" title="Title" />
+                    </Grid>
+                );
+            }
+
+            it('one click on first row (to expand first row)', () => {
+                const grid = createGrid();
+                const expandedItems = grid.state().expandedItems;
+
+                grid.find('.expander').first().simulate('click');
+
+                expect(expandedItems.length, 'expandedItems.length').to.equal(1);
+                expect(expandedItems[0], 'expandedItems[0]').to.equal(data[0]);
+            });
+
+            it('two clicks on first row (to expand and collapse first row)', () => {
+                const grid = createGrid();
+                const expandedItems = grid.state().expandedItems;
+
+                grid.find('.expander').first()
+                    .simulate('click')
+                    .simulate('click');
+
+                expect(expandedItems.length, 'expandedItems.length').to.equal(0);
+            });
+
+            it('one click on first row if row is not expandable', () => {
+                const grid = createGrid(false);
+                const expandedItems = grid.state().expandedItems;
+
+                grid.find('.expander').first().simulate('click');
+
+                expect(expandedItems.length, 'expandedItems.length').to.equal(0);
+            });
+        });
+
         describe('selection', () => {
             function createGrid(props: Partial<GridProps>): Enzyme.ReactWrapper<GridProps, GridState> {
                 return Enzyme.mount<GridProps>(
@@ -34,7 +81,7 @@ export default describe('<Grid />', () => {
                     grid = createGrid({ selectionMode: GridSelectionMode.Single });
                 });
 
-                it('one click on first row', () => {
+                it('one click on first row (to select first row)', () => {
                     const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click');
@@ -43,7 +90,17 @@ export default describe('<Grid />', () => {
                     expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);
                 });
 
-                it('one click on first row and one click to last row', () => {
+                it('two clicks on first row (to select and unselect first row)', () => {
+                    const selectedItems = grid.state().selectedItems;
+
+                    grid.find('.title-body').first()
+                        .simulate('click')
+                        .simulate('click');
+
+                    expect(selectedItems.length, 'selectedItems.length').to.equal(0);
+                });
+
+                it('one click on first row and one click to last row (to select second row)', () => {
                     const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click')
@@ -61,7 +118,7 @@ export default describe('<Grid />', () => {
                     grid = createGrid({ selectionMode: GridSelectionMode.Multiple });
                 });
 
-                it('one click on first row', () => {
+                it('one click on first row (to select first row)', () => {
                     const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click');
@@ -70,7 +127,7 @@ export default describe('<Grid />', () => {
                     expect(selectedItems[0], 'selectedItems[0]').to.equal(data[0]);
                 });
 
-                it('one click on first row and one click to last row', () => {
+                it('one click on first row and one click to last row (to select first and second rows)', () => {
                     const selectedItems = grid.state().selectedItems;
 
                     grid.find('.title-body').first().simulate('click')
@@ -172,51 +229,6 @@ export default describe('<Grid />', () => {
                 expect(view.sortedBy[0].field, 'sortedBy[0].field').to.equal('description');
             });
         });
-
-        // describe('expand/collapse rows', () =>{
-        //     let dataSource: DataSource<any>;
-        //     let grid;
-            
-        //     beforeEach(() => {
-        //         dataSource = new ClientDataSource({ dataGetter: () => [{ title: 'title 1', subItems: [{ title: 'sub title 1' }] }] });
-        //         dataSource.dataBind();
-        //         const columns = [
-        //                         new GridColumn({ body: { template: () => "" } }),
-        //                         new GridColumn({ field: "title", title: "Title" }),
-        //                     ];
-
-        //         grid = Enzyme.mount(
-        //             <Grid dataSource={dataSource}>
-        //                 <GridExpandContentColumn renderDetails={(rowType: { new (): GridBodyRow<GridBodyRowProps, any> }, index: number, item: any) => {
-        //                     const Row = rowType;
-        //                     const childDataSource = new ClientDataSource<any>({ dataGetter: () => item.subItems });
-        //                     childDataSource.dataBind();
-
-        //                     return item.subItems.map(v =>
-        //                         <Row columns={columns} dataSource={childDataSource} style={DefaultStyle.body.dataRow} index={index} item={v} />
-        //                     )
-
-        //                 }} />
-        //                 <GridColumn field="title" title="Title" />
-        //             </Grid>
-        //         );
-        //     });
-
-        //      it('click on expand/collapse content', () => {
-        //         expect(grid.find('tr').length).to.equal(1, 'rows count');
-
-        //         grid.find('td a')
-        //             .first()
-        //             .simulate('click');
-        //         expect(grid.find('tr').length).to.equal(2, 'rows and subrows count');
-
-        //         grid.find('td a')
-        //             .first()
-        //             .simulate('click');
-
-        //         expect(grid.find('tr').length).to.equal(1, 'rows and subrows count');
-        //     });
-        // })
     });
 
     describe('column properties', () => {

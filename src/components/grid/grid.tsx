@@ -94,10 +94,10 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     protected handleBodyCellClick = (event: React.MouseEvent<any>, cell: GridBodyCell<GridBodyCellProps>) => {
-        const item = cell.props.rowProps.item;
+        const rowProps = cell.props.rowProps;
 
-        if (cell.props.column instanceof GridExpanderColumn) {
-            this.expander.expandOrCollapse(item);
+        if ((cell.props.column instanceof GridExpanderColumn) && rowProps.isExpandable) {
+            this.expander.expandOrCollapse(rowProps.item);
 
             event.stopPropagation();
         }
