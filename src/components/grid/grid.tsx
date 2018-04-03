@@ -191,7 +191,10 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         if (dataSource) {
             dataSource.onDataBinding.on(this.handleDataBinding);
             dataSource.onDataBound.on(this.handleDataBound);
-            dataSource.changeTracker.onChange.on(this.handleDataSourceChange);
+
+            if (dataSource.changeTracker) {
+                dataSource.changeTracker.onChange.on(this.handleDataSourceChange);
+            }
         }
     }
 
@@ -207,7 +210,10 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         if (dataSource) {
             dataSource.onDataBinding.off(this.handleDataBinding);
             dataSource.onDataBound.off(this.handleDataBound);
-            dataSource.changeTracker.onChange.off(this.handleDataSourceChange);
+
+            if (dataSource.changeTracker) {
+                dataSource.changeTracker.onChange.off(this.handleDataSourceChange);
+            }
         }
 
         this._filterContext.onChange.off(this.handleFilterContextChange);
