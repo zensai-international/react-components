@@ -51,7 +51,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         this._onDataBound = new Event<any>();
 
         this._operations = {
-            [DataSourceOperation.GetCount]: this.createGetCountAction()
+            [DataSourceOperation.GetCount]: this.createGetCountOperation()
         };
 
         if (this._viewProps.page) {
@@ -135,7 +135,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         }
     }
 
-    protected createFilterAction(expression: ConditionalExpression): DataSourceOperationData<T> {
+    protected createFilterOperation(expression: ConditionalExpression): DataSourceOperationData<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => this.addFilterOperationToUrl(uriBuilder, expression),
             viewInitializer: (response: any, view: DataView<T>) => {
@@ -144,7 +144,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         };
     }
 
-    protected createGetCountAction(): DataSourceOperationData<T> {
+    protected createGetCountOperation(): DataSourceOperationData<T> {
         return {
             urlGenerator: (uriBuilder: UriBuilder) => {
                 if ((this.view == null) || !this.view.totalCount) {
@@ -159,7 +159,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         };
     }
 
-    protected createSetIndexAction(value: number): DataSourceOperationData<T> {
+    protected createSetIndexOperation(value: number): DataSourceOperationData<T> {
         const page = this.viewProps.page;
 
         return {
@@ -173,7 +173,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 }
             },
             viewInitializer: (response: any, view: DataView<T>) => {
-                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (this._view.page.index == (value - 1))
+                view.data = this._view && (this._view.mode == DataViewMode.FromFirstToCurrentPage) && (this._view.page.index != value)
                     ? this._view.data.concat(view.data)
                     : view.data;
                 view.mode = this.viewProps.mode;
@@ -265,14 +265,14 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
             this.view.data = [];
         }
 
-        this._operations[DataSourceOperation.Filter] = this.createFilterAction(expression);
+        this._operations[DataSourceOperation.Filter] = this.createFilterOperation(expression);
     }
 
     public read() {
     }
 
     public setPageIndex(value: number) {
-        this._operations[DataSourceOperation.SetPageIndex] = this.createSetIndexAction(value);
+        this._operations[DataSourceOperation.SetPageIndex] = this.createSetIndexOperation(value);
     }
 
     public sort(expressions: SortExpression[]) {

@@ -21,9 +21,9 @@ function isElementVisible(element) {
 }
 
 export interface InfiniteScrollPagerProps {
+    dataSource: DataSource;
+    containerClass?: string;
     isEnabled?: boolean;
-    dataSource: DataSource<any>;
-    containerClass?: string
 }
 
 export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, any> {
