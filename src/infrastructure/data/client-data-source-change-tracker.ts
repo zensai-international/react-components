@@ -13,15 +13,17 @@ export class ClientDataSourceChangeTracker<T = {}> implements DataSourceChangeTr
     }
 
     protected createChanges(): DataSourceChange<T>[] {
-        return new Proxy([], {
-            set: (target: DataSourceChange<T>[], property: PropertyKey, value: any, receiver: any): boolean => {
-                target[property] = value;
+        return [];
+        //TODO: ES11 issue
+        // return new Proxy([], {
+        //     set: (target: DataSourceChange<T>[], property: PropertyKey, value: any, receiver: any): boolean => {
+        //         target[property] = value;
 
-                this.onChange.trigger(this, value);
+        //         this.onChange.trigger(this, value);
 
-                return true;
-            }
-        });
+        //         return true;
+        //     }
+        // });
     }
 
     public apply() {

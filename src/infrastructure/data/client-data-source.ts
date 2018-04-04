@@ -204,10 +204,14 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
             this._data.splice(index, 1);
 
-            this.changeTracker.changes.push({
+            const change = {
                 item: item,
                 type: DataSourceChangeType.Delete,
-            } as DataSourceChange<T>);
+            } as DataSourceChange<T>;
+
+            this.changeTracker.changes.push(change);
+
+            this.changeTracker.onChange.trigger(this.changeTracker, change);
         }
     }
 
@@ -248,13 +252,17 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
         this.fieldAccessor.setValue(item, field, value);
 
-        this.changeTracker.changes.push({
+        const change = {
             field: field,
             item: item,
             prevValue: currentValue,
             type: DataSourceChangeType.Update,
             value: value
-        } as DataSourceChange<T>);
+        } as DataSourceChange<T>;
+
+        this.changeTracker.changes.push(change);
+
+        this.changeTracker.onChange.trigger(this.changeTracker, change);
     }
 
     public get changeTracker(): DataSourceChangeTracker<T> {
