@@ -24,7 +24,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
     public constructor(props?: P) {
         super(props);
 
-        this.state = { showFilter: false } as any;
+        this.state = { showFilter: false } as S;
     }
 
     protected getSortDirection(): SortDirection {

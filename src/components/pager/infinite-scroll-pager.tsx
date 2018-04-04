@@ -26,7 +26,7 @@ export interface InfiniteScrollPagerProps {
     isEnabled?: boolean;
 }
 
-export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, any> {
+export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, {}> {
     private _visibilityDetector: HTMLElement;
  
     public constructor(props: InfiniteScrollPagerProps) {

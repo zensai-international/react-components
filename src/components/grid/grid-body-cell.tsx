@@ -7,7 +7,7 @@ export interface GridBodyCellProps extends GridCellProps {
     rowProps: GridBodyRowProps;
 }
 
-export class GridBodyCell<P extends GridBodyCellProps = GridBodyCellProps, S = any> extends GridCell<P, S> {
+export class GridBodyCell<P extends GridBodyCellProps = GridBodyCellProps, S = {}> extends GridCell<P, S> {
     protected getStyleByColumn(column: GridColumn): Style {
         return column.props.body ? column.props.body.style : null;
     }
@@ -21,9 +21,9 @@ export class GridBodyCell<P extends GridBodyCellProps = GridBodyCellProps, S = a
             : null;
     }
 
-    protected renderContent(): JSX.Element | JSX.Element[] | string {
+    protected renderContent(): React.ReactNode {
         if (this.props.children) {
-            return this.props.children as any;
+            return this.props.children;
         }
 
         const column = this.props.column;

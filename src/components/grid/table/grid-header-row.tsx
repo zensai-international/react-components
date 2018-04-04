@@ -3,7 +3,7 @@ import { GridHeaderCell } from './grid-header-cell';
 import { GridCell } from '../grid-cell';
 import { GridHeaderRow as GridHeaderRowBase, GridHeaderRowProps } from '../grid-header-row';
 
-export class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S = any> extends GridHeaderRowBase<P, S> {
+export class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S = {}> extends GridHeaderRowBase<P, S> {
     public render(): JSX.Element {
         const className = this.props.style.className;
 
@@ -15,6 +15,6 @@ export class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S 
     }
 
     protected get cellType(): { new (): GridCell } {
-        return GridHeaderCell as any;
+        return GridHeaderCell;
     }
 }
