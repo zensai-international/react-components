@@ -14,8 +14,8 @@ export class ExpressionConverter {
             switch (expression.operator) {
                 case ComparisonOperator.Any:
                     comparer = (expression.value instanceof Array)
-                        ? x => x && x.some(y => (expression.value as any[]).some(z => z == y))
-                        : x => x && x.some(y => y == expression.value);
+                        ? x => x && (expression.value as any[]).some(y => x instanceof Array ? (x as any[]).some(z => z == y) : x == y)
+                        : x => x && (x instanceof Array) ? x.some(y => y == expression.value) : x == expression.value;
 
                     if (!(value instanceof Array)) {
                         comparer = (oldComparer => y => oldComparer([y]))(comparer);
@@ -52,7 +52,7 @@ export class ExpressionConverter {
             if (value instanceof Array) {
                  result = value.some(x => comparer(x));
             } else {
-                result = comparer(value)
+                result = comparer(value);
             }
 
             return result;

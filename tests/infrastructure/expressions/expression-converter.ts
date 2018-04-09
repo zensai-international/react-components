@@ -3,7 +3,36 @@ import { ComparisonOperator, ComparisonExpression } from '../../../src/infrastru
 import { ExpressionConverter } from '../../../src/infrastructure/expressions/expression-converter';
 
 export default describe('ExpressionConverter', () => {
-    describe('toComparison', () => {
+    describe('convert', () => {
+        describe('if operator is "any"', () => {
+            const expressionConverter = new ExpressionConverter();
+            const item = { field0: ['value0'] };
+
+            function createFilterExpression(value: any): ComparisonExpression {
+                return {
+                    field: 'field0',
+                    operator: ComparisonOperator.Any,
+                    value: value
+                };
+            }
+
+            it ('if result is true', () => {
+                const filterExpression = createFilterExpression('value0');
+
+                const comparisonExpression = expressionConverter.convert(filterExpression);
+
+                expect(comparisonExpression(item)).is.true;
+            });
+
+            it ('if result is false', () => {
+                const filterExpression = createFilterExpression('value1');
+
+                const comparisonExpression = expressionConverter.convert(filterExpression);
+
+                expect(comparisonExpression(item)).is.false;
+            });
+        });
+
         describe('if operator is "contain"', () => {
             const expressionConverter = new ExpressionConverter();
             const item = { field0: 'xxxyyyzzz' };
@@ -100,10 +129,6 @@ export default describe('ExpressionConverter', () => {
 
                 expect(comparisonExpression(item)).equal(true);
             });
-        });
-
-        describe('toComparison if operator is "equal"', () => {
-
         });
     });
 });
