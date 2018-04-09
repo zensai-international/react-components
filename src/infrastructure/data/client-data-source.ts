@@ -63,8 +63,8 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                 const fields = expression.fields;
 
                 for (const item of x.data) {
-                    const group = ObjectHelper.create(fields, fields.map(x => this.fieldAccessor.getValue(item, x)));
-                    const existedGroup = groups.find(x => fields.every(y => group[y] == this.fieldAccessor.getValue(x, y)));
+                    const group = ObjectHelper.create(this.fieldAccessor, fields, fields.map(y => this.fieldAccessor.getValue(item, y)));
+                    const existedGroup = groups.find(y => fields.every(field => this.fieldAccessor.getValue(y, field) == this.fieldAccessor.getValue(item, field)));
 
                     if (existedGroup == null) {
                         groups.push(group);

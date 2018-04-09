@@ -1,11 +1,14 @@
+import { FieldAccessor } from '../data/field-accessor';
+
 export class ObjectHelper {
-    public static create(fields: string[], values: any[]) {
+    public static create(fieldAccessor: FieldAccessor, fields: string[], values: any[]): {} {
         const result = {};
 
         for (let i = 0; i < fields.length; i++) {
             const field = fields[i];
+            const value = values[i];
 
-            result[field] = values[i];
+            fieldAccessor.setValue(result, field, value);
         }
 
         return result;

@@ -12,12 +12,12 @@ export default describe('ClientDataSource', () => {
             const data = [{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }];
             const dataSource = new ClientDataSource({ data: () => data });
 
-            expect(dataSource.view).to.be.null;
+            expect(dataSource.view).is.null;
             expect(dataSource.state, 'state').to.equal(DataSourceState.Empty);
 
             const view = await dataSource.dataBind();
 
-            expect(view).to.be.not.null;
+            expect(view).is.not.null;
             expect(dataSource.state, 'state').to.equal(DataSourceState.Bound);
 
             expect(view.data[0].field).to.equal('value0');
@@ -35,7 +35,7 @@ export default describe('ClientDataSource', () => {
 
             const view = await dataSource.dataBind();
 
-            expect(view).to.be.not.null;
+            expect(view).is.not.null;
             expect(dataSource.state).to.equal(DataSourceState.Bound, 'state');
 
             expect(view.data[0].field).to.equal('value0');
@@ -71,22 +71,40 @@ export default describe('ClientDataSource', () => {
         expect(view.data[0].field).to.equal('value0');
     });
 
-    it('group', async () => {
-        const data = [
-            { field0: '00', field1: '01' }, { field0: '00', field1: '01' },
-            { field0: '10', field1: '11' }, { field0: '10', field1: '11' }
-        ];
-        const dataSource = new ClientDataSource({ data: () => data });
+    describe('group', () => {
+        it('if group by 2 fields', async () => {
+            const data = [
+                { field0: '00', field1: '01' }, { field0: '00', field1: '01' },
+                { field0: '10', field1: '11' }, { field0: '10', field1: '11' }
+            ];
+            const dataSource = new ClientDataSource({ data: () => data });
+    
+            dataSource.group({ fields: ['field0', 'field1'] });
+    
+            const view = await dataSource.dataBind();
+    
+            expect(view.data.length, 'data.length').to.equal(2);
+            expect(view.data[0].field0, 'data[0].field0').to.equal('00');
+            expect(view.data[0].field1, 'data[0].field1').to.equal('01');
+            expect(view.data[1].field0, 'data[1].field0').to.equal('10');
+            expect(view.data[1].field1, 'data[1].field1').to.equal('11');
+        });
 
-        dataSource.group({ fields: ['field0', 'field1'] });
-
-        const view = await dataSource.dataBind();
-
-        expect(view.data.length).to.equal(2);
-        expect(view.data[0].field0, 'view.data[0].field0').to.equal('00');
-        expect(view.data[0].field1, 'view.data[0].field1').to.equal('01');
-        expect(view.data[1].field0, 'view.data[1].field0').to.equal('10');
-        expect(view.data[1].field1, 'view.data[1].field1').to.equal('11');
+        it('if group by complex object', async () => {
+            const data = [
+                { field0: { value: null } },
+                { field0: { value: '00' } }
+            ];
+            const dataSource = new ClientDataSource({ data: () => data });
+    
+            dataSource.group({ fields: ['field0.value'] });
+    
+            const view = await dataSource.dataBind();
+    
+            expect(view.data.length, 'data.length').to.equal(2);
+            expect(view.data[0].field0.value, 'data[0].field0.value').is.null;
+            expect(view.data[1].field0.value, 'data[0].field0.value').to.equal('00');
+        });
     });
 
     describe('setPageIndex', () => {
