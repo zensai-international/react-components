@@ -15,3 +15,5 @@ export class GridBodyCell<P extends GridBodyCellProps = GridBodyCellProps, S = {
         );
     }
 }
+
+export * from '../grid-body-cell';

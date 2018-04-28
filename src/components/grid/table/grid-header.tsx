@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridHeaderRow } from './grid-header-row';
+import { GridHeaderRow, GridHeaderRowProps } from './grid-header-row';
 import { GridHeader as GridHeaderBase, GridHeaderProps } from '../grid-header';
 
 export class GridHeader<P extends GridHeaderProps = GridHeaderProps, S = {}> extends GridHeaderBase<P, S> {
@@ -13,7 +13,9 @@ export class GridHeader<P extends GridHeaderProps = GridHeaderProps, S = {}> ext
         );
     }
 
-    protected get rowType(): { new(): GridHeaderRow } {
+    protected get rowType(): { new (props: GridHeaderRowProps): GridHeaderRow } {
         return GridHeaderRow;
     }
 }
+
+export * from '../grid-header';

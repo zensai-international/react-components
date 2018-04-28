@@ -20,5 +20,5 @@ export abstract class DataSourceProvider<P extends DataSourceProps> extends Reac
         return callback(this._dataSource);
     }
 
-    protected abstract get dataSourceType(): { new(props: DataSourceProps): DataSource }
+    protected abstract get dataSourceType(): { new (props: DataSourceProps): DataSource }
 }

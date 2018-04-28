@@ -21,8 +21,8 @@ export interface GridHeaderCellState {
 }
 
 export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderCellProps, S extends GridHeaderCellState = GridHeaderCellState> extends GridCell<P, S> {
-    public constructor(props?: P) {
-        super(props);
+    public constructor(props: P, context?: any) {
+        super(props, context);
 
         this.state = { showFilter: false } as S;
     }

@@ -8,7 +8,7 @@ export interface GridBodyRowStyle extends GridRowStyle {
     ifSelected: Style;
 }
 
-export type GridBodyRowTemplate = (rowType: { new (): GridBodyRow }, rowProps: GridBodyRowProps, gridContext?: GridContext) => React.ReactNode;
+export type GridBodyRowTemplate = (rowType: { new (props: GridBodyRowProps): GridBodyRow }, rowProps: GridBodyRowProps, gridContext?: GridContext) => React.ReactNode;
 
 export interface GridBodyRowProps extends GridRowProps {
     isExpandable: boolean;

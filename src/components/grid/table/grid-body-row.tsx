@@ -13,7 +13,9 @@ export class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = {}> 
         );
     }
 
-    protected get cellType(): { new (): GridBodyCell } {
+    protected get cellType(): { new (props): GridBodyCell } {
         return GridBodyCell;
     }
 }
+
+export * from '../grid-body-row';

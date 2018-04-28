@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
-import { GridBodyRow, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
+import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
 import { Style } from '../common';
 import { DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
 import { ObjectHelper } from '../../infrastructure/helpers/object-helper';
@@ -92,5 +92,5 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         }
     }
 
-    protected abstract get rowType(): { new(): GridBodyRow };
+    protected abstract get rowType(): { new (props: GridBodyRowProps): GridBodyRow };
 }

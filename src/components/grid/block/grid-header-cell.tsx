@@ -12,3 +12,5 @@ export class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderCellProps,
         );
     }
 }
+
+export * from '../grid-header-cell';

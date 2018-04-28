@@ -36,7 +36,7 @@ export class ConfirmationDialog<P extends ConfirmationDialogProps = Confirmation
 
     protected destroy() {
         if (ConfirmationDialog._instance) {
-            const container = ReactDom.findDOMNode(ConfirmationDialog._instance);
+            const container = ReactDom.findDOMNode(ConfirmationDialog._instance) as Element;
 
             ReactDom.unmountComponentAtNode(container);
             container.parentElement.remove();

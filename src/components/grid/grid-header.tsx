@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
-import { GridHeaderRow, GridHeaderRowStyle } from './grid-header-row';
+import { GridHeaderRow, GridHeaderRowProps, GridHeaderRowStyle } from './grid-header-row';
 import { Style } from '../common';
 
 export interface GridHeaderProps {
@@ -24,5 +24,5 @@ export abstract class GridHeader<P extends GridHeaderProps = GridHeaderProps, S 
         return [<Row {...this.props} index={0} key={0} style={rowStyle} />];
     }
 
-    protected abstract get rowType(): { new(): GridHeaderRow };
+    protected abstract get rowType(): { new (props: GridHeaderRowProps): GridHeaderRow };
 }

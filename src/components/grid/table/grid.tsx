@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { GridBody } from './grid-body';
-import { GridHeader } from './grid-header';
+import { GridBody, GridBodyProps } from './grid-body';
+import { GridHeader, GridHeaderProps } from './grid-header';
 import { Grid as GridBase, GridProps, GridState } from '../grid';
 
 export class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends GridBase<P, S> {
@@ -15,11 +15,11 @@ export class Grid<P extends GridProps = GridProps, S extends GridState = GridSta
         );
     }
 
-    protected get bodyType(): { new (): GridBody } {
+    protected get bodyType(): { new (props: GridBodyProps): GridBody } {
         return GridBody;
     }
 
-    protected get headerType(): { new (): GridHeader } {
+    protected get headerType(): { new (props: GridHeaderProps): GridHeader } {
         return GridHeader;
     }
 }

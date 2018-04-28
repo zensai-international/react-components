@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridHeaderCell } from './grid-header-cell';
+import { GridHeaderCell, GridHeaderCellProps } from './grid-header-cell';
 import { GridHeaderRow as GridHeaderRowBase, GridHeaderRowProps } from '../grid-header-row';
 
 export class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S = {}> extends GridHeaderRowBase<P, S> {
@@ -13,7 +13,9 @@ export class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S 
         );
     }
 
-    protected get cellType(): { new (): GridHeaderCell } {
+    protected get cellType(): { new (props: GridHeaderCellProps): GridHeaderCell } {
         return GridHeaderCell;
     }
 }
+
+export * from '../grid-header-row';

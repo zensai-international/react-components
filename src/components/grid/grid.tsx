@@ -1,12 +1,13 @@
 import * as React from 'react';
+import { PropTypes } from 'prop-types';
 import { DefaultGridProps } from './default-grid-pros';
-import { GridBody, GridBodyStyle } from './grid-body';
+import { GridBody, GridBodyProps, GridBodyStyle } from './grid-body';
 import { GridBodyCell, GridBodyCellProps } from './grid-body-cell';
 import { GridBodyRow, GridBodyRowTemplate, GridBodyRowProps } from './grid-body-row';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpander } from './grid-expander';
 import { GridExpanderColumn } from './grid-expander-column';
-import { GridHeader, GridHeaderStyle } from './grid-header';
+import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellState } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
 import { Style } from '../common';
@@ -14,6 +15,18 @@ import { DataSource, DataSourceState } from '../../infrastructure/data/data-sour
 import { DataSourceChange, DataSourceChangeType } from '../../infrastructure/data/data-source-change-tracker';
 import { FilterContext } from '../../infrastructure/data/filter-context';
 import { ConditionalExpression } from '../../infrastructure/expressions/expression';
+
+export interface GridContext {
+    filterContext: FilterContext;
+    grid: Grid;
+    spinnerType: { new (props: any): React.Component } | React.SFC;
+}
+
+export const GridContextTypes = {
+    filterContext: PropTypes.object,
+    grid: PropTypes.object,
+    spinnerType: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
+};
 
 export interface GridMessages {
     loading: string;
@@ -53,18 +66,8 @@ export interface GridStyle extends Style {
     header: GridHeaderStyle;
 }
 
-export interface GridContext {
-    filterContext: FilterContext;
-    grid: Grid;
-    spinnerType: { new(): React.Component };
-}
-
 export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
-    public static childContextTypes = {
-        filterContext: React.PropTypes.object,
-        grid: React.PropTypes.object,
-        spinnerType: React.PropTypes.oneOfType([React.PropTypes.object, React.PropTypes.func])
-    };
+    public static childContextTypes = GridContextTypes;
     public static defaultProps: Partial<GridProps> = DefaultGridProps;
 
     private _columns: GridColumn<GridColumnProps>[];
@@ -85,7 +88,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         } as S;
     }
 
-    public getChildContext(): any {
+    public getChildContext(): GridContext {
         return {
             filterContext: this._filterContext,
             grid: this,
@@ -238,11 +241,11 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected abstract get bodyType(): { new(): GridBody };
+    protected abstract get bodyType(): { new (props: GridBodyProps): GridBody };
 
-    protected abstract get headerType(): { new(): GridHeader };
+    protected abstract get headerType(): { new (props: GridHeaderProps): GridHeader };
 
-    protected get spinnerType(): { new(): React.Component } | React.SFC {
+    protected get spinnerType(): { new (props: any): React.Component } | React.SFC {
         return () => <span>{this.messages.loading}</span>;
     }
 

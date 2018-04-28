@@ -1,4 +1,4 @@
-import { GridCell } from './grid-cell';
+import { GridCell, GridCellProps } from './grid-cell';
 import { GridColumn } from './grid-column';
 import { GridRow, GridRowProps, GridRowStyle } from './grid-row';
 import { GridHeaderCellStyle } from './grid-header-cell';
@@ -12,7 +12,7 @@ export interface GridHeaderRowStyle extends GridRowStyle {
 }
 
 export abstract class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S = any> extends GridRow<P, S> {
-    protected getCellTypeByColumn(column: GridColumn): { new(): GridCell } {
+    protected getCellTypeByColumn(column: GridColumn): { new (props: GridCellProps): GridCell } {
         return column.props.header ? column.props.header.cellType : null;
     }
 }
