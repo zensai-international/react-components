@@ -19,6 +19,18 @@ export interface GridBodyRowProps extends GridRowProps {
 }
 
 export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = {}> extends GridRow<P, S> {
+    protected getAttributes(): React.HTMLAttributes<{}> {
+        const className = this.style.className;
+        const index = this.props.index;
+
+        return {
+            className: className,
+            'data-row-index': index,
+            onClick: this.handleClick,
+            role: 'row'
+        } as any;
+    }
+
     protected getCellTypeByColumn(column: GridColumn): { new(): GridCell } {
         return column.props.body ? column.props.body.cellType : null;
     }
