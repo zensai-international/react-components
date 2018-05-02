@@ -3,12 +3,12 @@ import { GridBody, GridBodyProps } from './grid-body';
 import { GridHeader, GridHeaderProps } from './grid-header';
 import { Grid as GridBase, GridProps, GridState } from '../grid';
 
-export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends GridBase<P, S> {
+export class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends GridBase<P, S> {
     public render(): JSX.Element {
-        const className = this.props.style.className;
+        const attributes = this.getAttributes();
 
         return (
-            <div className={className}>
+            <div {...attributes}>
                 {this.renderHeader()}
                 {this.renderBody()}
             </div>

@@ -17,6 +17,15 @@ export interface GridHeaderStyle extends Style {
 }
 
 export abstract class GridHeader<P extends GridHeaderProps = GridHeaderProps, S = any> extends GridComponent<P, S> {
+    protected getAttributes(): React.HTMLAttributes<{}> {
+        const className = this.props.style.className;
+
+        return {
+            className: className,
+            role: 'rowheader'
+        };
+    }
+
     protected renderRows(): React.ReactNode {
         const Row = this.rowType;
         const rowStyle = this.props.style.row;
