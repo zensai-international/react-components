@@ -35,7 +35,7 @@ ReactDom.render(
         {
             (dataSource: DataSource) =>
                 <InfiniteScrollPager dataSource={dataSource}>
-                    <table.Grid autoBind={true} bodyRowTemplate={renderBodyRow} dataSource={dataSource} selectionMode={GridSelectionMode.Multiple}>
+                    <table.Grid autoBind={true} bodyRowTemplate={renderBodyRow} dataSource={dataSource} key="grid" selectionMode={GridSelectionMode.Multiple}>
                         <GridSelectorColumn />
                         <GridExpanderColumn />
                         <GridColumn field="title" title="Title" />

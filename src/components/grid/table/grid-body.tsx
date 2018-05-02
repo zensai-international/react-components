@@ -14,10 +14,10 @@ export class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> extends G
     }
 
     public render(): JSX.Element {
-        const className = this.props.style.className;
+        const attributes = this.getAttributes();
 
         return (
-            <tbody className={className}>
+            <tbody {...attributes}>
                 {this.renderRows()}
             </tbody>
         );

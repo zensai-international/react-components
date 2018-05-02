@@ -20,6 +20,15 @@ export interface GridBodyProps {
 }
 
 export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> extends GridComponent<P, S> {
+    protected getAttributes(): React.HTMLAttributes<{}> {
+        const className = this.props.style.className;
+
+        return {
+            className: className,
+            role: 'rowgroup'
+        };
+    }
+
     protected renderDataRow(item: any, index: number): React.ReactNode {
         const Row = this.rowType;
         const style = this.props.style;

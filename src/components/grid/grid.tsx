@@ -88,6 +88,16 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         } as S;
     }
 
+    protected getAttributes(): React.HTMLAttributes<{}> {
+        const className = this.props.style.className;
+
+        return {
+            className: className,
+            // 'data-name': key,
+            role: 'grid'
+        } as any;
+    }
+
     public getChildContext(): GridContext {
         return {
             filterContext: this._filterContext,
