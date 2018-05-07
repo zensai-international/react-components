@@ -42,7 +42,7 @@ export class FilterContext {
 
     public delete(keys: any[]) {
         for (const key of keys) {
-            this._expressionByKey[key] = null;
+            delete this._expressionByKey[key];
         }
 
         this.handleChange();
@@ -50,6 +50,10 @@ export class FilterContext {
 
     public get(key: any): ConditionalExpression {
         return this._expressionByKey[key];
+    }
+
+    public get keys(): any[] {
+        return Object.keys(this._expressionByKey);
     }
 
     public get onChange(): Event<ConditionalExpression> {
