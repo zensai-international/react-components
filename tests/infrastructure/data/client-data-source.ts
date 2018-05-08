@@ -75,11 +75,11 @@ export default describe('ClientDataSource', () => {
         let dataSource: DataSource;
 
         beforeEach(() => {
-            const data = [];
+            const data = [{}, {}, {}];
 
             dataSource = new ClientDataSource<any>({
                 data: new Promise<any[]>((resolve: (data: any[]) => void) => {
-                    resolve(data);
+                    setTimeout(() => resolve(data), 0);
                 })
             })
         });
@@ -87,7 +87,8 @@ export default describe('ClientDataSource', () => {
         it('if state is "DataSourceState.Empty"', async () => {
             const view = await dataSource.getView({});
 
-            expect(view).is.not.null;
+            expect(view, 'view').is.not.null;
+            expect(view.data.length, 'view.data.length').to.equal(3);
         });
 
         it('if state is "DataSourceState.Binding"', async () => {
@@ -96,6 +97,7 @@ export default describe('ClientDataSource', () => {
             const view = await dataSource.getView({});
 
             expect(view).is.not.null;
+            expect(view.data.length, 'view.data.length').to.equal(3);
         });
 
         it('if state is "DataSourceState.Bound"', async () => {
@@ -104,6 +106,7 @@ export default describe('ClientDataSource', () => {
             const view = await dataSource.getView({});
 
             expect(view).is.not.null;
+            expect(view.data.length, 'view.data.length').to.equal(3);
         });
     });
 

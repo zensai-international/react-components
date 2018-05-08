@@ -80,7 +80,7 @@ export class GridSelector {
 
     public isAllSelected(): boolean {
         const dataSource = this._grid.props.dataSource;
-        const totalCount = dataSource.view.totalCount;
+        const totalCount = dataSource.view ? dataSource.view.totalCount : null;
 
         return (this._grid.state.selectedItems.length == totalCount);
     }
