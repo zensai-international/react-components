@@ -13,7 +13,7 @@ export abstract class GridBodyCell<P extends GridBodyCellProps = GridBodyCellPro
     protected getAttributes(): React.HTMLAttributes<{}> {
         const content = this.renderContent();
         const className = this.style.className;
-        const field = this.props.column.props.field;
+        const field = this.props.column ? this.props.column.props.field : '';
         const title = ObjectHelper.isString(content) ? content : '';
 
         return {

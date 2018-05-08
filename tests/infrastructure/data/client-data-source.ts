@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { DataType, SortDirection } from '../../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../../src/infrastructure/data/client-data-source';
-import { DataSourceState, DataViewMode } from '../../../src/infrastructure/data/data-source';
+import { DataSourceState, DataViewMode, DataSource } from '../../../src/infrastructure/data/data-source';
 import { TypeConverterProvider } from '../../../src/infrastructure/type-converter';
 import { ComparisonOperator } from '../../../src/infrastructure/expressions/expression';
 
@@ -69,6 +69,42 @@ export default describe('ClientDataSource', () => {
 
         expect(view.data.length).to.equal(1);
         expect(view.data[0].field).to.equal('value0');
+    });
+
+    describe('getView', () => {
+        let dataSource: DataSource;
+
+        beforeEach(() => {
+            const data = [];
+
+            dataSource = new ClientDataSource<any>({
+                data: new Promise<any[]>((resolve: (data: any[]) => void) => {
+                    resolve(data);
+                })
+            })
+        });
+
+        it('if state is "DataSourceState.Empty"', async () => {
+            const view = await dataSource.getView({});
+
+            expect(view).is.not.null;
+        });
+
+        it('if state is "DataSourceState.Binding"', async () => {
+            dataSource.dataBind();
+
+            const view = await dataSource.getView({});
+
+            expect(view).is.not.null;
+        });
+
+        it('if state is "DataSourceState.Bound"', async () => {
+            await dataSource.dataBind();
+
+            const view = await dataSource.getView({});
+
+            expect(view).is.not.null;
+        });
     });
 
     describe('group', () => {

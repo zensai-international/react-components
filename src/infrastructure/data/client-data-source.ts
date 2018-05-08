@@ -223,13 +223,34 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         this._operations[DataSourceOperation.Group] = this.createGroupOperation(expression);
     }
 
-    public getView(props: DataViewProps): DataView<T> {
-        const result = this.createInitialView(this._data, props);
-        const operations = this.createOperations(props);
+    public getView(props: DataViewProps): Promise<DataView<T>> {
+        const createView = () => {
+            const result = this.createInitialView(this._data, props);
+            const operations = this.createOperations(props);
+    
+            this.runOperations(result, operations);
 
-        this.runOperations(result, operations);
+            return result;
+        };
 
-        return result;
+        switch (this.state) {
+            case DataSourceState.Empty:
+                return this.dataBind().then(() => createView());
+            case DataSourceState.Binding:
+                return new Promise<DataView<T>>((resolve: (view: DataView<T>) => void) => {
+                    const handleDataBound = () => {
+                        const view = createView();
+
+                        this.onDataBound.off(handleDataBound);
+
+                        resolve(view);
+                    };
+
+                    this.onDataBound.on(handleDataBound);
+                });
+            case DataSourceState.Bound:
+                return Promise.resolve(createView());
+        }
     }
 
     public read() {

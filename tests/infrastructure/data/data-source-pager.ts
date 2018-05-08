@@ -20,7 +20,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.Last);
 
-                expect(pager.canMoveToPage(PageType.First)).equal(true);
+                expect(pager.canMoveToPage(PageType.First)).to.equal(true);
             });
 
             it('if current page is first', () => {
@@ -28,7 +28,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.First);
 
-                expect(pager.canMoveToPage(PageType.First)).equal(false);
+                expect(pager.canMoveToPage(PageType.First)).to.equal(false);
             });
         });
 
@@ -38,7 +38,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.First);
 
-                expect(pager.canMoveToPage(PageType.Last)).equal(true);
+                expect(pager.canMoveToPage(PageType.Last)).to.equal(true);
             });
 
             it('if current page is last', () => {
@@ -46,7 +46,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.Last);
 
-                expect(pager.canMoveToPage(PageType.Last)).equal(false);
+                expect(pager.canMoveToPage(PageType.Last)).to.equal(false);
             });
         });
 
@@ -56,7 +56,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.First);
 
-                expect(pager.canMoveToPage(PageType.Next)).equal(true);
+                expect(pager.canMoveToPage(PageType.Next)).to.equal(true);
             });
 
             it('if current page is last', () => {
@@ -64,7 +64,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.Last);
 
-                expect(pager.canMoveToPage(PageType.Next)).equal(false);
+                expect(pager.canMoveToPage(PageType.Next)).to.equal(false);
             });
         });
 
@@ -74,7 +74,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.Last);
 
-                expect(pager.canMoveToPage(PageType.Previous)).equal(true);
+                expect(pager.canMoveToPage(PageType.Previous)).to.equal(true);
             });
 
             it('if current page is first', () => {
@@ -82,7 +82,7 @@ export default describe('DataSourcePager', () => {
 
                 pager.moveToPage(PageType.First);
 
-                expect(pager.canMoveToPage(PageType.Previous)).equal(false);
+                expect(pager.canMoveToPage(PageType.Previous)).to.equal(false);
             });
         });
     });

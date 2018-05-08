@@ -29,7 +29,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
 
     protected getAttributes(): React.HTMLAttributes<{}> {
         const field = this.props.column.props.field;
-        const className = this.props.style.className;
+        const className = this.style.className;
 
         return {
             className: className,
