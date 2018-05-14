@@ -166,7 +166,6 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
     }
 
     public dataBind(): Promise<DataView<T>> {
-        debugger;
         const createView = () => {
             const result = this.createInitialView(this._data, this.viewProps);
             this.runOperations(result, this._operations);
