@@ -45,7 +45,7 @@
   },
   "scripts": {
     "build:dev": "webpack --config webpack.config.js",
-    "build:dev-watch": "webpack --config webpack.config.js --display-error-details --display-modules --watch",
+    "build:dev-watch": "webpack --config webpack.config.js --watch",
     "build:prod": "webpack --config webpack.config.js",
     "test": "karma start karma.config.js --watch"
   },
