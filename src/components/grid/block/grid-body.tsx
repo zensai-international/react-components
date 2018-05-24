@@ -4,10 +4,10 @@ import { GridBody as GridBodyBase, GridBodyProps } from '../grid-body';
 
 export class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> extends GridBodyBase<P, S> {
     public render(): JSX.Element {
-        const className = this.props.style.className;
+        const attributes = this.getAttributes();
 
         return (
-            <div className={className}>
+            <div {...attributes}>
                 {this.renderRows()}
             </div>
         );

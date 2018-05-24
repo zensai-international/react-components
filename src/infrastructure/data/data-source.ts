@@ -55,7 +55,7 @@ export interface DataSource<T = {}> {
     dataBind(): Promise<DataView<T>>;
     delete(item: T);
     filter(expression: ConditionalExpression);
-    getView(props: DataViewProps): DataView<T>;
+    getView(props: DataViewProps): Promise<DataView<T>>;
     group(expression: GroupExpression);
     read();
     setPageIndex(value: number);

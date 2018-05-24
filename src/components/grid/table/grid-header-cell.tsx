@@ -3,10 +3,10 @@ import { GridHeaderCell as GridHeaderCellBase, GridHeaderCellProps, GridHeaderCe
 
 export class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderCellProps, S = GridHeaderCellState>  extends GridHeaderCellBase<P, S> {
     public render(): JSX.Element {
-        const className = this.style.className;
+        const attributes = this.getAttributes();
 
         return (
-            <th className={className} onClick={this.handleClick}>
+            <th {...attributes}>
                 {this.renderContent()}
             </th>
         );

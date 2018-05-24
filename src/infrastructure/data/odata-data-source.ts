@@ -250,7 +250,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     public delete(item: T) {
     }
 
-    public getView(props: DataViewProps): DataView<T> {
+    public getView(props: DataViewProps): Promise<DataView<T>> {
         throw new Error('Method not implemented.');
     }
 

@@ -8,7 +8,7 @@ export class GridSelector {
         this._grid = grid;
     }
 
-    private getAllItems(): any[] {
+    private getAllItems(): Promise<any[]> {
         const dataSource = this._grid.props.dataSource;
 
         if (!dataSource.view) {
@@ -22,8 +22,8 @@ export class GridSelector {
                     filteredBy: dataSource.view.filteredBy,
                     sortedBy: dataSource.view.sortedBy
                 })
-                .data
-            : dataSource.view.data;
+                .then(x => x.data)
+            : Promise.resolve(dataSource.view.data);
     }
 
     public select(item: any) {
@@ -79,17 +79,18 @@ export class GridSelector {
     }
 
     public isAllSelected(): boolean {
-        const allItems = this.getAllItems();
+        const dataSource = this._grid.props.dataSource;
+        const totalCount = dataSource.view ? dataSource.view.totalCount : null;
 
-        return (allItems != null) && (allItems.length > 0) && (this._grid.state.selectedItems.length == allItems.length);
+        return (this._grid.state.selectedItems.length == totalCount);
     }
 
     public isSelected(item: any): boolean {
         return (this._grid.state.selectedItems.indexOf(item) != -1);
     }
 
-    public selectAll() {
-        const allItems = this.getAllItems();
+    public async selectAll() {
+        const allItems = await this.getAllItems();
 
         if (allItems != null) {
             const grid = this._grid;

@@ -6,6 +6,6 @@ module.exports = function (config) {
         frameworks: ['mocha'],
         plugins: ['karma-chrome-launcher', 'karma-mocha', 'karma-mocha-reporter'/*, 'karma-phantomjs-launcher'*/],
         reporters: ['mocha'],
-        singleRun: false
+        singleRun: true
     });
 };

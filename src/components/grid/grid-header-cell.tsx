@@ -27,6 +27,18 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
         this.state = { showFilter: false } as S;
     }
 
+    protected getAttributes(): React.HTMLAttributes<{}> {
+        const field = this.props.column.props.field;
+        const className = this.style.className;
+
+        return {
+            className: className,
+            'data-column-name': field,
+            onClick: this.handleClick,
+            role: 'columnheader'
+        } as any;
+    }
+
     protected getSortDirection(): SortDirection {
         const field = this.props.column.props.field;
         const dataSource = this.context.grid.props.dataSource;

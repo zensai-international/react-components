@@ -4,10 +4,10 @@ import { GridHeaderRow as GridHeaderRowBase, GridHeaderRowProps } from '../grid-
 
 export class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRowProps, S = {}> extends GridHeaderRowBase<P, S> {
     public render(): JSX.Element {
-        const className = this.props.style.className;
+        const attributes = this.getAttributes();
 
         return (
-            <div className={className} key={this.props.index}>
+            <div {...attributes}>
                 {this.renderCells()}
             </div>
         );

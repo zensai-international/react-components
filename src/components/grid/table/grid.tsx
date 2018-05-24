@@ -5,10 +5,10 @@ import { Grid as GridBase, GridProps, GridState } from '../grid';
 
 export class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends GridBase<P, S> {
     public render(): JSX.Element {
-        const className = this.props.style.className;
+        const attributes = this.getAttributes();
 
         return (
-            <table className={className}>
+            <table {...attributes}>
                 {this.renderHeader()}
                 {this.renderBody()}
             </table>
