@@ -3,11 +3,11 @@ import { ConditionalExpression } from '../expressions/expression';
 import { ConditionalExpressionBuilder } from '../expressions/conditional-expression-builder';
 
 export class FilterContext {
-    private _expressionByKey: { [key: number]: ConditionalExpression };
+    private _expressionByKey: { [key: string]: ConditionalExpression };
     private _onChange: Event<ConditionalExpression>;
 
-    public constructor() {
-        this._expressionByKey = {};
+    public constructor(expressionByKey?: { [key: string]: ConditionalExpression }) {
+        this._expressionByKey = expressionByKey || {};
 
         this._onChange = new Event<ConditionalExpression>();
     }

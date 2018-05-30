@@ -1,18 +1,21 @@
 import * as Enzyme from 'enzyme';
 import { expect } from 'chai';
 import * as React from 'react';
-import { ClientDataSource, DataSource, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src/index';
+import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src/index';
 
 const Grid = table.Grid;
 
 export default describe('<Grid />', () => {
+    const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
+    let dataSource: DataSource;
+
+    beforeEach(() => {
+        dataSource = new ClientDataSource({ data: () => data.map(x => x) });
+    });
+
     describe('behavior', () => {
-        describe('expansion', () =>{
-            const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
-
+        describe('expansion', () => {
             function createGrid(isExpandable: boolean = null): Enzyme.ReactWrapper<GridProps, GridState> {
-                const dataSource: DataSource = new ClientDataSource({ data: () => data.map(x => x) });
-
                 return Enzyme.mount(
                     <Grid
                         bodyRowTemplate={(rowType: { new (): GridBodyRow }, props: GridBodyRowProps) => {
@@ -58,10 +61,26 @@ export default describe('<Grid />', () => {
             });
         });
 
+        describe('filtering', () => {
+            it('if "FilterContext" has expressions', () => {
+                const expressionByKey = { ['key1']: { field: 'title', operator: ComparisonOperator.Equal, value: 'title0' } };
+                const filterContext = new FilterContext(expressionByKey);
+
+                Enzyme.mount(
+                    <Grid dataSource={dataSource} filterContext={filterContext}>
+                    </Grid>
+                );
+
+                const { filteredBy } = dataSource.view;
+
+                expect(filteredBy).to.equal(expressionByKey['key1']);
+            });
+        });
+
         describe('selection', () => {
             function createGrid(props: Partial<GridProps>): Enzyme.ReactWrapper<GridProps, GridState> {
                 return Enzyme.mount<GridProps>(
-                    <Grid {...props} autoBind={true} dataSource={dataSource}>
+                    <Grid {...props} dataSource={dataSource}>
                         <GridColumn
                             body={{ style: { className: 'title-body' } }}
                             header={{ style: { className: 'title-header' } }}
@@ -70,9 +89,6 @@ export default describe('<Grid />', () => {
                     </Grid>
                 );
             }
-
-            const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
-            const dataSource: DataSource = new ClientDataSource({ data: () => data });
 
             describe('if selection mode is single', () => {
                 let grid: Enzyme.ReactWrapper<any, GridState>;
@@ -151,14 +167,11 @@ export default describe('<Grid />', () => {
         });
 
         describe('sorting', () => {
-            let dataSource: DataSource;
             let grid: Enzyme.ReactWrapper;
 
             beforeEach(() => {
-                dataSource = new ClientDataSource({ data: () => [] });
-
                 grid = Enzyme.mount(
-                    <Grid autoBind={true} dataSource={dataSource}>
+                    <Grid dataSource={dataSource}>
                         <GridColumn
                             field="title"
                             header={{ style: { title: { className: 'title' } } }}
@@ -235,19 +248,19 @@ export default describe('<Grid />', () => {
         describe('body', () => {
             it('style', () => {
                 const grid = Enzyme.mount(
-                    <Grid autoBind={true} dataSource={new ClientDataSource({ data: () => [{}] })}>
+                    <Grid dataSource={dataSource}>
                         <GridColumn body={{ style: { className: 'body' } }} field="title" title="Title" />
                     </Grid>
                 );
 
-                expect(grid.find('.body').length).to.equal(1);
+                expect(grid.find('.body').length).to.equal(dataSource.view.data.length);
             });
         });
 
         describe('header', () => {
             it('style', () => {
                 const grid = Enzyme.mount(
-                    <Grid autoBind={true} dataSource={new ClientDataSource({ data: () => [{}] })}>
+                    <Grid dataSource={dataSource}>
                         <GridColumn header={{ style: { className: 'header', title: { className: 'header-title' } } }} field="title" title="Title" />
                     </Grid>
                 );

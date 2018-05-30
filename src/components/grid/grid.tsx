@@ -198,6 +198,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected setDataSource(dataSource: DataSource) {
         if ((this.props.autoBind != false) && (dataSource.state == DataSourceState.Empty)) {
+            const filterExpression = this._filterContext.build();
+
+            if (filterExpression) {
+                dataSource.filter(filterExpression);
+            }
+
             dataSource.dataBind();
         }
 
