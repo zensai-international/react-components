@@ -6,7 +6,11 @@ import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table,
 const Grid = table.Grid;
 
 export default describe('<Grid />', () => {
-    const data = [{ title: 'title0' }, { title: 'title1' }, { title: 'title2' }];
+    const data = [
+        { array: ['value0', 'value1', 'value2'], title: 'title0' },
+        { array: ['value0', 'value1', 'value2'], title: 'title1' },
+        { array: ['value0', 'value1', 'value2'], title: 'title2' }
+    ];
     let dataSource: DataSource;
 
     beforeEach(() => {
@@ -268,6 +272,19 @@ export default describe('<Grid />', () => {
                 expect(grid.find('.header').length, 'header').to.equal(1);
                 expect(grid.find('.header > .header-title').length, 'header-title').to.equal(1);
             });
+        });
+    });
+
+    describe('render', () => {
+        it('body cell if value is array', () => {
+            const grid = Enzyme.mount(
+                <Grid dataSource={dataSource}>
+                    <GridColumn body={{ style: { className: 'body' } }} field="array" />
+                </Grid>
+            );
+            const bodyCell = grid.find('.body').first();
+
+            expect(bodyCell.html()).to.contain('value0, value1, value2');
         });
     });
 });

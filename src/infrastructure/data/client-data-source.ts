@@ -165,7 +165,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         executeViewInitializer(DataSourceOperation.SetPageIndex);
     }
 
-    public dataBind(): Promise<DataView<T>> {
+    public dataBind(data?: T[]): Promise<DataView<T>> {
         const createView = () => {
             const result = this.createInitialView(this._data, this.viewProps);
             this.runOperations(result, this._operations);
@@ -175,7 +175,9 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
         this.handleDataBinding();
 
-        if (!this._data && this._props.data && ObjectHelper.isFunction(this._props.data)) {
+        if (data) {
+            this._data = data;
+        } else if (!this._data && this._props.data && ObjectHelper.isFunction(this._props.data)) {
             this._data = (this._props.data as () => T[])();
         }
 

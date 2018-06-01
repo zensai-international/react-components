@@ -6,7 +6,7 @@ export class ClientDataSourceProvider extends DataSourceProvider<ClientDataSourc
         if ((this.props.data != nextProps.data)
             && ((this.props.data == null) || Array.isArray(this.props.data))
             && ((nextProps.data == null) || Array.isArray(nextProps.data))) {
-            this.dataSource = this.createDataSource(nextProps);
+            (this.dataSource as ClientDataSource).dataBind(nextProps.data as any[]);
         }
     }
 

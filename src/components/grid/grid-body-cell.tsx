@@ -43,11 +43,14 @@ export abstract class GridBodyCell<P extends GridBodyCellProps = GridBodyCellPro
             return this.props.children;
         }
 
-        const column = this.props.column;
-        const item = this.props.rowProps.item;
+        const { column, rowProps } = this.props;
+        const { body } = column.props;
+        const item = rowProps.item;
         const value = this.getValue();
-        const template = column.props.body ? column.props.body.template : null;
+        const template = (body && body.template)
+            ? body.template
+            : (item, column, cell) => (value instanceof Array ? value.join(', ') : value);
 
-        return template ? template(item, column, this) : value;
+        return template(item, column, this);
     }
 }
