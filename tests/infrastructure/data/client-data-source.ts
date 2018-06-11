@@ -31,16 +31,24 @@ export default describe('ClientDataSource', () => {
             });
             const dataSource = new ClientDataSource<{ field: string }>({ data: data });
 
-            dataSource.dataBind();
+            const view = await dataSource.dataBind();
+
+            expect(view).is.not.null;
+            expect(dataSource.state, 'state').to.equal(DataSourceState.Bound);
+            expect(view.data.length, 'data.length').to.equal(3);
+        });
+
+        it('if data is function that returns promise', async () => {
+            const data = () => new Promise((resolve: (value?: any) => void) => {
+                resolve([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
+            });
+            const dataSource = new ClientDataSource<{ field: string }>({ data: data });
 
             const view = await dataSource.dataBind();
 
             expect(view).is.not.null;
-            expect(dataSource.state).to.equal(DataSourceState.Bound, 'state');
-
-            expect(view.data[0].field).to.equal('value0');
-            expect(view.data[1].field).to.equal('value1');
-            expect(view.data[2].field).to.equal('value2');
+            expect(dataSource.state, 'state').to.equal(DataSourceState.Bound);
+            expect(view.data.length, 'data.length').to.equal(3);
         });
     });
 

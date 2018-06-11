@@ -12,7 +12,7 @@ import { ObjectHelper } from '../helpers/object-helper';
 export type ViewInitializer<T> = (view: DataView<T>) => void;
 
 export interface ClientDataSourceProps<T = {}> extends DataSourceProps {
-    data: Promise<T[]> | (() => T[]) | T[];
+    data: (() => Promise<T[]>) | Promise<T[]> | (() => T[]) | T[];
 }
 
 export class ClientDataSource<T = {}> implements DataSource<T> {
@@ -172,13 +172,29 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
             return result;
         };
+        const handlePromise = (promise: Promise<T[]>): Promise<DataView<T>> => {
+            return promise
+                .then(x => {
+                    this._data = x;
+
+                    this._view = createView();
+                    this.handleDataBound();
+                })
+                .then(() => this.view);
+        };
 
         this.handleDataBinding();
 
         if (data) {
             this._data = data;
         } else if (!this._data && this._props.data && ObjectHelper.isFunction(this._props.data)) {
-            this._data = (this._props.data as () => T[])();
+            const funcResult = (this._props.data as () => T[])();
+
+            if (funcResult instanceof Array) {
+                this._data = funcResult;
+            } else if (funcResult as Promise<T[]>) {
+                return handlePromise(funcResult);
+            }
         }
 
         if (this._data) {
@@ -189,14 +205,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                 resolve(this.view);
             });
         } else if (this._props.data && !ObjectHelper.isFunction(this._props.data)) {
-            return (this._props.data as Promise<T[]>)
-                .then(x => {
-                    this._data = x;
-
-                    this._view = createView();
-                    this.handleDataBound();
-                })
-                .then(() => this.view);
+            return handlePromise(this._props.data as Promise<T[]>);
         }
     }
 
