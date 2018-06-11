@@ -46,8 +46,11 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     }
 
     protected handleScroll = () => {
-        if ((this.props.dataSource.state != DataSourceState.Binding) && isElementVisible(this._visibilityDetector)) {
+        if ((this.props.dataSource.state != DataSourceState.Binding)
+            && this._visibilityDetector
+            && isElementVisible(this._visibilityDetector)) {
             const dataSourcePager = new DataSourcePager(this.props.dataSource);
+
             dataSourcePager.moveToPage(PageType.Next);
         }
     }
