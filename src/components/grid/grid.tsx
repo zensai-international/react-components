@@ -33,11 +33,6 @@ export interface GridMessages {
     noItems: string;
 }
 
-export enum GridSelectionMode {
-    Single,
-    Multiple
-}
-
 export interface GridProps {
     autoBind?: boolean;
     bodyRowTemplate?: GridBodyRowTemplate;
