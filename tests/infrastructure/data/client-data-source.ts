@@ -426,6 +426,70 @@ export default describe('ClientDataSource', () => {
             });
         });
 
+        describe('by two "number" fields', () => {
+            const testCases = [
+                [
+                    { numberField0: 0, numberField1: 0 },
+                    { numberField0: 0, numberField1: 1 },
+                    { numberField0: 0, numberField1: 2 },
+                    { numberField0: 1, numberField1: 0 }
+                ],
+                [
+                    { numberField0: 0, numberField1: 2 },
+                    { numberField0: 0, numberField1: 0 },
+                    { numberField0: 0, numberField1: 1 },
+                    { numberField0: 1, numberField1: 0 }],
+                [
+                    { numberField0: 0, numberField1: 2 },
+                    { numberField0: 0, numberField1: 1 },
+                    { numberField0: 0, numberField1: 0 },
+                    { numberField0: 1, numberField1: 0 }
+                ]
+            ];
+
+            it('ascending sorting', () => {
+                testCases.forEach(x => {
+                    const dataSource = new ClientDataSource({ data: x });
+
+                    dataSource.sort([
+                        { direction: SortDirection.Ascending, field: 'numberField0' },
+                        { direction: SortDirection.Ascending, field: 'numberField1' }
+                    ]);
+
+                    dataSource.dataBind();
+
+                    const { data } = dataSource.view;
+                    console.log(data);
+
+                    expect(data[0].numberField1).to.equal(0);
+                    expect(data[1].numberField1).to.equal(1);
+                    expect(data[2].numberField1).to.equal(2);
+                    expect(data[3].numberField1).to.equal(0);
+                });
+            });
+
+            it('descending sorting', () => {
+                testCases.forEach(x => {
+                    const dataSource = new ClientDataSource({ data: x });
+
+                    dataSource.sort([
+                        { direction: SortDirection.Descending, field: 'numberField0' },
+                        { direction: SortDirection.Descending, field: 'numberField1' }
+                    ]);
+
+                    dataSource.dataBind();
+
+                    const { data } = dataSource.view;
+                    console.log(data);
+
+                    expect(data[0].numberField1).to.equal(0);
+                    expect(data[1].numberField1).to.equal(2);
+                    expect(data[2].numberField1).to.equal(1);
+                    expect(data[3].numberField1).to.equal(0);
+                });
+            });
+        });
+
         describe('clear previous sorting', async () => {
             const data = [{ stringField: 'value0' }, { stringField: 'value1' }, { stringField: 'value2' }];
             const dataSource = new ClientDataSource({ data: () => data });

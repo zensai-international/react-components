@@ -121,6 +121,12 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
     }
 
     private getComparer(expressions: SortExpression[]): (x: T, y: T) => number {
+        function mergeComparer(prevComparer: (x: T, y: T) => number, comparer: (x: T, y: T) => number): ((x: T, y: T) => number) {
+            return (x: T, y: T) => prevComparer
+                ? prevComparer(x, y) || comparer(x, y)
+                : comparer(x, y);
+        }
+
         let result = null;
 
         for (let i = 0; i < expressions.length; i++) {
@@ -132,9 +138,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                     return Comparer.instance.compare(xValue, yValue, direction);
                 })(expressions[i].direction, expressions[i].field);
 
-            result = (result != null)
-                ? ((prevComparer) => (x, y) => prevComparer(x, y))(result)
-                : comparer;
+            result = result ? mergeComparer(result, comparer) : comparer;
         }
 
         return result;
