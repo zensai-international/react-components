@@ -1,5 +1,5 @@
 import { GridContext } from './grid';
-import { GridCell } from './grid-cell';
+import { GridCell, GridCellProps } from './grid-cell';
 import { GridColumn } from './grid-column';
 import { GridRow, GridRowProps, GridRowStyle } from './grid-row';
 import { Style, StyleHelper } from '../common';
@@ -31,7 +31,7 @@ export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps,
         } as any;
     }
 
-    protected getCellTypeByColumn(column: GridColumn): { new(): GridCell } {
+    protected getCellTypeByColumn(column: GridColumn): { new (props: GridCellProps): GridCell } {
         return column.props.body ? column.props.body.cellType : null;
     }
 

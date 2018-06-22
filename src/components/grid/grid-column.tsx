@@ -1,20 +1,20 @@
 import { GridComponent } from './grid-component';
-import { GridBodyCell } from './grid-body-cell';
-import { GridCell, GridCellStyle } from './grid-cell';
-import { GridHeaderCell, GridHeaderCellStyle } from './grid-header-cell';
+import { GridBodyCell, GridBodyCellProps } from './grid-body-cell';
+import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
+import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellStyle } from './grid-header-cell';
 
 export interface GridColumnCellProps {
-    cellType?: { new (): GridCell };
+    cellType?: { new (props: GridCellProps): GridCell };
     style?: GridCellStyle;
 }
 
 export interface GridColumnBodyCellProps extends GridColumnCellProps {
-    cellType?: { new (): GridBodyCell };
+    cellType?: { new (props: GridBodyCellProps): GridBodyCell };
     template?: (item: any, column: GridColumn, cell: GridBodyCell) => React.ReactNode;
 }
 
 export interface GridColumnHeaderCellProps extends GridColumnCellProps {
-    cellType?: { new (): GridHeaderCell };
+    cellType?: { new (props: GridHeaderCellProps): GridHeaderCell };
     style?: GridHeaderCellStyle;
     template?: (column: GridColumn, cell: GridHeaderCell) => React.ReactNode;
 }

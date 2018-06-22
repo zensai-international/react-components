@@ -43,9 +43,7 @@ module.exports = {
     ],
     resolve: {
         alias: {
-            'react$': path.resolve(__dirname, './node_modules/react/dist/react-with-addons'),
-            'react-dom$': path.resolve(__dirname, './node_modules/react-dom/dist/react-dom'),
-            'react-addons-test-utils$': path.resolve(__dirname, './node_modules/react-addons-test-utils/index'),
+            'react-addons-test-utils$': path.resolve(__dirname, './node_modules/react-dom/test-utils'),
             'sinon': 'sinon/pkg/sinon',
             'url': path.resolve(__dirname, './node_modules/url/url'),
         },

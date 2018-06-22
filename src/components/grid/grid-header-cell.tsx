@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
 import { GridColumn } from './grid-column';
-import { GridColumnFilter } from './grid-column-filter';
+import { GridColumnFilter, GridColumnFilterProps } from './grid-column-filter';
 import { Style } from '../common';
 import { SortDirection } from '../../infrastructure/data/common';
 
@@ -140,7 +140,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
             : null;
     }
 
-    protected get filterType(): { new(): GridColumnFilter } {
+    protected get filterType(): { new (props: GridColumnFilterProps): GridColumnFilter } {
         return null;
     }
 }

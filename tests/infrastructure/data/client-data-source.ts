@@ -459,7 +459,6 @@ export default describe('ClientDataSource', () => {
                     dataSource.dataBind();
 
                     const { data } = dataSource.view;
-                    console.log(data);
 
                     expect(data[0].numberField1).to.equal(0);
                     expect(data[1].numberField1).to.equal(1);
@@ -480,7 +479,6 @@ export default describe('ClientDataSource', () => {
                     dataSource.dataBind();
 
                     const { data } = dataSource.view;
-                    console.log(data);
 
                     expect(data[0].numberField1).to.equal(0);
                     expect(data[1].numberField1).to.equal(2);
