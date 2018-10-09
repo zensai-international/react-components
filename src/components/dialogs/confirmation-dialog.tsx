@@ -10,7 +10,7 @@ export interface ConfirmationDialogProps {
 
 interface ConfirmationDialogInternalProps {
     cancel: () => void;
-    confirm: () => void;
+    confirm: (state: ConfirmationDialogState) => void;
 }
 
 export interface ConfirmationDialogState {
@@ -54,7 +54,7 @@ export class ConfirmationDialog<P extends ConfirmationDialogProps = Confirmation
 
     protected handleConfirm = () => {
         this.setState({ isOpen: false }, () => {
-            (this.props as any as ConfirmationDialogInternalProps).confirm();
+            (this.props as any as ConfirmationDialogInternalProps).confirm(this.state);
 
             this.destroy();
         });
