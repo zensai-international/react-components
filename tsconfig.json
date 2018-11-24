@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "outDir": "types",
+        "outDir": "dist/types",
         "jsx": "react",
         "lib": [
             "dom",

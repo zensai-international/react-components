@@ -1,5 +1,6 @@
-.vscode
-tests
+/.vscode
+/tests
+/examples
 /node_modules
 /src
 /typings
@@ -7,4 +8,5 @@ tests
 karma.config.js
 webpack.config.js
 tsconfig.json
+tslint.json
 typings.json
