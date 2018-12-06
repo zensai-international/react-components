@@ -1,16 +1,22 @@
 import { Grid } from './grid';
+import { GridBody } from './grid-body';
 import { GridBodyCell } from './grid-body-cell';
 import { GridBodyRow } from './grid-body-row';
-import { GridBody } from './grid-body';
+import { GridFooter } from './grid-footer';
+import { GridFooterCell } from './grid-footer-cell';
+import { GridFooterRow } from './grid-footer-row';
+import { GridHeader } from './grid-header';
 import { GridHeaderCell } from './grid-header-cell';
 import { GridHeaderRow } from './grid-header-row';
-import { GridHeader } from './grid-header';
 
 export const table = {
     Grid,
     GridBodyCell,
     GridBodyRow,
     GridBody,
+    GridFooter,
+    GridFooterCell,
+    GridFooterRow,
     GridHeaderCell,
     GridHeaderRow,
     GridHeader

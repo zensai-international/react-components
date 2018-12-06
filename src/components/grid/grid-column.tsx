@@ -1,6 +1,7 @@
 import { GridComponent } from './grid-component';
 import { GridBodyCell, GridBodyCellProps } from './grid-body-cell';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
+import { GridFooterCell, GridFooterCellProps } from './grid-footer-cell';
 import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellStyle } from './grid-header-cell';
 
 export interface GridColumnCellProps {
@@ -13,6 +14,11 @@ export interface GridColumnBodyCellProps extends GridColumnCellProps {
     template?: (item: any, column: GridColumn, cell: GridBodyCell) => React.ReactNode;
 }
 
+export interface GridColumnFooterCellProps extends GridColumnCellProps {
+    cellType?: { new (props: GridFooterCellProps): GridFooterCell };
+    template?: (column: GridColumn, cell: GridFooterCell) => React.ReactNode;
+}
+
 export interface GridColumnHeaderCellProps extends GridColumnCellProps {
     cellType?: { new (props: GridHeaderCellProps): GridHeaderCell };
     style?: GridHeaderCellStyle;
@@ -23,6 +29,7 @@ export interface GridColumnProps {
     body?: GridColumnBodyCellProps;
     field?: string;
     filterType?: number;
+    footer?: GridColumnFooterCellProps;
     header?: GridColumnHeaderCellProps;
     isFilterable?: boolean;
     isSortable?: boolean;

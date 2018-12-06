@@ -6,7 +6,7 @@ import { Style } from '../common';
 
 export interface GridRowProps {
     columns: GridColumn[] | JSX.Element[];
-    index: number;
+    index?: number;
     style: GridRowStyle;
 
     onCellClick: (event: React.MouseEvent<any>, sender: any) => void;

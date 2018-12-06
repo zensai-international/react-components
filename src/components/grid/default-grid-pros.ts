@@ -20,6 +20,15 @@ export const DefaultGridProps: Partial<GridProps> = {
                 }
             }
         },
+        footer: {
+            className: '',
+            row: {
+                className: '',
+                cell: {
+                    className: ''
+                }
+            }
+        },
         header: {
             row: {
                 className: '',

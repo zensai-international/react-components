@@ -31,7 +31,7 @@ function renderBodyRow(rowType: { new (): GridBodyRow }, props: GridBodyRowProps
 }
 
 ReactDom.render(
-    <ClientDataSourceProvider data={() => getData(10000)} view={{ mode: DataViewMode.FromFirstToCurrentPage, page: { size: 100 }}}>
+    <ClientDataSourceProvider data={() => getData(500)} view={{ mode: DataViewMode.FromFirstToCurrentPage, page: { size: 100 }}}>
         {
             (dataSource: DataSource) =>
                 <InfiniteScrollPager dataSource={dataSource}>
@@ -42,8 +42,10 @@ ReactDom.render(
                         <GridColumn field="description" title="Description" />
                         <GridColumn
                             isSortable={false}
-                            body={{ template: (x) => (<a href="#">{x.title}</a>) }}
-                            title="Link" />
+                            body={{ template: x => <a href="#">{x.title}</a> }}
+                            footer={{ template: () => 'Link Footer' }}
+                            title="Link"
+                        />
                     </table.Grid>
                 </InfiniteScrollPager>
         }

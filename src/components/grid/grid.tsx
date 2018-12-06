@@ -7,6 +7,7 @@ import { GridBodyRow, GridBodyRowTemplate, GridBodyRowProps } from './grid-body-
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpander } from './grid-expander';
 import { GridExpanderColumn } from './grid-expander-column';
+import { GridFooter, GridFooterProps, GridFooterStyle } from './grid-footer';
 import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellState } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
@@ -63,6 +64,7 @@ export interface GridState {
 
 export interface GridStyle extends Style {
     body: GridBodyStyle;
+    footer: GridFooterStyle;
     header: GridHeaderStyle;
 }
 
@@ -167,21 +169,6 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     protected handleHeaderRowClick = () => {
     }
 
-    protected renderHeader(): React.ReactNode {
-        const Header = this.headerType;
-        const headerStyle = this.props.style.header;
-
-        return (this.props.showHeader != false)
-            ? (
-                <Header
-                    columns={this.columns}
-                    onCellClick={this.handleHeaderCellClick}
-                    onRowClick={this.handleHeaderRowClick}
-                    style={headerStyle} />
-            )
-            : null;
-    }
-
     protected renderBody(): React.ReactNode {
         const Body = this.bodyType;
         const bodyStyle = this.props.style.body;
@@ -192,7 +179,37 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
                 onCellClick={this.handleBodyCellClick}
                 onRowClick={this.handleBodyRowClick}
                 rowTemplate={this.props.bodyRowTemplate}
-                style={bodyStyle} />
+                style={bodyStyle}
+            />
+        );
+    }
+
+    protected renderFooter(): React.ReactNode {
+        const Footer = this.footerType;
+        const footerStyle = this.props.style.footer;
+        const showFooter = this.columns.some(x => x.props.footer != null);
+
+        return showFooter && (
+            <Footer
+                columns={this.columns}
+                onCellClick={null}
+                onRowClick={null}
+                style={footerStyle}
+            />
+        );
+    }
+
+    protected renderHeader(): React.ReactNode {
+        const Header = this.headerType;
+        const headerStyle = this.props.style.header;
+
+        return (this.props.showHeader != false) && (
+            <Header
+                columns={this.columns}
+                onCellClick={this.handleHeaderCellClick}
+                onRowClick={this.handleHeaderRowClick}
+                style={headerStyle}
+            />
         );
     }
 
@@ -258,6 +275,8 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     protected abstract get bodyType(): { new (props: GridBodyProps): GridBody };
+
+    protected abstract get footerType(): { new (props: GridFooterProps): GridFooter };
 
     protected abstract get headerType(): { new (props: GridHeaderProps): GridHeader };
 
