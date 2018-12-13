@@ -14,5 +14,6 @@
         "sourceMap": false,
         "target": "es5"
     },
-    "exclude": ["dist", "examples", "node_modules", "tests"]   
+    "exclude": ["dist", "examples", "node_modules", "tests"]
+     
 }
