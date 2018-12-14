@@ -63,7 +63,7 @@ export class ConfirmationDialog<P extends ConfirmationDialogProps = Confirmation
 
 export declare type ConfirmFunc<P extends ConfirmationDialogProps = ConfirmationDialogProps> = (props?: P) => Promise<{}>;
 
-export function createConfirm<P extends ConfirmationDialogProps = ConfirmationDialogProps>(dialog: (props: P) => JSX.Element): ConfirmFunc {
+export function createConfirm<P extends ConfirmationDialogProps = ConfirmationDialogProps>(dialog: (props: P) => JSX.Element): ConfirmFunc<P> {
     return function(props: P): Promise<{}> {
         return new Promise((resolve, reject) => {
             const requiredProps: ConfirmationDialogInternalProps = {
