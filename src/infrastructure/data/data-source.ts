@@ -57,7 +57,7 @@ export interface DataSource<T = {}> {
     filter(expression: ConditionalExpression);
     getView(props: DataViewProps): Promise<DataView<T>>;
     group(expression: GroupExpression);
-    read();
+    read(): Promise<DataView>;
     setPageIndex(value: number);
     sort(expressions: SortExpression[]);
     update(item: T, field: string, value: any);

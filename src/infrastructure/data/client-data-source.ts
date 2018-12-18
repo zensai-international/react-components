@@ -268,11 +268,12 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         }
     }
 
-    public read() {
+    public read(): Promise<DataView> {
         this._data = null;
+        this._view = null;
         this.changeTracker.apply();
 
-        this.dataBind();
+        return this.dataBind();
     }
 
     public setPageIndex(value: number) {

@@ -6,6 +6,12 @@ import { DataSourceState, DataViewMode, DataSource } from '../../../src/infrastr
 import { TypeConverterProvider } from '../../../src/infrastructure/type-converter';
 import { ComparisonOperator } from '../../../src/infrastructure/expressions/expression';
 
+function getDataPromise<T = any>(data: T[]): Promise<T[]> {
+    return new Promise((resolve: (value?: any) => void) => {
+        setTimeout(() => resolve(data), 0);
+    });
+}
+
 export default describe('ClientDataSource', () => {
     describe('dataBind', () => {
         it('default behavior', async () => {
@@ -26,9 +32,7 @@ export default describe('ClientDataSource', () => {
         });
 
         it('if data is promise', async () => {
-            const data = new Promise((resolve: (value?: any) => void) => {
-                resolve([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
-            });
+            const data = getDataPromise([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
             const dataSource = new ClientDataSource<{ field: string }>({ data: data });
 
             const view = await dataSource.dataBind();
@@ -39,9 +43,7 @@ export default describe('ClientDataSource', () => {
         });
 
         it('if data is function that returns promise', async () => {
-            const data = () => new Promise((resolve: (value?: any) => void) => {
-                resolve([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
-            });
+            const data = getDataPromise([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
             const dataSource = new ClientDataSource<{ field: string }>({ data: data });
 
             const view = await dataSource.dataBind();
@@ -85,11 +87,7 @@ export default describe('ClientDataSource', () => {
         beforeEach(() => {
             const data = [{}, {}, {}];
 
-            dataSource = new ClientDataSource<any>({
-                data: new Promise<any[]>((resolve: (data: any[]) => void) => {
-                    setTimeout(() => resolve(data), 0);
-                })
-            })
+            dataSource = new ClientDataSource<any>({ data: getDataPromise(data) });
         });
 
         it('if state is "DataSourceState.Empty"', async () => {
@@ -125,11 +123,11 @@ export default describe('ClientDataSource', () => {
                 { field0: '10', field1: '11' }, { field0: '10', field1: '11' }
             ];
             const dataSource = new ClientDataSource({ data: () => data });
-    
+
             dataSource.group({ fields: ['field0', 'field1'] });
-    
+
             const view = await dataSource.dataBind();
-    
+
             expect(view.data.length, 'data.length').to.equal(2);
             expect(view.data[0].field0, 'data[0].field0').to.equal('00');
             expect(view.data[0].field1, 'data[0].field1').to.equal('01');
@@ -143,14 +141,36 @@ export default describe('ClientDataSource', () => {
                 { field0: { value: '00' } }
             ];
             const dataSource = new ClientDataSource({ data: () => data });
-    
+
             dataSource.group({ fields: ['field0.value'] });
-    
+
             const view = await dataSource.dataBind();
-    
+
             expect(view.data.length, 'data.length').to.equal(2);
             expect(view.data[0].field0.value, 'data[0].field0.value').is.null;
             expect(view.data[1].field0.value, 'data[0].field0.value').to.equal('00');
+        });
+    });
+
+    describe('read', () => {
+        it('default behavior', async () => {
+            const data = [];
+            const dataSource = new ClientDataSource({ data: () => data });
+
+            const view = await dataSource.read();
+
+            expect(view).is.not.null;
+            expect(dataSource.state, 'state').to.equal(DataSourceState.Bound);
+            expect(view.data, 'data').to.equal(data);
+        });
+
+        it('if run second time', async () => {
+            const dataSource = new ClientDataSource({ data: () => getDataPromise([]) });
+
+            await dataSource.read();
+            dataSource.read();
+
+            expect(dataSource.view).is.null;
         });
     });
 
@@ -213,7 +233,8 @@ export default describe('ClientDataSource', () => {
                     view: {
                         mode: DataViewMode.FromFirstToCurrentPage,
                         page: { size: 1 }
-                    }});
+                    }
+                });
 
                 const view = await dataSource.dataBind();
 
@@ -230,7 +251,8 @@ export default describe('ClientDataSource', () => {
                             view: {
                                 mode: DataViewMode.FromFirstToCurrentPage,
                                 page: { size: 1 }
-                            }});
+                            }
+                        });
 
                         dataSource.setPageIndex(x.pageIndex);
 

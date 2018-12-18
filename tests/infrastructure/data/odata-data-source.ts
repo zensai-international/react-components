@@ -54,7 +54,7 @@ export default describe('ODataDataSource', () => {
             expect(dataSource.view.totalCount, 'totalCount').to.equal(totalCount);
         });
 
-        it(`generated url depends on call times`, async () => {
+        it('generated url depends on call times', async () => {
             const data = sinon.promise().resolves(serviceResult);
             const dataSource = new ODataDataSource<any>({ data: data, url: serviceUrl });
 

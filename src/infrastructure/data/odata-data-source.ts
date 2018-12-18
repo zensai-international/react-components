@@ -268,7 +268,8 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         this._operations[DataSourceOperation.Filter] = this.createFilterOperation(expression);
     }
 
-    public read() {
+    public read(): Promise<DataView> {
+        throw new Error('Method not implemented.');
     }
 
     public setPageIndex(value: number) {
