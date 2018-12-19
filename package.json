@@ -49,7 +49,7 @@
   "scripts": {
     "build:dev": "webpack --mode development",
     "build:dev-watch": "webpack --mode development --watch",
-    "build:prod": "webpack --mode production",
+    "build:prod": "webpack --config webpack.config.prod.js --mode production",
     "test": "karma start karma.config.js --watch"
   },
   "version": "2.1.1"

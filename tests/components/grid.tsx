@@ -2,7 +2,7 @@ import * as Enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 import * as React from 'react';
-import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src/index';
+import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src';
 
 Enzyme.configure({ adapter: new Adapter() });
 

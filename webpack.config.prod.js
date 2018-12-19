@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const BundleVisualizer = require('webpack-visualizer-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
@@ -11,8 +10,7 @@ module.exports = (environment, options) => {
     return {
         context: path.resolve(__dirname, '.'),
         entry: {
-            'examples/grid': ['./examples/grid'],
-            'index.tests': ['./tests/index']
+            'index': ['./src/index']
         },
         externals: {
             'jsdom': 'window',
@@ -38,15 +36,9 @@ module.exports = (environment, options) => {
                 'process.env.NODE_ENV': JSON.stringify(mode)
             }),
             new webpack.NoEmitOnErrorsPlugin(),
-            new ForkTsCheckerWebpackPlugin(),
-            new BundleVisualizer({ filename: './bundle-report.html' })
+            new ForkTsCheckerWebpackPlugin()
         ],
         resolve: {
-            alias: {
-                'react-addons-test-utils$': path.resolve(__dirname, './node_modules/react-dom/test-utils'),
-                'sinon': 'sinon/pkg/sinon',
-                'url': path.resolve(__dirname, './node_modules/url/url'),
-            },
             extensions: ['.js', '.json', '.ts', '.tsx']
         }
     }

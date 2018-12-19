@@ -1,5 +1,6 @@
 import { Grid, GridSelectionMode } from './grid';
 import { DataSourcePager } from '../../infrastructure/data/data-source-pager';
+import { ArrayHelper } from '../../infrastructure/helpers/array-helper';
 
 export class GridSelector {
     private _grid: Grid;
@@ -80,26 +81,30 @@ export class GridSelector {
 
     public isAllSelected(): boolean {
         const dataSource = this._grid.props.dataSource;
-        const totalCount = dataSource.view ? dataSource.view.totalCount : null;
+        const totalCount = dataSource.view ? dataSource.view.data.length : null;
+        const { selectedItems } = this._grid.state;
 
-        return (this._grid.state.selectedItems.length == totalCount);
+        return (selectedItems.length > 0) && (selectedItems.length == totalCount);
     }
 
     public isSelected(item: any): boolean {
         return (this._grid.state.selectedItems.indexOf(item) != -1);
     }
 
-    public async selectAll() {
+    public async selectAll(): Promise<any[]> {
         const allItems = await this.getAllItems();
 
         if (allItems != null) {
             const grid = this._grid;
+            const result = ArrayHelper.clone(allItems);
 
-            grid.setState({ selectedItems: allItems }, () => {
+            grid.setState({ selectedItems: result }, () => {
                 if (grid.props.onSelect) {
-                    grid.props.onSelect(grid, grid.state.selectedItems);
+                    grid.props.onSelect(grid, result);
                 }
             });
+
+            return result;
         }
     }
 
