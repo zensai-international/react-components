@@ -29,6 +29,22 @@ export default describe('GridSelector', () => {
 
             expect(isAllSelected, 'isAllSelected').is.true;
         });
+
+        it('if there is paging and first page is selected', () => {
+            const item0 = { };
+            const item1 = { };
+            const dataSource = new ClientDataSource({
+                data: [item0, item1],
+                view: { page: { size: 1 } }
+            });
+            const grid = new table.Grid({ dataSource: dataSource, selectedItems: [item0] });
+
+            dataSource.dataBind();
+
+            const isAllSelected = grid.selector.isAllSelected();
+
+            expect(isAllSelected, 'isAllSelected').is.false;
+        });
     });
 
     describe('selectAll', () => {

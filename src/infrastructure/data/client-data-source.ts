@@ -50,6 +50,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
                 const lambdaExpression = expressionConverter.convert(expression);
 
                 x.data = x.data.filter(lambdaExpression);
+                x.totalCount = x.data.length;
             }
         };
     }
