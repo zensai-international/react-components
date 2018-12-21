@@ -52,5 +52,5 @@
     "build:prod": "webpack --config webpack.config.prod.js --mode production",
     "test": "karma start karma.config.js --watch"
   },
-  "version": "2.1.2"
+  "version": "2.1.3"
 }
