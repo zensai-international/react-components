@@ -7,10 +7,11 @@
             "dom",
             "es2016"
         ],
-        "module": "commonjs",
+        "module": "es6",
         "noImplicitAny": false,
         "noUnusedLocals": true,
         "noUnusedParameters": false,
+        "moduleResolution": "node",
         "sourceMap": false,
         "target": "es5"
     },
