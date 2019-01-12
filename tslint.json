@@ -1,61 +1,30 @@
 {
-    "defaultSeverity": "error",
     "extends": [
-        "tslint:recommended"
+        "tslint-microsoft-contrib",
+        "tslint-config-prettier",
+        "tslint-no-unused-expression-chai"
     ],
-    "jsRules": {
-        "max-line-length": {
-            "options": [
-                120
-            ]
-        }
-    },
     "rules": {
-        "arrow-parens": [
-            true,
-            "ban-single-arg-parens"
-        ],
-        "eofline": false,
-        "interface-name": [
-            true,
-            "never-prefix"
-        ],
-        "max-line-length": {
-            "options": [
-                120
-            ]
-        },
-        "new-parens": true,
-        "no-arg": true,
-        "no-bitwise": true,
-        "no-conditional-assignment": true,
-        "no-consecutive-blank-lines": false,
-        "no-console": {
-            "severity": "warning",
-            "options": [
-                "debug",
-                "info",
-                "log",
-                "time",
-                "timeEnd",
-                "trace"
-            ]
-        },
-        "ordered-imports": false,
-        "trailing-comma": [
-            true,
-            {
-                "multiline": "never",
-                "singleline": "never"
-            }
-        ],
-        "triple-equals": false,
-        "quotemark": [
-            true,
-            "single",
-            "avoid-escape",
-            "avoid-template"
-        ]
+        "chai-vague-errors": false,
+        "export-name": false,
+        "interface-name": [true, "never-prefix"],
+        "match-default-export-name": false,
+        "no-default-export": false,
+        "no-function-expression": false,
+        "no-implicit-dependencies": [true, "dev"],
+        "no-inferrable-types": true,
+        "no-null-keyword": false,
+        "no-plusplus": [false],
+        "no-relative-imports": false,
+        "no-reserved-keywords": false,
+        "no-string-literal": false,
+        "prefer-object-spread": false,
+        "triple-equals": [false, "allow-null-check", "allow-undefined-check"],
+        "typedef": [false],
+        "use-default-type-parameter": false,
+        "variable-name": [true, "allow-leading-underscore", "allow-pascal-case", "check-format"]
     },
-    "rulesDirectory": []
+    "rulesDirectory": [
+        "tslint-microsoft-contrib"
+    ]
 }
