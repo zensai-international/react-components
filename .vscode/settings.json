@@ -1,10 +1,12 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+    "editor.formatOnSave": true,
     "files.exclude": {
         "**/.git*": true,
         "**/node_modules": true,
         "node_modules": true,
         "typings": true
     },
+    "javascript.format.enable": false,
     "typescript.tsdk": "node_modules\\typescript\\lib"
 }

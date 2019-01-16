@@ -68,9 +68,8 @@
         "build:dev": "webpack --mode development",
         "build:dev-watch": "webpack --mode development --watch",
         "build:prod": "webpack --config webpack.config.prod.js --mode production",
-        "format": "prettier --write {src,tests}/**/*.{ts,tsx} & tslint --fix --force {src,tests}/**/*.{ts,tsx}",
-        "format:prettier": "prettier --write {src,tests}/**/*.{ts,tsx}",
-        "format:tslint": "tslint --fix --force {src,tests}/**/*.{ts,tsx}",
+        "format:check": "tslint --project tsconfig.json {src,tests}/**/*.{ts,tsx}",
+        "format:fix": "tslint --project tsconfig.json --fix {src,tests}/**/*.{ts,tsx}",
         "test": "karma start karma.config.js --watch"
     },
     "version": "2.1.3"

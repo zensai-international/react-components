@@ -1,28 +1,77 @@
 {
     "extends": [
         "tslint-microsoft-contrib",
-        "tslint-config-prettier",
         "tslint-no-unused-expression-chai"
     ],
     "rules": {
         "chai-vague-errors": false,
+        "completed-docs": false,
+        "eofline": false,
         "export-name": false,
-        "interface-name": [true, "never-prefix"],
+        "indent": [
+            true,
+            "spaces",
+            4
+        ],
+        "interface-name": [
+            true,
+            "never-prefix"
+        ],
+        "linebreak-style": [
+            true,
+            "CRLF"
+        ],
         "match-default-export-name": false,
+        "member-ordering": [
+            true,
+            {
+                "order": [
+                    "public-static-field",
+                    "public-instance-field",
+                    "public-constructor",
+                    "private-static-field",
+                    "private-instance-field",
+                    "private-constructor",
+                    "public-instance-method",
+                    "protected-instance-method",
+                    "private-instance-method"
+                ]
+            }
+        ],
+        "no-any": false,
+        "newline-per-chained-call": false,
         "no-default-export": false,
         "no-function-expression": false,
-        "no-implicit-dependencies": [true, "dev"],
+        "no-implicit-dependencies": [
+            true,
+            "dev"
+        ],
         "no-inferrable-types": true,
         "no-null-keyword": false,
-        "no-plusplus": [false],
+        "no-plusplus": [
+            false
+        ],
         "no-relative-imports": false,
         "no-reserved-keywords": false,
         "no-string-literal": false,
+        "no-unsafe-any": false,
         "prefer-object-spread": false,
-        "triple-equals": [false, "allow-null-check", "allow-undefined-check"],
-        "typedef": [false],
+        "typ": false,
+        "triple-equals": [
+            false,
+            "allow-null-check",
+            "allow-undefined-check"
+        ],
+        "typedef": [
+            false
+        ],
         "use-default-type-parameter": false,
-        "variable-name": [true, "allow-leading-underscore", "allow-pascal-case", "check-format"]
+        "variable-name": [
+            true,
+            "allow-leading-underscore",
+            "allow-pascal-case",
+            "check-format"
+        ]
     },
     "rulesDirectory": [
         "tslint-microsoft-contrib"
