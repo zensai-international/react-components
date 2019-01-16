@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { DataSourceState, DataViewMode } from '../../infrastructure/data/data-source';
+import { ObjectHelper } from '../../infrastructure/helpers/object-helper';
+import { Style } from '../common';
+import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
-import { GridBodyRow, GridBodyRowProps, GridBodyRowStyle, GridBodyRowTemplate } from './grid-body-row';
-import { Style } from '../common';
-import { DataViewMode, DataSourceState } from '../../infrastructure/data/data-source';
-import { ObjectHelper } from '../../infrastructure/helpers/object-helper';
 
 export interface GridBodyStyle extends Style {
     row: GridBodyRowStyle;
@@ -24,8 +24,8 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         const className = this.props.style.className;
 
         return {
-            className: className,
-            role: 'rowgroup'
+            className,
+            role: 'rowgroup',
         };
     }
 
@@ -38,12 +38,12 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         const rowProps = Object.assign({}, this.props, {
             children: null,
             key: `row-${index}`,
-            index: index,
+            index,
             isExpandable: null,
-            isExpanded: isExpanded,
-            isSelected: isSelected,
-            item: item,
-            style: style.row
+            isExpanded,
+            isSelected,
+            item,
+            style: style.row,
         });
 
         return this.props.rowTemplate

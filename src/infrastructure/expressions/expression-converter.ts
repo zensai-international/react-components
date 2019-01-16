@@ -1,6 +1,6 @@
-import { ConditionalExpression, ComparisonExpression, ComparisonOperator, LambdaExpression } from './expression';
-import { DefaultFieldAccessor, FieldAccessor } from '../data/field-accessor';
 import { LogicalExpression, LogicalOperator } from '../../index';
+import { DefaultFieldAccessor, FieldAccessor } from '../data/field-accessor';
+import { ComparisonExpression, ComparisonOperator, ConditionalExpression, LambdaExpression } from './expression';
 
 export class ExpressionConverter {
     private _fieldAccessor: FieldAccessor = new DefaultFieldAccessor();
@@ -50,7 +50,7 @@ export class ExpressionConverter {
             }
 
             if (value instanceof Array) {
-                 result = value.some(x => comparer(x));
+                result = value.some(x => comparer(x));
             } else {
                 result = comparer(value);
             }
@@ -78,10 +78,8 @@ export class ExpressionConverter {
 
         const logicalExpression = (expression as LogicalExpression);
 
-        if (logicalExpression.left && logicalExpression.right) {
-            return this.convertLogical(logicalExpression);
-        } else {
-            return this.convertComparison(expression as ComparisonExpression);
-        }
+        return (logicalExpression.left && logicalExpression.right)
+            ? this.convertLogical(logicalExpression)
+            : this.convertComparison(expression as ComparisonExpression);
     }
 }

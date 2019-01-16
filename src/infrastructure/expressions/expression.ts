@@ -10,7 +10,7 @@ export enum ComparisonOperator {
     GreaterOrEqual,
     Less,
     LessOrEqual,
-    NotEqual
+    NotEqual,
 }
 
 export interface ComparisonExpression {
@@ -24,7 +24,7 @@ export interface ComparisonExpression {
 
 export enum LogicalOperator {
     And,
-    Or
+    Or,
 }
 
 export interface LogicalExpression {

@@ -1,6 +1,6 @@
-import { Grid, GridSelectionMode } from './grid';
 import { DataSourcePager } from '../../infrastructure/data/data-source-pager';
 import { ArrayHelper } from '../../infrastructure/helpers/array-helper';
+import { Grid, GridSelectionMode } from './grid';
 
 export class GridSelector {
     private _grid: Grid;
@@ -20,9 +20,9 @@ export class GridSelector {
 
         return (pager.getPageCount() > 1)
             ? dataSource.getView({
-                    filteredBy: dataSource.view.filteredBy,
-                    sortedBy: dataSource.view.sortedBy
-                })
+                filteredBy: dataSource.view.filteredBy,
+                sortedBy: dataSource.view.sortedBy,
+            })
                 .then(x => x.data)
             : Promise.resolve(dataSource.view.data);
     }
@@ -42,7 +42,7 @@ export class GridSelector {
 
                 selectedItems.push(item);
 
-                grid.setState({ selectedItems: selectedItems }, () => {
+                grid.setState({ selectedItems }, () => {
                     if (gridProps.onSelect) {
                         gridProps.onSelect(grid, [item]);
                     }
@@ -62,7 +62,7 @@ export class GridSelector {
             if (itemIndex != -1) {
                 selectedItems.splice(itemIndex, 1);
 
-                grid.setState({ selectedItems: selectedItems }, () => {
+                grid.setState({ selectedItems }, () => {
                     if (gridProps.onUnselect) {
                         gridProps.onUnselect(grid, [item]);
                     }

@@ -19,5 +19,5 @@ export const block = {
     GridFooterRow,
     GridHeader,
     GridHeaderCell,
-    GridHeaderRow
-}; 
+    GridHeaderRow,
+};

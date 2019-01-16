@@ -9,7 +9,7 @@ export enum PageType {
     First,
     Next,
     Last,
-    Previous
+    Previous,
 }
 
 export class DataSourcePager {
@@ -59,7 +59,7 @@ export class DataSourcePager {
             firstIndex: pageIndex * page.size,
             lastIndex: ((totalCount == null) || (lastPageIndex < totalCount))
                 ? lastPageIndex
-                : (totalCount > 0) ? (totalCount - 1) : 0
+                : (totalCount > 0) ? (totalCount - 1) : 0,
         };
     }
 

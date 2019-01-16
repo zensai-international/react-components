@@ -1,13 +1,13 @@
-import { ClientDataSourceChangeTracker } from './client-data-source-change-tracker';
-import { GroupExpression, SortExpression } from './common';
-import { DataSource, DataSourceOperation, DataSourceProps, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
-import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker } from './data-source-change-tracker';
-import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Comparer } from '../comparer';
 import { Event } from '../event';
 import { ConditionalExpression } from '../expressions/expression';
 import { ExpressionConverter } from '../expressions/expression-converter';
 import { ObjectHelper } from '../helpers/object-helper';
+import { ClientDataSourceChangeTracker } from './client-data-source-change-tracker';
+import { GroupExpression, SortExpression } from './common';
+import { DataSource, DataSourceOperation, DataSourceProps, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
+import { DataSourceChange, DataSourceChangeTracker, DataSourceChangeType } from './data-source-change-tracker';
+import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 
 export type ViewInitializer<T> = (view: DataView<T>) => void;
 
@@ -28,7 +28,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
     public constructor(props: ClientDataSourceProps<T>) {
         this._fieldAccessor = props.fieldAccessor;
-        this._props = Object.assign({}, props, { view: Object.assign({ mode: DataViewMode.CurrentPage, page: { } }, props.view) });
+        this._props = Object.assign({}, props, { view: Object.assign({ mode: DataViewMode.CurrentPage, page: {} }, props.view) });
         this._operations = this.createOperations(this._props.view);
         this._changeTracker = new ClientDataSourceChangeTracker<T>(this);
         this._onDataBinding = new Event<any>();
@@ -65,7 +65,8 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
                 for (const item of x.data) {
                     const group = ObjectHelper.create(this.fieldAccessor, fields, fields.map(y => this.fieldAccessor.getValue(item, y)));
-                    const existedGroup = groups.find(y => fields.every(field => this.fieldAccessor.getValue(y, field) == this.fieldAccessor.getValue(item, field)));
+                    const comparer = (x, y, field) => this.fieldAccessor.getValue(x, field) == this.fieldAccessor.getValue(y, field);
+                    const existedGroup = groups.find(y => fields.every(field => comparer(y, item, field)));
 
                     if (existedGroup == null) {
                         groups.push(group);
@@ -79,9 +80,9 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
 
     protected createInitialView(data: T[], props: DataViewProps): DataView<T> {
         return {
-            data: data,
+            data,
             mode: props.mode,
-            totalCount: data.length
+            totalCount: data.length,
         };
     }
 
@@ -92,19 +93,19 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
             [DataSourceOperation.Group]: props.groupedBy ? this.createGroupOperation(props.groupedBy) : null,
             [DataSourceOperation.SetPageIndex]: (props.page && props.page.size)
                 ? this.createSetPageIndexOperation(props, props.page.index || 0)
-                : null
+                : null,
         };
     }
 
     protected createSetPageIndexOperation(props: DataViewProps, value: number): ViewInitializer<T> {
         const page = props.page;
-        const firstIndex = page.size * value
+        const firstIndex = page.size * value;
         const lastIndex = page.size * (value + 1);
 
         return x => {
             x.page = {
                 index: value,
-                size: page.size
+                size: page.size,
             };
             x.data = (props.mode == DataViewMode.FromFirstToCurrentPage)
                 ? x.data.slice(0, lastIndex)
@@ -209,7 +210,9 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
             return new Promise<DataView<T>>((resolve: (value?: any) => void) => {
                 resolve(this.view);
             });
-        } else if (this._props.data && !ObjectHelper.isFunction(this._props.data)) {
+        }
+
+        if (this._props.data && !ObjectHelper.isFunction(this._props.data)) {
             return handlePromise(this._props.data as Promise<T[]>);
         }
     }
@@ -221,7 +224,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
             this._data.splice(index, 1);
 
             const change = {
-                item: item,
+                item,
                 type: DataSourceChangeType.Delete,
             } as DataSourceChange<T>;
 
@@ -243,7 +246,7 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         const createView = () => {
             const result = this.createInitialView(this._data, props);
             const operations = this.createOperations(props);
-    
+
             this.runOperations(result, operations);
 
             return result;
@@ -291,11 +294,11 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         this.fieldAccessor.setValue(item, field, value);
 
         const change = {
-            field: field,
-            item: item,
+            field,
+            item,
             prevValue: currentValue,
             type: DataSourceChangeType.Update,
-            value: value
+            value,
         } as DataSourceChange<T>;
 
         this.changeTracker.changes.push(change);

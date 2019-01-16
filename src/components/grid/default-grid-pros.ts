@@ -3,7 +3,7 @@ import { GridProps } from './grid';
 export const DefaultGridProps: Partial<GridProps> = {
     messages: {
         loading: '',
-        noItems: ''
+        noItems: '',
     },
     selectionMode: 0,
     style: {
@@ -13,21 +13,21 @@ export const DefaultGridProps: Partial<GridProps> = {
             row: {
                 className: '',
                 cell: {
-                    className: ''
+                    className: '',
                 },
                 ifSelected: {
-                    className: ''
-                }
-            }
+                    className: '',
+                },
+            },
         },
         footer: {
             className: '',
             row: {
                 className: '',
                 cell: {
-                    className: ''
-                }
-            }
+                    className: '',
+                },
+            },
         },
         header: {
             row: {
@@ -37,13 +37,13 @@ export const DefaultGridProps: Partial<GridProps> = {
                     filterIcon: (isFiltered: boolean) => ({ className: '' }),
                     iconBySortDirection: {
                         [1]: { className: '' },
-                        [2]: { className: '' }
+                        [2]: { className: '' },
                     },
                     title: {
-                        className: ''
-                    }
-                }
-            }
-        }
-    }
+                        className: '',
+                    },
+                },
+            },
+        },
+    },
 };

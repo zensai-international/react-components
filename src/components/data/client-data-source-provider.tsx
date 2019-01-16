@@ -1,5 +1,5 @@
-import { DataSourceProvider } from './data-source-provider';
 import { ClientDataSource, ClientDataSourceProps } from '../../infrastructure/data/client-data-source';
+import { DataSourceProvider } from './data-source-provider';
 
 export class ClientDataSourceProvider extends DataSourceProvider<ClientDataSourceProps> {
     public componentWillReceiveProps(nextProps: ClientDataSourceProps) {

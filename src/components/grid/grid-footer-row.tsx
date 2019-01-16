@@ -11,10 +11,10 @@ export abstract class GridFooterRow<P extends GridFooterRowProps = GridFooterRow
         const key = this.props.index;
 
         return {
-            className: className,
-            key: key,
+            className,
+            key,
             onClick: this.handleClick,
-            role: 'rowfooter'
+            role: 'rowfooter',
         } as any;
     }
 

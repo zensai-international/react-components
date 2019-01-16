@@ -22,7 +22,7 @@ export class TypeConverterProvider {
     public static readonly instance: TypeConverterProvider = new TypeConverterProvider();
 
     private _converters: { [dataType: string]: TypeConverter<any> } = {
-        [DataType[DataType.Date]]: new DateConverter()
+        [DataType[DataType.Date]]: new DateConverter(),
     };
 
     public get(dataType: DataType): TypeConverter<any> {

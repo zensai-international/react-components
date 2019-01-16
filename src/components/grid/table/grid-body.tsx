@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { GridBodyRow, GridBodyRowProps } from './grid-body-row';
 import { GridBody as GridBodyBase, GridBodyProps } from '../grid-body';
+import { GridBodyRow, GridBodyRowProps } from './grid-body-row';
 
 export class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> extends GridBodyBase<P, S> {
     protected renderMessageRow(messageContent: React.ReactNode): React.ReactNode {

@@ -1,10 +1,10 @@
 import { ComparisonExpression, ConditionalExpression, LogicalExpression, LogicalOperator } from './expression';
 
-//TODO: Need refactoring.
+// TODO: Need refactoring.
 export interface ExpressionVisitorProps {
     onVisitComparison: (expression: ComparisonExpression) => string;
     onVisitLogical: (left: string, operator: LogicalOperator, right: string) => string;
-} 
+}
 
 export class ExpressionVisitor {
     private readonly props: ExpressionVisitorProps;

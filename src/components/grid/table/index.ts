@@ -19,5 +19,5 @@ export const table = {
     GridFooterRow,
     GridHeaderCell,
     GridHeaderRow,
-    GridHeader
-}; 
+    GridHeader,
+};

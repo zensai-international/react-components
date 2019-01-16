@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { SortDirection } from '../../infrastructure/data/common';
+import { Style } from '../common';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
 import { GridColumn } from './grid-column';
 import { GridColumnFilter, GridColumnFilterProps } from './grid-column-filter';
-import { Style } from '../common';
-import { SortDirection } from '../../infrastructure/data/common';
 
 export interface GridHeaderCellProps extends GridCellProps {
     style: GridHeaderCellStyle;
@@ -20,7 +20,10 @@ export interface GridHeaderCellState {
     showFilter?: boolean;
 }
 
-export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderCellProps, S extends GridHeaderCellState = GridHeaderCellState> extends GridCell<P, S> {
+export abstract class GridHeaderCell<
+    P extends GridHeaderCellProps = GridHeaderCellProps,
+    S extends GridHeaderCellState = GridHeaderCellState
+    > extends GridCell<P, S> {
     public constructor(props: P, context?: any) {
         super(props, context);
 
@@ -32,10 +35,10 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
         const className = this.style.className;
 
         return {
-            className: className,
+            className,
             'data-column-name': field,
             onClick: this.handleClick,
-            role: 'columnheader'
+            role: 'columnheader',
         } as any;
     }
 
@@ -47,8 +50,8 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
             : null;
 
         return (sortedBy != null)
-                && (sortedBy.length == 1)
-                && (sortedBy[0].field == field)
+            && (sortedBy.length == 1)
+            && (sortedBy[0].field == field)
             ? sortedBy[0].direction
             : null;
     }
@@ -64,29 +67,29 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
     protected handleSort = () => {
         const props = this.props.column.props;
 
-        if ((props.isSortable != false) && props.field) {
+        if ((props.isSortable) && props.field) {
             const field = this.props.column.props.field;
 
             if (!field) return;
-    
+
             const dataSource = this.context.grid.props.dataSource;
             let sortedBy = null;
-    
+
             if (dataSource.view && dataSource.view.sortedBy) {
                 sortedBy = dataSource.view.sortedBy.filter(x => x.field == field);
                 sortedBy = (sortedBy.length == 1) ? sortedBy[0] : null;
             }
-    
+
             const direction = (sortedBy != null)
                 ? ((sortedBy.direction == SortDirection.Ascending) ? SortDirection.Descending : null)
                 : SortDirection.Ascending;
-    
+
             if (direction) {
-                dataSource.sort([{ direction: direction, field: field }]);
+                dataSource.sort([{ direction, field }]);
             } else {
                 dataSource.sort([]);
             }
-    
+
             dataSource.dataBind();
         }
     }
@@ -100,7 +103,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
     protected renderContent(): React.ReactNode {
         const column = this.props.column;
         const columnProps = column.props;
-        const isSortable = (columnProps.isSortable != false);
+        const isSortable = columnProps.isSortable;
         const sortDirection = isSortable ? this.getSortDirection() : null;
         const sortIconClassName = sortDirection ? this.props.style.iconBySortDirection[sortDirection].className : null;
         const titleClassName = (this.style as GridHeaderCellStyle).title.className;
@@ -114,7 +117,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
                     {(isSortable && sortDirection) ? <i className={sortIconClassName} /> : null}
                 </span>,
                 this.renderFilterIcon(),
-                this.state.showFilter ? this.renderFilter() : null
+                this.state.showFilter ? this.renderFilter() : null,
             ];
     }
 
@@ -130,7 +133,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
     protected renderFilterIcon(): React.ReactNode {
         const column = this.props.column;
         const columnProps = column.props;
-        const isFilterable = (columnProps.isFilterable == true);
+        const isFilterable = columnProps.isFilterable;
         const filterContext = this.context.filterContext;
         const filterExpression = filterContext.get(columnProps.field);
         const filterIconClassName = this.props.style.filterIcon(filterExpression != null).className;
@@ -140,7 +143,7 @@ export abstract class GridHeaderCell<P extends GridHeaderCellProps = GridHeaderC
             : null;
     }
 
-    protected get filterType(): { new (props: GridColumnFilterProps): GridColumnFilter } {
+    protected get filterType(): { new(props: GridColumnFilterProps): GridColumnFilter } {
         return null;
     }
 }

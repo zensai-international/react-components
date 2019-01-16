@@ -6,7 +6,7 @@ export class UriParser {
 
     private static getQueryParameters(query: string): { [name: string]: string } {
         const hashes = query.split('&');
-        let result = {};
+        const result = {};
 
         for (let i = 0; i < hashes.length; i++) {
             const hash = hashes[i];
@@ -29,7 +29,7 @@ export class UriParser {
             host: obj.host,
             path: obj.pathname,
             query: obj.query,
-            queryParameters: obj.query ? UriParser.getQueryParameters(obj.query) : {}
+            queryParameters: obj.query ? UriParser.getQueryParameters(obj.query) : {},
         };
     }
 }

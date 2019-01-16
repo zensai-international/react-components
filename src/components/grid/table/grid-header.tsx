@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { GridHeaderRow, GridHeaderRowProps } from './grid-header-row';
 import { GridHeader as GridHeaderBase, GridHeaderProps } from '../grid-header';
+import { GridHeaderRow, GridHeaderRowProps } from './grid-header-row';
 
 export class GridHeader<P extends GridHeaderProps = GridHeaderProps, S = {}> extends GridHeaderBase<P, S> {
     public render(): JSX.Element {

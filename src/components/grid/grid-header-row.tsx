@@ -1,7 +1,7 @@
 import { GridCell, GridCellProps } from './grid-cell';
 import { GridColumn } from './grid-column';
-import { GridRow, GridRowProps, GridRowStyle } from './grid-row';
 import { GridHeaderCellStyle } from './grid-header-cell';
+import { GridRow, GridRowProps, GridRowStyle } from './grid-row';
 
 export interface GridHeaderRowProps extends GridRowProps {
     style: GridHeaderRowStyle;
@@ -17,10 +17,10 @@ export abstract class GridHeaderRow<P extends GridHeaderRowProps = GridHeaderRow
         const key = this.props.index;
 
         return {
-            className: className,
-            key: key,
+            className,
+            key,
             onClick: this.handleClick,
-            role: 'rowheader'
+            role: 'rowheader',
         } as any;
     }
 

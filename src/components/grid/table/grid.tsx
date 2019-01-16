@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { Grid as GridBase, GridProps, GridState } from '../grid';
 import { GridBody, GridBodyProps } from './grid-body';
 import { GridFooter, GridFooterProps } from './grid-footer';
 import { GridHeader, GridHeaderProps } from './grid-header';
-import { Grid as GridBase, GridProps, GridState } from '../grid';
 
 export class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends GridBase<P, S> {
     public render(): JSX.Element {

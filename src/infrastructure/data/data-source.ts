@@ -1,12 +1,12 @@
+import { Event } from '../event';
+import { ConditionalExpression } from '../expressions/expression';
 import { GroupExpression, SortExpression } from './common';
 import { DataSourceChangeTracker } from './data-source-change-tracker';
 import { FieldAccessor } from './field-accessor';
-import { Event } from '../event';
-import { ConditionalExpression } from '../expressions/expression';
 
 export enum DataViewMode {
     CurrentPage,
-    FromFirstToCurrentPage
+    FromFirstToCurrentPage,
 }
 
 export interface DataViewPage {
@@ -37,13 +37,13 @@ export enum DataSourceOperation {
     GetCount,
     Group,
     SetPageIndex,
-    Sort
+    Sort,
 }
 
 export enum DataSourceState {
     Empty,
     Binding,
-    Bound
+    Bound,
 }
 
 export interface DataSourceProps {

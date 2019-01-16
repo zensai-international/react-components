@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { GridBodyCell } from './grid-body-cell';
 import { GridBodyRow as GridBodyRowBase, GridBodyRowProps } from '../grid-body-row';
+import { GridBodyCell } from './grid-body-cell';
 
 export class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = {}> extends GridBodyRowBase<P, S> {
     public render(): JSX.Element {

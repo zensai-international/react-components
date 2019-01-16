@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { Style } from '../common';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridComponent } from './grid-component';
 import { GridHeaderRow, GridHeaderRowProps, GridHeaderRowStyle } from './grid-header-row';
-import { Style } from '../common';
 
 export interface GridHeaderProps {
     columns: GridColumn<GridColumnProps>[];
@@ -21,8 +21,8 @@ export abstract class GridHeader<P extends GridHeaderProps = GridHeaderProps, S 
         const className = this.props.style.className;
 
         return {
-            className: className,
-            role: 'rowheader'
+            className,
+            role: 'rowheader',
         };
     }
 

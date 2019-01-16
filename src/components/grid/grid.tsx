@@ -1,9 +1,14 @@
-import * as React from 'react';
 import { PropTypes } from 'prop-types';
+import * as React from 'react';
+import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
+import { DataSourceChange, DataSourceChangeType } from '../../infrastructure/data/data-source-change-tracker';
+import { FilterContext } from '../../infrastructure/data/filter-context';
+import { ConditionalExpression } from '../../infrastructure/expressions/expression';
+import { Style } from '../common';
 import { DefaultGridProps } from './default-grid-pros';
 import { GridBody, GridBodyProps, GridBodyStyle } from './grid-body';
 import { GridBodyCell, GridBodyCellProps } from './grid-body-cell';
-import { GridBodyRow, GridBodyRowTemplate, GridBodyRowProps } from './grid-body-row';
+import { GridBodyRow, GridBodyRowProps, GridBodyRowTemplate } from './grid-body-row';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpander } from './grid-expander';
 import { GridExpanderColumn } from './grid-expander-column';
@@ -11,22 +16,17 @@ import { GridFooter, GridFooterProps, GridFooterStyle } from './grid-footer';
 import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
 import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellState } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
-import { Style } from '../common';
-import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
-import { DataSourceChange, DataSourceChangeType } from '../../infrastructure/data/data-source-change-tracker';
-import { FilterContext } from '../../infrastructure/data/filter-context';
-import { ConditionalExpression } from '../../infrastructure/expressions/expression';
 
 export interface GridContext {
     filterContext: FilterContext;
     grid: Grid;
-    spinnerType: { new (props: any): React.Component } | React.SFC;
+    spinnerType: { new(props: any): React.Component } | React.SFC;
 }
 
 export const GridContextTypes = {
     filterContext: PropTypes.object,
     grid: PropTypes.object,
-    spinnerType: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
+    spinnerType: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 };
 
 export interface GridMessages {
@@ -36,7 +36,7 @@ export interface GridMessages {
 
 export enum GridSelectionMode {
     Single,
-    Multiple
+    Multiple,
 }
 
 export interface GridProps {
@@ -86,7 +86,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
         this.state = {
             expandedItems: [],
-            selectedItems: this.props.selectedItems || []
+            selectedItems: this.props.selectedItems || [],
         } as S;
     }
 
@@ -94,9 +94,9 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         const className = this.props.style.className;
 
         return {
-            className: className,
+            className,
             // 'data-name': key,
-            role: 'grid'
+            role: 'grid',
         } as any;
     }
 
@@ -104,14 +104,14 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         return {
             filterContext: this._filterContext,
             grid: this,
-            spinnerType: this.spinnerType
+            spinnerType: this.spinnerType,
         };
     }
 
     protected handleBodyCellClick = (event: React.MouseEvent<any>, cell: GridBodyCell<GridBodyCellProps>) => {
         const rowProps = cell.props.rowProps;
 
-        if ((cell.props.column instanceof GridExpanderColumn) && (rowProps.isExpandable != false)) {
+        if ((cell.props.column instanceof GridExpanderColumn) && (rowProps.isExpandable)) {
             this.expander.expandOrCollapse(rowProps.item);
 
             event.stopPropagation();
@@ -274,13 +274,13 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
         }
     }
 
-    protected abstract get bodyType(): { new (props: GridBodyProps): GridBody };
+    protected abstract get bodyType(): { new(props: GridBodyProps): GridBody };
 
-    protected abstract get footerType(): { new (props: GridFooterProps): GridFooter };
+    protected abstract get footerType(): { new(props: GridFooterProps): GridFooter };
 
-    protected abstract get headerType(): { new (props: GridHeaderProps): GridHeader };
+    protected abstract get headerType(): { new(props: GridHeaderProps): GridHeader };
 
-    protected get spinnerType(): { new (props: any): React.Component } | React.SFC {
+    protected get spinnerType(): { new(props: any): React.Component } | React.SFC {
         return () => <span>{this.messages.loading}</span>;
     }
 

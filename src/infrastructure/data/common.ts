@@ -14,7 +14,7 @@ export enum DataType {
     Date,
     Enum,
     String,
-    Number
+    Number,
 }
 
 export interface GroupExpression {
@@ -23,7 +23,7 @@ export interface GroupExpression {
 
 export enum SortDirection {
     Ascending = 1 << 0,
-    Descending = 1 << 1
+    Descending = 1 << 1,
 }
 
 export interface SortExpression {

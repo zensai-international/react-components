@@ -1,15 +1,15 @@
 
-import { GroupExpression, SortDirection, SortExpression } from './common';
-import { DataSource, DataSourceProps, DataSourceOperation, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
-import { DataSourceChangeTracker } from './data-source-change-tracker';
-import { DataSourcePager } from './data-source-pager';
-import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 import { Event } from '../event';
+import { ComparisonExpression, ComparisonOperator, ConditionalExpression, LogicalOperator } from '../expressions/expression';
+import { ExpressionVisitor } from '../expressions/expression-visitor';
 import { Uri } from '../uri';
 import { UriBuilder } from '../uri-builder';
 import { UriParser } from '../uri-parser';
-import { ConditionalExpression, ComparisonExpression, ComparisonOperator, LogicalOperator } from '../expressions/expression';
-import { ExpressionVisitor } from '../expressions/expression-visitor';
+import { GroupExpression, SortDirection, SortExpression } from './common';
+import { DataSource, DataSourceOperation, DataSourceProps, DataSourceState, DataView, DataViewMode, DataViewProps } from './data-source';
+import { DataSourceChangeTracker } from './data-source-change-tracker';
+import { DataSourcePager } from './data-source-pager';
+import { DefaultFieldAccessor, FieldAccessor } from './field-accessor';
 
 export interface ODataDataSourceProps extends DataSourceProps {
     data: (url: string) => Promise<any>;
@@ -45,13 +45,13 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
         this._state = DataSourceState.Empty;
         this._url = new UriParser().parse(props.url);
         this._view = null;
-        this._viewProps = Object.assign({ page: { } }, props.view);
+        this._viewProps = Object.assign({ page: {} }, props.view);
 
         this._onDataBinding = new Event<any>();
         this._onDataBound = new Event<any>();
 
         this._operations = {
-            [DataSourceOperation.GetCount]: this.createGetCountOperation()
+            [DataSourceOperation.GetCount]: this.createGetCountOperation(),
         };
 
         if (this._viewProps.page) {
@@ -74,11 +74,11 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
             [ComparisonOperator.GreaterOrEqual]: 'ge',
             [ComparisonOperator.Less]: 'lt',
             [ComparisonOperator.LessOrEqual]: 'le',
-            [ComparisonOperator.NotEqual]: 'ne'
+            [ComparisonOperator.NotEqual]: 'ne',
         };
         const logicalOperatorAsString = {
             [LogicalOperator.And]: 'and',
-            [LogicalOperator.Or]: 'or'
+            [LogicalOperator.Or]: 'or',
         };
 
         if (expression) {
@@ -93,8 +93,8 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                     if (value instanceof Date) {
                         valueAsString = (value as Date).toISOString();
                     } else if (typeof value == 'string') {
-                        valueAsString = '\''+ value + '\'';
-                    } else  if (value != null) {
+                        valueAsString = `'${value}'`;
+                    } else if (value != null) {
                         valueAsString = value.toString();
                     }
 
@@ -107,7 +107,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 },
                 onVisitLogical: (left: string, operator: LogicalOperator, right: string) => {
                     return `(${left} ${logicalOperatorAsString[operator]} ${right})`;
-                }
+                },
             });
 
             urlBuilder.addQueryParameter('$filter', expressionVisitor.visit(expression));
@@ -117,7 +117,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     protected addSortOperationToUrl(urlBuilder: UriBuilder, expressions: SortExpression[]) {
         const sortDirectionAsString = {
             [SortDirection.Ascending]: 'asc',
-            [SortDirection.Descending]: 'desc'
+            [SortDirection.Descending]: 'desc',
         };
         const parameterValueParts = [];
 
@@ -127,7 +127,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 ? this._fieldMappings[sortExpression.field] || sortExpression.field
                 : sortExpression.field;
 
-            parameterValueParts.push( `${field} ${sortDirectionAsString[sortExpression.direction]}`);
+            parameterValueParts.push(`${field} ${sortDirectionAsString[sortExpression.direction]}`);
         }
 
         if (parameterValueParts.length) {
@@ -140,7 +140,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
             urlGenerator: (uriBuilder: UriBuilder) => this.addFilterOperationToUrl(uriBuilder, expression),
             viewInitializer: (response: any, view: DataView<T>) => {
                 view.filteredBy = expression;
-            }
+            },
         };
     }
 
@@ -155,7 +155,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 if (response['@odata.count']) {
                     view.totalCount = response['@odata.count'];
                 }
-            }
+            },
         };
     }
 
@@ -179,9 +179,9 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
                 view.mode = this.viewProps.mode;
                 view.page = {
                     index: value,
-                    size: page.size
+                    size: page.size,
                 };
-            }
+            },
         };
     }
 
@@ -190,7 +190,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
             urlGenerator: (uriBuilder: UriBuilder) => this.addSortOperationToUrl(uriBuilder, expressions),
             viewInitializer: (response: any, view: DataView<T>) => {
                 view.sortedBy = expressions;
-            }
+            },
         };
     }
 
@@ -199,11 +199,11 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
             ? response['value'].map(x => this._itemConverter(x))
             : response['value'] as T[];
         const result = {
-            data: data,
-            totalCount: this._view ? this._view.totalCount : null
+            data,
+            totalCount: this._view ? this._view.totalCount : null,
         };
 
-        for (let operationKey in this._operations) {
+        for (const operationKey in this._operations) {
             this._operations[operationKey].viewInitializer(response, result);
         }
 
@@ -213,7 +213,7 @@ export class ODataDataSource<T = {}> implements DataSource<T> {
     protected generateUrl(): string {
         const uriBuilder = new UriBuilder(this._url);
 
-        for (let operationKey in this._operations) {
+        for (const operationKey in this._operations) {
             this._operations[operationKey].urlGenerator(uriBuilder);
         }
 

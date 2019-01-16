@@ -1,4 +1,4 @@
-const ClassNameSeparator: string = ' ';
+const ClassNameSeparator = ' ';
 
 export class CssClassNameBuilder {
     private _stack: ((x: string) => string)[] = [];

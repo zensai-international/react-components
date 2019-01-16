@@ -1,11 +1,11 @@
 import { Uri, UriScheme } from './uri';
 
-const DefaultHttpPort: number = 80;
-const DefaultHttpsPort: number = 443;
+const DefaultHttpPort = 80;
+const DefaultHttpsPort = 443;
 
 export class UriBuilder {
     private _host: string;
-    private _path: string = '';
+    private _path = '';
     private _port: number;
     private _scheme: UriScheme;
     private _queryParameters?: { [name: string]: string } = {};
@@ -28,7 +28,7 @@ export class UriBuilder {
         let result = '';
 
         for (const queryParameterName in queryParameters) {
-            result = result ? (result + '&') : '?';
+            result = result ? `${result}&` : '?';
             result += `${queryParameterName}=${queryParameters[queryParameterName]}`;
         }
 
@@ -80,7 +80,7 @@ export class UriBuilder {
         return this;
     }
 
-    public build(isFullUrl: boolean = true): string {
+    public build(isFullUrl = true): string {
         const query = UriBuilder.getQuery(this._queryParameters);
         const pathAndQuery = this._path + query;
 
@@ -90,10 +90,10 @@ export class UriBuilder {
                 : `${UriScheme[this._scheme].toLowerCase()}://${this._host}:${this._port}`;
 
             return pathAndQuery
-                ? ((pathAndQuery.indexOf('/') == 0) ? (schemeAndHostAndPort + pathAndQuery) : (schemeAndHostAndPort + '/' + pathAndQuery))
+                ? ((pathAndQuery.indexOf('/') == 0) ? (schemeAndHostAndPort + pathAndQuery) : `${schemeAndHostAndPort}/${pathAndQuery}`)
                 : schemeAndHostAndPort;
-        } else {
-            return pathAndQuery;
         }
+
+        return pathAndQuery;
     }
 }

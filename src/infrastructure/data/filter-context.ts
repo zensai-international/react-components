@@ -1,6 +1,6 @@
 import { Event } from '../event';
-import { ConditionalExpression } from '../expressions/expression';
 import { ConditionalExpressionBuilder } from '../expressions/conditional-expression-builder';
+import { ConditionalExpression } from '../expressions/expression';
 
 export class FilterContext {
     private _expressionByKey: { [key: string]: ConditionalExpression };
@@ -27,7 +27,7 @@ export class FilterContext {
     public build(excludeKeys?: any[]): ConditionalExpression {
         const expressionBuilder = new ConditionalExpressionBuilder();
 
-        for (let key in this._expressionByKey) {
+        for (const key in this._expressionByKey) {
             if ((excludeKeys == null) || (excludeKeys.indexOf(key) == -1)) {
                 const expression = this._expressionByKey[key];
 

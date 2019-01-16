@@ -1,14 +1,18 @@
+import { Style, StyleHelper } from '../common';
 import { GridContext } from './grid';
 import { GridCell, GridCellProps } from './grid-cell';
 import { GridColumn } from './grid-column';
 import { GridRow, GridRowProps, GridRowStyle } from './grid-row';
-import { Style, StyleHelper } from '../common';
 
 export interface GridBodyRowStyle extends GridRowStyle {
     ifSelected: Style;
 }
 
-export type GridBodyRowTemplate = (rowType: { new (props: GridBodyRowProps): GridBodyRow }, rowProps: GridBodyRowProps, gridContext?: GridContext) => React.ReactNode;
+export type GridBodyRowTemplate = (
+    rowType: { new(props: GridBodyRowProps): GridBodyRow },
+    rowProps: GridBodyRowProps,
+    gridContext?: GridContext
+) => React.ReactNode;
 
 export interface GridBodyRowProps extends GridRowProps {
     isExpandable: boolean;
@@ -24,14 +28,14 @@ export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps,
         const index = this.props.index;
 
         return {
-            className: className,
+            className,
             'data-row-index': index,
             onClick: this.handleClick,
-            role: 'row'
+            role: 'row',
         } as any;
     }
 
-    protected getCellTypeByColumn(column: GridColumn): { new (props: GridCellProps): GridCell } {
+    protected getCellTypeByColumn(column: GridColumn): { new(props: GridCellProps): GridCell } {
         return column.props.body ? column.props.body.cellType : null;
     }
 

@@ -1,71 +1,77 @@
 {
     "extends": [
-        "tslint-microsoft-contrib",
-        "tslint-no-unused-expression-chai"
+        "tslint-config-airbnb"
     ],
     "rules": {
         "chai-vague-errors": false,
         "completed-docs": false,
         "eofline": false,
         "export-name": false,
-        "indent": [
+        "function-name": [
             true,
-            "spaces",
-            4
+            {
+                "static-method-regex": "^[a-z][\\w\\d]+$"
+            }
         ],
         "interface-name": [
             true,
             "never-prefix"
         ],
-        "linebreak-style": [
-            true,
-            "CRLF"
-        ],
         "match-default-export-name": false,
-        "member-ordering": [
+        "max-line-length": [
             true,
+            150
+        ],
+        "member-ordering": [
+            false,
             {
-                "order": [
-                    "public-static-field",
-                    "public-instance-field",
-                    "public-constructor",
-                    "private-static-field",
-                    "private-instance-field",
-                    "private-constructor",
-                    "public-instance-method",
-                    "protected-instance-method",
-                    "private-instance-method"
-                ]
+                "order": "fields-first"
             }
         ],
         "no-any": false,
         "newline-per-chained-call": false,
         "no-default-export": false,
         "no-function-expression": false,
-        "no-implicit-dependencies": [
-            true,
-            "dev"
-        ],
+        "no-increment-decrement": false,
         "no-inferrable-types": true,
         "no-null-keyword": false,
-        "no-plusplus": [
-            false
-        ],
+        "no-plusplus": false,
         "no-relative-imports": false,
         "no-reserved-keywords": false,
         "no-string-literal": false,
         "no-unsafe-any": false,
+        "object-shorthand-properties-first": false,
+        "ordered-imports": true,
         "prefer-object-spread": false,
+        "ter-arrow-parens": [
+            true,
+            "as-needed"
+        ],
+        "ter-indent": [
+            true,
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
         "typ": false,
+        "trailing-comma": [
+            true,
+            {
+                "multiline": {
+                    "objects": "always",
+                    "arrays": "always",
+                    "functions": "never",
+                    "typeLiterals": "ignore"
+                },
+                "singleline": "never"
+            }
+        ],
         "triple-equals": [
             false,
             "allow-null-check",
             "allow-undefined-check"
         ],
-        "typedef": [
-            false
-        ],
-        "use-default-type-parameter": false,
         "variable-name": [
             true,
             "allow-leading-underscore",
@@ -73,7 +79,5 @@
             "check-format"
         ]
     },
-    "rulesDirectory": [
-        "tslint-microsoft-contrib"
-    ]
+    "rulesDirectory": []
 }

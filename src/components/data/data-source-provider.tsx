@@ -15,7 +15,7 @@ export abstract class DataSourceProvider<P extends DataSourceProps> extends Reac
     }
 
     public render(): JSX.Element {
-        const callback = this.props.children as (dataSource: DataSource) => JSX.Element
+        const callback = this.props.children as (dataSource: DataSource) => JSX.Element;
 
         return callback(this._dataSource);
     }

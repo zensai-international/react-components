@@ -10,8 +10,12 @@ export class ConditionalExpressionBuilder {
         this._result = expression;
     }
 
-    private add(expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression, operator: LogicalOperator, next?: (builder: ConditionalExpressionBuilder) => void): ConditionalExpressionBuilder {
-        let expression = expressionBuilder(this._comparisonExpressionBuilder)
+    private add(
+        expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression,
+        operator: LogicalOperator,
+        next?: (builder: ConditionalExpressionBuilder) => void
+    ): ConditionalExpressionBuilder {
+        let expression = expressionBuilder(this._comparisonExpressionBuilder);
 
         if (expression != null) {
             if (next) {
@@ -23,18 +27,24 @@ export class ConditionalExpressionBuilder {
             }
 
             this._result = this._result
-                ? ({ left: this._result, operator: operator, right: expression } as LogicalExpression)
+                ? ({ left: this._result, operator, right: expression } as LogicalExpression)
                 : expression;
         }
 
         return this;
     }
 
-    public and(expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression, next?: (builder: ConditionalExpressionBuilder) => ConditionalExpression): ConditionalExpressionBuilder {
+    public and(
+        expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression,
+        next?: (builder: ConditionalExpressionBuilder) => ConditionalExpression
+    ): ConditionalExpressionBuilder {
         return this.add(expressionBuilder, LogicalOperator.And, next);
     }
 
-    public or(expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression, next?: (builder: ConditionalExpressionBuilder) => ConditionalExpression): ConditionalExpressionBuilder {
+    public or(
+        expressionBuilder: (builder: ComparisonExpressionBuilder) => ConditionalExpression,
+        next?: (builder: ConditionalExpressionBuilder) => ConditionalExpression
+    ): ConditionalExpressionBuilder {
         return this.add(expressionBuilder, LogicalOperator.Or, next);
     }
 

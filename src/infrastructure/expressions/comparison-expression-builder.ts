@@ -3,9 +3,9 @@ import { ComparisonExpression, ComparisonOperator } from './expression';
 export class ComparisonExpressionBuilder {
     private createExpression(field: string, operator: ComparisonOperator, value: any): ComparisonExpression {
         return {
-            field: field,
-            operator: operator,
-            value: value
+            field,
+            operator,
+            value,
         };
     }
 

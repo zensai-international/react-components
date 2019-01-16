@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { GridFooterCell, GridFooterCellProps } from './grid-footer-cell';
 import { GridFooterRow as GridFooterRowBase, GridFooterRowProps } from '../grid-footer-row';
+import { GridFooterCell, GridFooterCellProps } from './grid-footer-cell';
 
 export class GridFooterRow<P extends GridFooterRowProps = GridFooterRowProps, S = {}> extends GridFooterRowBase<P, S> {
     public render(): JSX.Element {

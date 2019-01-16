@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { GridComponent } from './grid-component';
-import { GridColumn } from './grid-column';
 import { SortDirection } from '../../infrastructure/data/common';
 import { DataView } from '../../infrastructure/data/data-source';
-import { ConditionalExpression, ComparisonOperator } from '../../infrastructure/expressions/expression';
+import { ComparisonOperator, ConditionalExpression } from '../../infrastructure/expressions/expression';
+import { GridColumn } from './grid-column';
+import { GridComponent } from './grid-component';
 
 export interface GridColumnFilterProps {
     column: GridColumn;
@@ -19,9 +19,9 @@ export class GridColumnFilter<P extends GridColumnFilterProps = GridColumnFilter
             filterContext.add(
                 field,
                 {
-                    field: field,
+                    field,
                     operator: (value instanceof Array) ? ComparisonOperator.Any : ComparisonOperator.Contain,
-                    value: value
+                    value,
                 });
         } else {
             filterContext.delete([field]);
@@ -33,7 +33,10 @@ export interface GridColumnFilterByValueListState {
     values: DataView;
 }
 
-export abstract class GridColumnFilterByValueList<P extends GridColumnFilterProps = GridColumnFilterProps, S extends GridColumnFilterByValueListState = GridColumnFilterByValueListState> extends GridColumnFilter<P, S> {
+export abstract class GridColumnFilterByValueList<
+    P extends GridColumnFilterProps = GridColumnFilterProps,
+    S extends GridColumnFilterByValueListState = GridColumnFilterByValueListState>
+    extends GridColumnFilter<P, S> {
     public constructor(props: P) {
         super(props);
 
@@ -49,7 +52,7 @@ export abstract class GridColumnFilterByValueList<P extends GridColumnFilterProp
         return dataSource.getView({
             filteredBy: filterContext.build([field]),
             groupedBy: { fields: [field] },
-            sortedBy: [{ direction: SortDirection.Ascending, field: field }]
+            sortedBy: [{ direction: SortDirection.Ascending, field }],
         });
     }
 

@@ -15,7 +15,7 @@ export class StyleHelper {
             .add(y.className)
             .build();
         const result = {
-            className: className
+            className,
         };
 
         for (const propertyName in x) {

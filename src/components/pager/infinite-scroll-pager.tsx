@@ -7,11 +7,12 @@ function isElementVisible(element) {
     let left = element.offsetLeft;
     const width = element.offsetWidth;
     const height = element.offsetHeight;
+    let currentElement = element;
 
-    while(element.offsetParent) {
-        element = element.offsetParent;
-        top += element.offsetTop;
-        left += element.offsetLeft;
+    while (currentElement.offsetParent) {
+        currentElement = currentElement.offsetParent;
+        top += currentElement.offsetTop;
+        left += currentElement.offsetLeft;
     }
 
     return top >= window.pageYOffset
@@ -28,7 +29,7 @@ export interface InfiniteScrollPagerProps {
 
 export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, {}> {
     private _visibilityDetector: HTMLElement;
- 
+
     public constructor(props: InfiniteScrollPagerProps) {
         super(props);
 
@@ -56,7 +57,7 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     }
 
     public componentDidMount() {
-        if (this.props.isEnabled != false) {
+        if (this.props.isEnabled) {
             this.attachEvents();
         }
     }

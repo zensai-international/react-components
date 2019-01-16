@@ -1,6 +1,6 @@
-import { DataSource } from './data-source';
-import { DataSourceChange, DataSourceChangeType, DataSourceChangeTracker, DataSourceUpdate } from './data-source-change-tracker';
 import { Event } from '../event';
+import { DataSource } from './data-source';
+import { DataSourceChange, DataSourceChangeTracker, DataSourceChangeType, DataSourceUpdate } from './data-source-change-tracker';
 
 export class ClientDataSourceChangeTracker<T = {}> implements DataSourceChangeTracker<T> {
     private _changes: DataSourceChange<T>[];
@@ -14,7 +14,7 @@ export class ClientDataSourceChangeTracker<T = {}> implements DataSourceChangeTr
 
     protected createChanges(): DataSourceChange<T>[] {
         return [];
-        //TODO: ES11 issue
+        // TODO: ES11 issue
         // return new Proxy([], {
         //     set: (target: DataSourceChange<T>[], property: PropertyKey, value: any, receiver: any): boolean => {
         //         target[property] = value;
@@ -41,7 +41,7 @@ export class ClientDataSourceChangeTracker<T = {}> implements DataSourceChangeTr
                     const update = change as DataSourceUpdate<T>;
 
                     fieldAccessor.setValue(update.item, update.field, update.prevValue);
-                break;
+                    break;
             }
         }
 

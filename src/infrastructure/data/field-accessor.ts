@@ -27,17 +27,18 @@ export class DefaultFieldAccessor {
 
     public setValue(item: any, compositeField: string, value: any) {
         const fields = compositeField.split(FieldSeparator);
+        let fieldValue = item;
 
         for (let i = 0; i < (fields.length - 1); i++) {
             const field = fields[i];
 
-            if ((item[field] == null) && ((fields.length - 1) != i)) {
-                item[field] = {};
+            if ((fieldValue[field] == null) && ((fields.length - 1) != i)) {
+                fieldValue[field] = {};
             }
 
-            item = item[field];
+            fieldValue = fieldValue[field];
         }
 
-        item[fields[fields.length - 1]] = value;
+        fieldValue[fields[fields.length - 1]] = value;
     }
 }

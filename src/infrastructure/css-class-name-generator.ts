@@ -1,11 +1,11 @@
-const PossibleChars: string = 'abcdefghijklmnopqrstuvwxyz0123456789';
+const PossibleChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
 export class CssClassNameGenerator {
     private readonly _byKey: { [key: string]: string } = {};
 
     public generate(): string {
         let result = '';
-        
+
         for (let i = 0; i < 10; i++) {
             result += PossibleChars.charAt(Math.floor(Math.random() * PossibleChars.length));
         }

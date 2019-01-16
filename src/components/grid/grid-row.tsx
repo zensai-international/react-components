@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { Style } from '../common';
 import { GridCell, GridCellProps, GridCellStyle } from './grid-cell';
 import { GridColumn } from './grid-column';
 import { GridComponent } from './grid-component';
-import { Style } from '../common';
 
 export interface GridRowProps {
     columns: GridColumn[] | JSX.Element[];
@@ -18,7 +18,7 @@ export interface GridRowStyle extends Style {
 }
 
 export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> extends GridComponent<P, S> {
-    protected abstract getCellTypeByColumn(column: GridColumn): { new (props: GridCellProps): GridCell<GridCellProps, {}> };
+    protected abstract getCellTypeByColumn(column: GridColumn): { new(props: GridCellProps): GridCell<GridCellProps, {}> };
 
     protected handleClick = (event: React.MouseEvent<any>) => {
         if (this.props.onRowClick) {
@@ -38,7 +38,8 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
                 key={key}
                 rowProps={this.props}
                 onClick={this.props.onCellClick}
-                style={style} />
+                style={style}
+            />
         );
     }
 
@@ -65,5 +66,5 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
             : this.renderCells();
     }
 
-    protected abstract get cellType(): { new (props: GridCellProps): GridCell }
+    protected abstract get cellType(): { new(props: GridCellProps): GridCell }
 }

@@ -14,10 +14,13 @@ interface ConfirmationDialogInternalProps {
 }
 
 export interface ConfirmationDialogState {
-    isOpen: boolean
+    isOpen: boolean;
 }
 
-export class ConfirmationDialog<P extends ConfirmationDialogProps = ConfirmationDialogProps, S extends ConfirmationDialogState = ConfirmationDialogState> extends React.Component<P, S> {
+export class ConfirmationDialog<
+    P extends ConfirmationDialogProps = ConfirmationDialogProps,
+    S extends ConfirmationDialogState = ConfirmationDialogState
+    > extends React.Component<P, S> {
     private static _instance: Element;
 
     public constructor(props: P) {
@@ -64,11 +67,11 @@ export class ConfirmationDialog<P extends ConfirmationDialogProps = Confirmation
 export declare type ConfirmFunc<P extends ConfirmationDialogProps = ConfirmationDialogProps> = (props?: P) => Promise<{}>;
 
 export function createConfirm<P extends ConfirmationDialogProps = ConfirmationDialogProps>(dialog: (props: P) => JSX.Element): ConfirmFunc<P> {
-    return function(props: P): Promise<{}> {
+    return function (props: P): Promise<{}> {
         return new Promise((resolve, reject) => {
             const requiredProps: ConfirmationDialogInternalProps = {
                 cancel: reject,
-                confirm: resolve
+                confirm: resolve,
             };
             const resultProps = (props ? Object.assign({}, props, requiredProps) : requiredProps) as any;
 

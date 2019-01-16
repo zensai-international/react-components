@@ -3,7 +3,7 @@ import { Event } from '../event';
 export enum DataSourceChangeType {
     Create,
     Update,
-    Delete
+    Delete,
 }
 
 export interface DataSourceChange<T = {}> {

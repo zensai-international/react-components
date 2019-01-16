@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { Style } from '../common';
 import { GridCell, GridCellProps } from './grid-cell';
 import { GridColumn } from './grid-column';
-import { Style } from '../common';
 
 export interface GridFooterCellProps extends GridCellProps {
 }
@@ -16,10 +16,10 @@ export abstract class GridFooterCell<P extends GridFooterCellProps = GridFooterC
         const className = this.style.className;
 
         return {
-            className: className,
+            className,
             'data-column-name': field,
             onClick: this.handleClick,
-            role: 'columnfooter'
+            role: 'columnfooter',
         } as any;
     }
 

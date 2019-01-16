@@ -1,7 +1,7 @@
 export enum UriScheme {
     HTTP,
     HTTPS,
-    Unknown
+    Unknown,
 }
 
 export interface Uri {

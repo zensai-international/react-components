@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { ObjectHelper } from '../../infrastructure/helpers/object-helper';
+import { Style } from '../common';
+import { GridBodyRowProps } from './grid-body-row';
 import { GridCell, GridCellProps } from './grid-cell';
 import { GridColumn } from './grid-column';
-import { GridBodyRowProps } from './grid-body-row';
-import { Style } from '../common';
-import { ObjectHelper } from '../../infrastructure/helpers/object-helper';
 
 export interface GridBodyCellProps extends GridCellProps {
     rowProps: GridBodyRowProps;
@@ -17,11 +17,11 @@ export abstract class GridBodyCell<P extends GridBodyCellProps = GridBodyCellPro
         const title = ObjectHelper.isString(content) ? content : '';
 
         return {
-            className: className,
+            className,
             'data-column-name': field,
             onClick: this.handleClick,
             role: 'gridcell',
-            title: title
+            title,
         } as any;
     }
 
