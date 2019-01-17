@@ -5,7 +5,7 @@ export default describe('UriParser', () => {
     describe('queryParameters', () => {
         it('if only one query parameter', () => {
             const uri = new UriParser().parse('/path?p0=0');
-    
+
             expect(uri.query).to.be.equal('p0=0');
             expect(uri.queryParameters['p0']).to.be.equal('0');
         });

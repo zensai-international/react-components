@@ -37,4 +37,7 @@ export interface GridColumnProps {
 }
 
 export class GridColumn<P extends GridColumnProps = GridColumnProps, S = {}> extends GridComponent<P, S> {
+    public static defaultProps: Partial<GridColumnProps> = {
+        isSortable: true,
+    };
 }

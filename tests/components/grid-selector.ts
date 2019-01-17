@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import { ClientDataSource, table, ComparisonOperator } from '../../src';
+import { ClientDataSource, ComparisonOperator, table } from '../../src';
 
 export default describe('GridSelector', () => {
     describe('isAllSelected', () => {
         it('if there are no items', () => {
             const dataSource = new ClientDataSource({ data: [] });
-            const grid = new table.Grid({ dataSource: dataSource });
+            const grid = new table.Grid({ dataSource });
 
             dataSource.dataBind();
 
@@ -19,9 +19,9 @@ export default describe('GridSelector', () => {
             const item1 = { title: 'title1' };
             const dataSource = new ClientDataSource({
                 data: [item0, item1],
-                view: { filteredBy: { field: 'title', operator: ComparisonOperator.Equal, value: item0.title } }
+                view: { filteredBy: { field: 'title', operator: ComparisonOperator.Equal, value: item0.title } },
             });
-            const grid = new table.Grid({ dataSource: dataSource, selectedItems: [item1] });
+            const grid = new table.Grid({ dataSource, selectedItems: [item1] });
 
             dataSource.dataBind();
 
@@ -35,9 +35,9 @@ export default describe('GridSelector', () => {
             const item1 = { };
             const dataSource = new ClientDataSource({
                 data: [item0, item1],
-                view: { page: { size: 1 } }
+                view: { page: { size: 1 } },
             });
-            const grid = new table.Grid({ dataSource: dataSource, selectedItems: [item0] });
+            const grid = new table.Grid({ dataSource, selectedItems: [item0] });
 
             dataSource.dataBind();
 
@@ -50,8 +50,8 @@ export default describe('GridSelector', () => {
     describe('selectAll', () => {
         it('default behavior', async () => {
             const data = [];
-            const dataSource = new ClientDataSource({ data: data });
-            const grid = new table.Grid({ dataSource: dataSource });
+            const dataSource = new ClientDataSource({ data });
+            const grid = new table.Grid({ dataSource });
 
             await dataSource.dataBind();
 

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
-import { SortDirection } from '../../src/infrastructure/data/common';
 import { Comparer } from '../../src/infrastructure/comparer';
+import { SortDirection } from '../../src/infrastructure/data/common';
 
 const comparer = Comparer.instance;
 

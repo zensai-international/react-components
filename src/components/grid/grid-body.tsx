@@ -68,9 +68,6 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         return (
             <Row {...this.props}
                 index={null}
-                isExpandable={null}
-                isExpanded={null}
-                isSelected={null}
                 item={null}
                 key="row-message"
                 style={style.row}>
@@ -101,5 +98,5 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
         }
     }
 
-    protected abstract get rowType(): { new (props: GridBodyRowProps): GridBodyRow };
+    protected abstract get rowType(): { new(props: GridBodyRowProps): GridBodyRow };
 }

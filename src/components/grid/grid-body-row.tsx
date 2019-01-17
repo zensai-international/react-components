@@ -15,14 +15,20 @@ export type GridBodyRowTemplate = (
 ) => React.ReactNode;
 
 export interface GridBodyRowProps extends GridRowProps {
-    isExpandable: boolean;
-    isExpanded: boolean;
-    isSelected: boolean;
+    isExpandable?: boolean;
+    isExpanded?: boolean;
+    isSelected?: boolean;
     item: any;
     style: GridBodyRowStyle;
 }
 
 export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps, S = {}> extends GridRow<P, S> {
+    public static defaultProps: Partial<GridBodyRowProps> = {
+        isExpandable: true,
+        isExpanded: false,
+        isSelected: false,
+    };
+
     protected getAttributes(): React.HTMLAttributes<{}> {
         const className = this.style.className;
         const index = this.props.index;

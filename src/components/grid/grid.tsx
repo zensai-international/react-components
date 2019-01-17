@@ -111,7 +111,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     protected handleBodyCellClick = (event: React.MouseEvent<any>, cell: GridBodyCell<GridBodyCellProps>) => {
         const rowProps = cell.props.rowProps;
 
-        if ((cell.props.column instanceof GridExpanderColumn) && (rowProps.isExpandable)) {
+        if ((cell.props.column instanceof GridExpanderColumn) && rowProps.isExpandable) {
             this.expander.expandOrCollapse(rowProps.item);
 
             event.stopPropagation();
@@ -214,7 +214,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     }
 
     protected setDataSource(dataSource: DataSource) {
-        if ((this.props.autoBind != false) && (dataSource.state == DataSourceState.Empty)) {
+        if (this.props.autoBind && (dataSource.state == DataSourceState.Empty)) {
             const filterExpression = this._filterContext.build();
 
             if (filterExpression) {

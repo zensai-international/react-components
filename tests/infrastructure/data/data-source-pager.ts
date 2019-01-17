@@ -3,10 +3,10 @@ import { ClientDataSource } from '../../../src/infrastructure/data/client-data-s
 import { DataSourcePager, PageType } from '../../../src/infrastructure/data/data-source-pager';
 
 export default describe('DataSourcePager', () => {
-    function createPager(pageSize: number = 2) {
+    function createPager(pageSize = 2) {
         const dataSource = new ClientDataSource({
             data: () => [{ value: 0 }, { value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }],
-            view: { page: { index: 2, size: pageSize } }
+            view: { page: { index: 2, size: pageSize } },
         });
         dataSource.dataBind();
 
@@ -92,7 +92,7 @@ export default describe('DataSourcePager', () => {
             [
                 { pageIndex: 0, pageInfo: { firstIndex: 0, lastIndex: 1 } },
                 { pageIndex: 1, pageInfo: { firstIndex: 2, lastIndex: 3 } },
-                { pageIndex: 2, pageInfo: { firstIndex: 4, lastIndex: 4 } }
+                { pageIndex: 2, pageInfo: { firstIndex: 4, lastIndex: 4 } },
             ].forEach(x => {
                 const pager = createPager();
 
@@ -115,7 +115,7 @@ export default describe('DataSourcePager', () => {
         it('if data source is empty', () => {
             const dataSource = new ClientDataSource({
                 data: () => [],
-                view: { page: { index: 0, size: 2 } }
+                view: { page: { index: 0, size: 2 } },
             });
             const pager = new DataSourcePager(dataSource);
 

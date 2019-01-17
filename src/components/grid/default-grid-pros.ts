@@ -1,6 +1,7 @@
 import { GridProps } from './grid';
 
 export const DefaultGridProps: Partial<GridProps> = {
+    autoBind: true,
     messages: {
         loading: '',
         noItems: '',

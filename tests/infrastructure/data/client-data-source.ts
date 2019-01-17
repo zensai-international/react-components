@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { DataType, SortDirection } from '../../../src/infrastructure/data/common';
 import { ClientDataSource } from '../../../src/infrastructure/data/client-data-source';
-import { DataSourceState, DataViewMode, DataSource } from '../../../src/infrastructure/data/data-source';
-import { TypeConverterProvider } from '../../../src/infrastructure/type-converter';
+import { DataType, SortDirection } from '../../../src/infrastructure/data/common';
+import { DataSource, DataSourceState, DataViewMode } from '../../../src/infrastructure/data/data-source';
 import { ComparisonOperator } from '../../../src/infrastructure/expressions/expression';
+import { TypeConverterProvider } from '../../../src/infrastructure/type-converter';
 
 function getDataPromise<T = any>(data: T[]): Promise<T[]> {
     return new Promise((resolve: (value?: any) => void) => {
@@ -33,7 +33,7 @@ export default describe('ClientDataSource', () => {
 
         it('if data is promise', async () => {
             const data = getDataPromise([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
-            const dataSource = new ClientDataSource<{ field: string }>({ data: data });
+            const dataSource = new ClientDataSource<{ field: string }>({ data });
 
             const view = await dataSource.dataBind();
 
@@ -44,7 +44,7 @@ export default describe('ClientDataSource', () => {
 
         it('if data is function that returns promise', async () => {
             const data = getDataPromise([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
-            const dataSource = new ClientDataSource<{ field: string }>({ data: data });
+            const dataSource = new ClientDataSource<{ field: string }>({ data });
 
             const view = await dataSource.dataBind();
 
@@ -120,7 +120,7 @@ export default describe('ClientDataSource', () => {
         it('if group by 2 fields', async () => {
             const data = [
                 { field0: '00', field1: '01' }, { field0: '00', field1: '01' },
-                { field0: '10', field1: '11' }, { field0: '10', field1: '11' }
+                { field0: '10', field1: '11' }, { field0: '10', field1: '11' },
             ];
             const dataSource = new ClientDataSource({ data: () => data });
 
@@ -138,7 +138,7 @@ export default describe('ClientDataSource', () => {
         it('if group by complex object', async () => {
             const data = [
                 { field0: { value: null } },
-                { field0: { value: '00' } }
+                { field0: { value: '00' } },
             ];
             const dataSource = new ClientDataSource({ data: () => data });
 
@@ -182,13 +182,13 @@ export default describe('ClientDataSource', () => {
                 { field: 'value2' },
                 { field: 'value3' },
                 { field: 'value4' },
-                { field: 'value5' }
+                { field: 'value5' },
             ];
 
             it('default behavior', async () => {
                 const dataSource = new ClientDataSource({
                     data: () => data,
-                    view: { page: { size: 1 } }
+                    view: { page: { size: 1 } },
                 });
 
                 const view = await dataSource.dataBind();
@@ -203,7 +203,7 @@ export default describe('ClientDataSource', () => {
                     .forEach(async x => {
                         const dataSource = new ClientDataSource({
                             data: () => data,
-                            view: { page: { size: 1 } }
+                            view: { page: { size: 1 } },
                         });
 
                         dataSource.setPageIndex(x.pageIndex);
@@ -212,10 +212,10 @@ export default describe('ClientDataSource', () => {
 
                         expect(view.page.index, 'page.index').to.equal(x.pageIndex);
                         expect(view.data.length, 'data.length').to.equal(1);
-                        expect(view.data[0].field, 'data[0].field').to.equal('value' + x.pageIndex);
+                        expect(view.data[0].field, 'data[0].field').to.equal(`value${x.pageIndex}`);
                     });
             });
-        })
+        });
 
         describe('if "DataViewMode" is "FromFirstToCurrentPage"', () => {
             const data = [
@@ -224,7 +224,7 @@ export default describe('ClientDataSource', () => {
                 { field: 'value2' },
                 { field: 'value3' },
                 { field: 'value4' },
-                { field: 'value5' }
+                { field: 'value5' },
             ];
 
             it('default behavior', async () => {
@@ -232,8 +232,8 @@ export default describe('ClientDataSource', () => {
                     data: () => data,
                     view: {
                         mode: DataViewMode.FromFirstToCurrentPage,
-                        page: { size: 1 }
-                    }
+                        page: { size: 1 },
+                    },
                 });
 
                 const view = await dataSource.dataBind();
@@ -250,8 +250,8 @@ export default describe('ClientDataSource', () => {
                             data: () => data,
                             view: {
                                 mode: DataViewMode.FromFirstToCurrentPage,
-                                page: { size: 1 }
-                            }
+                                page: { size: 1 },
+                            },
                         });
 
                         dataSource.setPageIndex(x.pageIndex);
@@ -300,7 +300,7 @@ export default describe('ClientDataSource', () => {
             const testCases = [
                 [{ booleanField: true }, { booleanField: false }, { booleanField: null }],
                 [{ booleanField: null }, { booleanField: true }, { booleanField: false }],
-                [{ booleanField: null }, { booleanField: false }, { booleanField: true }]
+                [{ booleanField: null }, { booleanField: false }, { booleanField: true }],
             ];
 
             it('ascending sorting', () => {
@@ -321,7 +321,7 @@ export default describe('ClientDataSource', () => {
                 testCases.forEach(async x => {
                     const dataSource = new ClientDataSource({ data: () => x });
 
-                    dataSource.sort([{ direction: SortDirection.Descending, field: 'booleanField' }])
+                    dataSource.sort([{ direction: SortDirection.Descending, field: 'booleanField' }]);
 
                     const view = await dataSource.dataBind();
 
@@ -336,14 +336,14 @@ export default describe('ClientDataSource', () => {
             const testCases = [
                 [{ numberField: 0 }, { numberField: 1 }, { numberField: 2 }],
                 [{ numberField: 2 }, { numberField: 0 }, { numberField: 1 }],
-                [{ numberField: 2 }, { numberField: 1 }, { numberField: 0 }]
+                [{ numberField: 2 }, { numberField: 1 }, { numberField: 0 }],
             ];
 
             it('ascending sorting', () => {
                 testCases.forEach(async x => {
                     const dataSource = new ClientDataSource({ data: () => x });
 
-                    dataSource.sort([{ direction: SortDirection.Ascending, field: 'numberField' }])
+                    dataSource.sort([{ direction: SortDirection.Ascending, field: 'numberField' }]);
 
                     const view = await dataSource.dataBind();
 
@@ -357,7 +357,7 @@ export default describe('ClientDataSource', () => {
                 testCases.forEach(async x => {
                     const dataSource = new ClientDataSource({ data: () => x });
 
-                    dataSource.sort([{ direction: SortDirection.Descending, field: 'numberField' }])
+                    dataSource.sort([{ direction: SortDirection.Descending, field: 'numberField' }]);
 
                     const view = await dataSource.dataBind();
 
@@ -372,7 +372,7 @@ export default describe('ClientDataSource', () => {
             const testCases = [
                 [{ stringField: 'value0' }, { stringField: 'value1' }, { stringField: 'value2' }],
                 [{ stringField: 'value2' }, { stringField: 'value0' }, { stringField: 'value1' }],
-                [{ stringField: 'value2' }, { stringField: 'value1' }, { stringField: 'value0' }]
+                [{ stringField: 'value2' }, { stringField: 'value1' }, { stringField: 'value0' }],
             ];
 
             it('ascending sorting', () => {
@@ -411,17 +411,17 @@ export default describe('ClientDataSource', () => {
                 getValue(item: any): any {
                     return typeConverter.convert(item.dateField);
                 },
-                setValue: () => null
+                setValue: () => null,
             };
             const testCases = [
                 [{ dateField: '3/1/2001' }, { dateField: '2/1/2002' }, { dateField: '1/1/2003' }],
                 [{ dateField: '1/1/2003' }, { dateField: '3/1/2001' }, { dateField: '2/1/2002' }],
-                [{ dateField: '1/1/2003' }, { dateField: '2/1/2002' }, { dateField: '3/1/2001' }]
+                [{ dateField: '1/1/2003' }, { dateField: '2/1/2002' }, { dateField: '3/1/2001' }],
             ];
 
             it('ascending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ data: () => x, fieldAccessor: fieldAccessor });
+                    const dataSource = new ClientDataSource({ data: () => x, fieldAccessor });
 
                     dataSource.sort([{ direction: SortDirection.Ascending, field: 'dateField' }]);
 
@@ -435,7 +435,7 @@ export default describe('ClientDataSource', () => {
 
             it('descending sorting', () => {
                 testCases.forEach(async x => {
-                    const dataSource = new ClientDataSource({ data: () => x, fieldAccessor: fieldAccessor });
+                    const dataSource = new ClientDataSource({ data: () => x, fieldAccessor });
 
                     dataSource.sort([{ direction: SortDirection.Descending, field: 'dateField' }]);
 
@@ -454,7 +454,7 @@ export default describe('ClientDataSource', () => {
                     { numberField0: 0, numberField1: 0 },
                     { numberField0: 0, numberField1: 1 },
                     { numberField0: 0, numberField1: 2 },
-                    { numberField0: 1, numberField1: 0 }
+                    { numberField0: 1, numberField1: 0 },
                 ],
                 [
                     { numberField0: 0, numberField1: 2 },
@@ -465,8 +465,8 @@ export default describe('ClientDataSource', () => {
                     { numberField0: 0, numberField1: 2 },
                     { numberField0: 0, numberField1: 1 },
                     { numberField0: 0, numberField1: 0 },
-                    { numberField0: 1, numberField1: 0 }
-                ]
+                    { numberField0: 1, numberField1: 0 },
+                ],
             ];
 
             it('ascending sorting', () => {
@@ -475,7 +475,7 @@ export default describe('ClientDataSource', () => {
 
                     dataSource.sort([
                         { direction: SortDirection.Ascending, field: 'numberField0' },
-                        { direction: SortDirection.Ascending, field: 'numberField1' }
+                        { direction: SortDirection.Ascending, field: 'numberField1' },
                     ]);
 
                     dataSource.dataBind();
@@ -495,7 +495,7 @@ export default describe('ClientDataSource', () => {
 
                     dataSource.sort([
                         { direction: SortDirection.Descending, field: 'numberField0' },
-                        { direction: SortDirection.Descending, field: 'numberField1' }
+                        { direction: SortDirection.Descending, field: 'numberField1' },
                     ]);
 
                     dataSource.dataBind();

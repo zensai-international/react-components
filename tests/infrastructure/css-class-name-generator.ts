@@ -17,10 +17,10 @@ export default describe('ClassNameGenerator', () => {
 
     describe('generateByKey', () => {
         it('result is the same', () => {
-            let classNameGenerator = new CssClassNameGenerator();
+            const classNameGenerator = new CssClassNameGenerator();
 
-            let className0 = classNameGenerator.generateByKey('0');
-            let className1 = classNameGenerator.generateByKey('0');
+            const className0 = classNameGenerator.generateByKey('0');
+            const className1 = classNameGenerator.generateByKey('0');
 
             expect(className0).is.not.null;
             expect(className1).is.not.null;

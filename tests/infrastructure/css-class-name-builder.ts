@@ -4,7 +4,7 @@ import { CssClassNameBuilder } from '../../src/infrastructure/css-class-name-bui
 export default describe('ClassNameBuilder', () => {
     describe('add', () => {
         it('one class', () => {
-            let classNameBuilder = new CssClassNameBuilder();
+            const classNameBuilder = new CssClassNameBuilder();
 
             classNameBuilder.add('class0');
 
@@ -12,7 +12,7 @@ export default describe('ClassNameBuilder', () => {
         });
 
         it('two classes', () => {
-            let classNameBuilder = new CssClassNameBuilder();
+            const classNameBuilder = new CssClassNameBuilder();
 
             classNameBuilder.add('class0');
             classNameBuilder.add('class1');
@@ -23,7 +23,7 @@ export default describe('ClassNameBuilder', () => {
 
     describe('addIf', () => {
         it('condition is true', () => {
-            let classNameBuilder = new CssClassNameBuilder();
+            const classNameBuilder = new CssClassNameBuilder();
 
             classNameBuilder.addIf(true, () => 'class0');
 
@@ -31,7 +31,7 @@ export default describe('ClassNameBuilder', () => {
         });
 
         it('condition is false', () => {
-            let classNameBuilder = new CssClassNameBuilder();
+            const classNameBuilder = new CssClassNameBuilder();
 
             classNameBuilder.addIf(false, () => 'class0');
 

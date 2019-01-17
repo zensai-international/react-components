@@ -14,7 +14,7 @@ export class GridExpanderColumn<P extends GridColumnProps = GridColumnProps> ext
     protected renderBody(item: any, cell: GridBodyCell): React.ReactNode {
         const rowProps = cell.props.rowProps;
 
-        return (rowProps.isExpandable)
+        return rowProps.isExpandable
             ? <a href="#">{rowProps.isExpanded ? '-' : '+'}</a>
             : null;
     }

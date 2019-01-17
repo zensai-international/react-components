@@ -1,8 +1,22 @@
+import { expect } from 'chai';
 import * as Enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
-import { expect } from 'chai';
 import * as React from 'react';
-import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src';
+import {
+    ClientDataSource,
+    ComparisonOperator,
+    DataSource,
+    FilterContext,
+    GridBodyRow,
+    GridBodyRowProps,
+    GridColumn,
+    GridExpanderColumn,
+    GridProps,
+    GridSelectionMode,
+    GridState,
+    SortDirection,
+    table
+} from '../../src';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -12,7 +26,7 @@ export default describe('<Grid />', () => {
     const data = [
         { array: ['value0', 'value1', 'value2'], title: 'title0' },
         { array: ['value0', 'value1', 'value2'], title: 'title1' },
-        { array: ['value0', 'value1', 'value2'], title: 'title2' }
+        { array: ['value0', 'value1', 'value2'], title: 'title2' },
     ];
     let dataSource: DataSource;
 
@@ -22,13 +36,13 @@ export default describe('<Grid />', () => {
 
     describe('behavior', () => {
         describe('expansion', () => {
-            function createGrid(isExpandable: boolean = null): Enzyme.ReactWrapper<GridProps, GridState> {
+            function createGrid(isExpandable = true): Enzyme.ReactWrapper<GridProps, GridState> {
                 return Enzyme.mount(
                     <Grid
-                        bodyRowTemplate={(rowType: { new (): GridBodyRow }, props: GridBodyRowProps) => {
+                        bodyRowTemplate={(rowType: { new(): GridBodyRow }, props: GridBodyRowProps) => {
                             const Row = rowType;
 
-                            return <Row {...props} isExpandable={isExpandable} />
+                            return <Row {...props} isExpandable={isExpandable} />;
                         }}
                         dataSource={dataSource}>
                         <GridExpanderColumn body={{ style: { className: 'expander' } }} />
@@ -126,7 +140,7 @@ export default describe('<Grid />', () => {
                 it('one click on first row and one click to last row (to select second row)', () => {
                     const selectedItems = grid.state().selectedItems;
 
-                    grid.find('.title-body').first().simulate('click')
+                    grid.find('.title-body').first().simulate('click');
                     grid.find('.title-body').last().simulate('click');
 
                     expect(selectedItems.length, 'selectedItems.length').to.equal(1);
@@ -153,7 +167,7 @@ export default describe('<Grid />', () => {
                 it('one click on first row and one click to last row (to select first and second rows)', () => {
                     const selectedItems = grid.state().selectedItems;
 
-                    grid.find('.title-body').first().simulate('click')
+                    grid.find('.title-body').first().simulate('click');
                     grid.find('.title-body').last().simulate('click');
 
                     expect(selectedItems.length, 'selectedItems.length').to.equal(2);
@@ -168,7 +182,7 @@ export default describe('<Grid />', () => {
                 const dataSource = grid.props().dataSource;
 
                 dataSource.delete(item);
-                
+
                 expect(grid.state().selectedItems.length, 'selectedItems.length').to.equal(0);
             });
         });

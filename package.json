@@ -49,8 +49,7 @@
     "license": "ISC",
     "lint-staged": {
         "*.{ts,tsx}": [
-            "tslint --project tsconfig.json --fix --force",
-            "git add"
+            "tslint --project tsconfig.json"
         ]
     },
     "name": "ef.react-components",

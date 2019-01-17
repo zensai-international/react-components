@@ -59,7 +59,8 @@ export abstract class GridRow<P extends GridRowProps = GridRowProps, S = any> ex
                     key={null}
                     rowProps={this.props}
                     onClick={null}
-                    style={style}>
+                    style={style}
+                >
                     {this.props.children}
                 </Cell>
             )

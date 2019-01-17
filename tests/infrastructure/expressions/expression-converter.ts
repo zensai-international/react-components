@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ComparisonOperator, ComparisonExpression } from '../../../src/infrastructure/expressions/expression';
+import { ComparisonExpression, ComparisonOperator } from '../../../src/infrastructure/expressions/expression';
 import { ExpressionConverter } from '../../../src/infrastructure/expressions/expression-converter';
 
 export default describe('ExpressionConverter', () => {
@@ -12,11 +12,11 @@ export default describe('ExpressionConverter', () => {
                 return {
                     field: 'field0',
                     operator: ComparisonOperator.Any,
-                    value: value
+                    value,
                 };
             }
 
-            it ('if result is true', () => {
+            it('if result is true', () => {
                 const filterExpression = createFilterExpression('value0');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -24,7 +24,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).is.true;
             });
 
-            it ('if result is false', () => {
+            it('if result is false', () => {
                 const filterExpression = createFilterExpression('value1');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -41,11 +41,11 @@ export default describe('ExpressionConverter', () => {
                 return {
                     field: 'field0',
                     operator: ComparisonOperator.Contain,
-                    value: value
+                    value,
                 };
             }
 
-            it ('if result is true and value is start part', () => {
+            it('if result is true and value is start part', () => {
                 const filterExpression = createFilterExpression('xxx');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -53,7 +53,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(true);
             });
 
-            it ('if result is true and value is middle part', () => {
+            it('if result is true and value is middle part', () => {
                 const filterExpression = createFilterExpression('yyy');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -61,7 +61,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(true);
             });
 
-            it ('if result is true and value is middle part (upper case)', () => {
+            it('if result is true and value is middle part (upper case)', () => {
                 const filterExpression = createFilterExpression('YYY');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -69,7 +69,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(true);
             });
 
-            it ('if result is true and value is end part', () => {
+            it('if result is true and value is end part', () => {
                 const filterExpression = createFilterExpression('zzz');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -77,7 +77,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(true);
             });
 
-            it ('if result is false', () => {
+            it('if result is false', () => {
                 const filterExpression = createFilterExpression('xxxxxxxxx');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -85,7 +85,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(false);
             });
 
-            it ('if result is false and value is null', () => {
+            it('if result is false and value is null', () => {
                 const filterExpression = createFilterExpression(null);
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -102,11 +102,11 @@ export default describe('ExpressionConverter', () => {
                 return {
                     field: 'fields.field0',
                     operator: ComparisonOperator.Contain,
-                    value: value
+                    value,
                 };
             }
 
-            it ('if result is true and value is start part', () => {
+            it('if result is true and value is start part', () => {
                 const filterExpression = createFilterExpression('xxx');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -114,7 +114,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(true);
             });
 
-            it ('if result is true and value is middle part', () => {
+            it('if result is true and value is middle part', () => {
                 const filterExpression = createFilterExpression('yyy');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);
@@ -122,7 +122,7 @@ export default describe('ExpressionConverter', () => {
                 expect(comparisonExpression(item)).equal(true);
             });
 
-            it ('if result is true and value is end part', () => {
+            it('if result is true and value is end part', () => {
                 const filterExpression = createFilterExpression('zzz');
 
                 const comparisonExpression = expressionConverter.convert(filterExpression);

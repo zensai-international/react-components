@@ -67,7 +67,7 @@ export abstract class GridHeaderCell<
     protected handleSort = () => {
         const props = this.props.column.props;
 
-        if ((props.isSortable) && props.field) {
+        if (props.isSortable && props.field) {
             const field = this.props.column.props.field;
 
             if (!field) return;
