@@ -1,4 +1,4 @@
-import { GridProps } from './grid';
+import { GridProps } from './grid.types';
 
 export const DefaultGridProps: Partial<GridProps> = {
     messages: {

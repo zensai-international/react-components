@@ -1,29 +1,12 @@
-import { Grid, GridSelectionMode } from './grid';
+import { Grid } from './grid';
 import { DataSourcePager } from '../../infrastructure/data/data-source-pager';
+import { GridSelectionMode } from './grid.types';
 
 export class GridSelector {
     private _grid: Grid;
 
     public constructor(grid: Grid) {
         this._grid = grid;
-    }
-
-    private getAllItems(): Promise<any[]> {
-        const dataSource = this._grid.props.dataSource;
-
-        if (!dataSource.view) {
-            return null;
-        }
-
-        const pager = new DataSourcePager(dataSource);
-
-        return (pager.getPageCount() > 1)
-            ? dataSource.getView({
-                    filteredBy: dataSource.view.filteredBy,
-                    sortedBy: dataSource.view.sortedBy
-                })
-                .then(x => x.data)
-            : Promise.resolve(dataSource.view.data);
     }
 
     public select(item: any) {
@@ -41,7 +24,7 @@ export class GridSelector {
 
                 selectedItems.push(item);
 
-                grid.setState({ selectedItems: selectedItems }, () => {
+                grid.setState({ selectedItems }, () => {
                     if (gridProps.onSelect) {
                         gridProps.onSelect(grid, [item]);
                     }
@@ -61,7 +44,7 @@ export class GridSelector {
             if (itemIndex != -1) {
                 selectedItems.splice(itemIndex, 1);
 
-                grid.setState({ selectedItems: selectedItems }, () => {
+                grid.setState({ selectedItems }, () => {
                     if (gridProps.onUnselect) {
                         gridProps.onUnselect(grid, [item]);
                     }
@@ -121,5 +104,23 @@ export class GridSelector {
                 }
             });
         }
+    }
+
+    private getAllItems(): Promise<any[]> {
+        const dataSource = this._grid.props.dataSource;
+
+        if (!dataSource.view) {
+            return null;
+        }
+
+        const pager = new DataSourcePager(dataSource);
+
+        return (pager.getPageCount() > 1)
+            ? dataSource.getView({
+                    filteredBy: dataSource.view.filteredBy,
+                    sortedBy: dataSource.view.sortedBy
+                })
+                .then(x => x.data)
+            : Promise.resolve(dataSource.view.data);
     }
 }

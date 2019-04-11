@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridBodyCell } from './grid-body-cell';
 import { GridHeaderCell } from './grid-header-cell';
-import { GridSelectionMode } from '../../index';
+import { GridSelectionMode } from './grid.types';
 
 export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> extends GridColumn<P> {
     public static defaultProps: Partial<GridColumnProps> = {
@@ -21,11 +21,11 @@ export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> ext
         const isAllSelected = grid.selector.isAllSelected();
 
         return (grid.props.selectionMode == GridSelectionMode.Multiple)
-            ? <input checked={isAllSelected} onClick={() => grid.selector.selectOrUnselectAll()} type="checkbox" />
+            ? <input checked={isAllSelected} onClick={() => grid.selector.selectOrUnselectAll()} type='checkbox' />
             : null;
     }
 
     protected renderBodyContent(item: any, cell: GridBodyCell): React.ReactNode {
-        return <input checked={cell.props.rowProps.isSelected} type="checkbox" />;
+        return <input checked={cell.props.rowProps.isSelected} type='checkbox' />;
     }
 }

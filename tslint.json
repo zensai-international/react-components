@@ -25,6 +25,7 @@
                 120
             ]
         },
+        "variable-name": false,
         "new-parens": true,
         "no-arg": true,
         "no-bitwise": true,

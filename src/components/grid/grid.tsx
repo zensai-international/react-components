@@ -1,21 +1,21 @@
 import * as React from 'react';
 import { PropTypes } from 'prop-types';
 import { DefaultGridProps } from './default-grid-pros';
-import { GridBody, GridBodyProps, GridBodyStyle } from './grid-body';
+import { GridBody, GridBodyProps } from './grid-body';
 import { GridBodyCell, GridBodyCellProps } from './grid-body-cell';
-import { GridBodyRow, GridBodyRowTemplate, GridBodyRowProps } from './grid-body-row';
+import { GridBodyRow, GridBodyRowProps } from './grid-body-row';
 import { GridColumn, GridColumnProps } from './grid-column';
 import { GridExpander } from './grid-expander';
 import { GridExpanderColumn } from './grid-expander-column';
-import { GridFooter, GridFooterProps, GridFooterStyle } from './grid-footer';
-import { GridHeader, GridHeaderProps, GridHeaderStyle } from './grid-header';
+import { GridFooter, GridFooterProps } from './grid-footer';
+import { GridHeader, GridHeaderProps } from './grid-header';
 import { GridHeaderCell, GridHeaderCellProps, GridHeaderCellState } from './grid-header-cell';
 import { GridSelector } from './grid-selector';
-import { Style } from '../common';
 import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
 import { DataSourceChange, DataSourceChangeType } from '../../infrastructure/data/data-source-change-tracker';
 import { FilterContext } from '../../infrastructure/data/filter-context';
 import { ConditionalExpression } from '../../infrastructure/expressions/expression';
+import { GridProps, GridMessages } from './grid.types';
 
 export interface GridContext {
     filterContext: FilterContext;
@@ -29,43 +29,9 @@ export const GridContextTypes = {
     spinnerType: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
 };
 
-export interface GridMessages {
-    loading: string;
-    noItems: string;
-}
-
-export enum GridSelectionMode {
-    Single,
-    Multiple
-}
-
-export interface GridProps {
-    autoBind?: boolean;
-    bodyRowTemplate?: GridBodyRowTemplate;
-    dataSource: DataSource;
-    filterContext?: FilterContext;
-    messages?: GridMessages;
-    selectedItems?: any[];
-    selectionMode?: GridSelectionMode;
-    showHeader?: boolean;
-    style?: GridStyle;
-
-    onDataBound?: (sender: Grid) => void;
-    onBodyCellClick?: (event: React.MouseEvent<any>, row: GridBodyCell) => void;
-    onBodyRowClick?: (event: React.MouseEvent<any>, row: GridBodyRow) => void;
-    onSelect?: (sender: Grid, items: any[]) => void;
-    onUnselect?: (sender: Grid, items: any[]) => void;
-}
-
 export interface GridState {
     expandedItems?: any[];
     selectedItems?: any[];
-}
-
-export interface GridStyle extends Style {
-    body: GridBodyStyle;
-    footer: GridFooterStyle;
-    header: GridHeaderStyle;
 }
 
 export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {

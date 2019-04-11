@@ -2,7 +2,8 @@ import * as Enzyme from 'enzyme';
 import * as Adapter from 'enzyme-adapter-react-16';
 import { expect } from 'chai';
 import * as React from 'react';
-import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridProps, GridSelectionMode, GridState, SortDirection } from '../../src/index';
+import { ClientDataSource, ComparisonOperator, DataSource, FilterContext, table, GridBodyRow, GridBodyRowProps, GridColumn, GridExpanderColumn, GridState, SortDirection } from '../../src/index';
+import { GridSelectionMode, GridProps } from '../../src/components/grid/grid.types';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -25,14 +26,14 @@ export default describe('<Grid />', () => {
             function createGrid(isExpandable: boolean = null): Enzyme.ReactWrapper<GridProps, GridState> {
                 return Enzyme.mount(
                     <Grid
-                        bodyRowTemplate={(rowType: { new (): GridBodyRow }, props: GridBodyRowProps) => {
+                        bodyRowTemplate={(rowType: { new(): GridBodyRow }, props: GridBodyRowProps) => {
                             const Row = rowType;
 
-                            return <Row {...props} isExpandable={isExpandable} />
+                            return <Row {...props} isExpandable={isExpandable} />;
                         }}
                         dataSource={dataSource}>
                         <GridExpanderColumn body={{ style: { className: 'expander' } }} />
-                        <GridColumn field="title" title="Title" />
+                        <GridColumn field='title' title='Title' />
                     </Grid>
                 );
             }
@@ -91,8 +92,8 @@ export default describe('<Grid />', () => {
                         <GridColumn
                             body={{ style: { className: 'title-body' } }}
                             header={{ style: { className: 'title-header' } }}
-                            field="title"
-                            title="Title" />
+                            field='title'
+                            title='Title' />
                     </Grid>
                 );
             }
@@ -126,7 +127,7 @@ export default describe('<Grid />', () => {
                 it('one click on first row and one click to last row (to select second row)', () => {
                     const selectedItems = grid.state().selectedItems;
 
-                    grid.find('.title-body').first().simulate('click')
+                    grid.find('.title-body').first().simulate('click');
                     grid.find('.title-body').last().simulate('click');
 
                     expect(selectedItems.length, 'selectedItems.length').to.equal(1);
@@ -153,7 +154,7 @@ export default describe('<Grid />', () => {
                 it('one click on first row and one click to last row (to select first and second rows)', () => {
                     const selectedItems = grid.state().selectedItems;
 
-                    grid.find('.title-body').first().simulate('click')
+                    grid.find('.title-body').first().simulate('click');
                     grid.find('.title-body').last().simulate('click');
 
                     expect(selectedItems.length, 'selectedItems.length').to.equal(2);
@@ -168,7 +169,7 @@ export default describe('<Grid />', () => {
                 const dataSource = grid.props().dataSource;
 
                 dataSource.delete(item);
-                
+
                 expect(grid.state().selectedItems.length, 'selectedItems.length').to.equal(0);
             });
         });
@@ -180,13 +181,13 @@ export default describe('<Grid />', () => {
                 grid = Enzyme.mount(
                     <Grid dataSource={dataSource}>
                         <GridColumn
-                            field="title"
+                            field='title'
                             header={{ style: { title: { className: 'title' } } }}
-                            title="Title" />
+                            title='Title' />
                         <GridColumn
-                            field="description"
+                            field='description'
                             header={{ style: { title: { className: 'description' } } }}
-                            title="Description" />
+                            title='Description' />
                     </Grid>
                 );
             });
@@ -256,7 +257,7 @@ export default describe('<Grid />', () => {
             it('style', () => {
                 const grid = Enzyme.mount(
                     <Grid dataSource={dataSource}>
-                        <GridColumn body={{ style: { className: 'body' } }} field="title" title="Title" />
+                        <GridColumn body={{ style: { className: 'body' } }} field='title' title='Title' />
                     </Grid>
                 );
 
@@ -268,7 +269,7 @@ export default describe('<Grid />', () => {
             it('style', () => {
                 const grid = Enzyme.mount(
                     <Grid dataSource={dataSource}>
-                        <GridColumn header={{ style: { className: 'header', title: { className: 'header-title' } } }} field="title" title="Title" />
+                        <GridColumn header={{ style: { className: 'header', title: { className: 'header-title' } } }} field='title' title='Title' />
                     </Grid>
                 );
 
@@ -282,7 +283,7 @@ export default describe('<Grid />', () => {
         it('body cell if value is array', () => {
             const grid = Enzyme.mount(
                 <Grid dataSource={dataSource}>
-                    <GridColumn body={{ style: { className: 'body' } }} field="array" />
+                    <GridColumn body={{ style: { className: 'body' } }} field='array' />
                 </Grid>
             );
             const bodyCell = grid.find('.body').first();

@@ -6,5 +6,27 @@
         "node_modules": true,
         "typings": true
     },
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "tslint.autoFixOnSave": [
+        "align",
+        "brace-style",
+        "comment-format",
+        "no-consecutive-blank-lines",
+        "no-inferrable-types",
+        "no-trailing-whitespace",
+        "no-var-keyword",
+        "object-curly-spacing",
+        "object-literal-shorthand",
+        "ordered-imports",
+        "prefer-const",
+        "prefer-template",
+        "semicolon",
+        "space-in-parens",
+        "ter-indent",
+        "trailing-comma",
+        "quotemark",
+        "whitespace",
+        "object-curly-spacing",
+        "trailing-comma"
+    ]
 }
