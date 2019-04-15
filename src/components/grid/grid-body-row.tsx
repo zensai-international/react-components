@@ -17,6 +17,7 @@ export type GridBodyRowTemplate = (
 export interface GridBodyRowProps extends GridRowProps {
     isExpandable?: boolean;
     isExpanded?: boolean;
+    isSelectable?: boolean;
     isSelected?: boolean;
     item: any;
     style: GridBodyRowStyle;
@@ -26,6 +27,7 @@ export abstract class GridBodyRow<P extends GridBodyRowProps = GridBodyRowProps,
     public static defaultProps: Partial<GridBodyRowProps> = {
         isExpandable: true,
         isExpanded: false,
+        isSelectable: true,
         isSelected: false,
     };
 
