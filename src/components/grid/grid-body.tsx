@@ -40,6 +40,7 @@ export abstract class GridBody<P extends GridBodyProps = GridBodyProps, S = {}> 
             key: `row-${index}`,
             index,
             isExpandable: null,
+            isSelectable: true,
             isExpanded,
             isSelected,
             item,
