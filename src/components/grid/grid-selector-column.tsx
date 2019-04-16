@@ -28,7 +28,7 @@ export class GridSelectorColumn<P extends GridColumnProps = GridColumnProps> ext
     protected renderBodyContent(item: any, cell: GridBodyCell): React.ReactNode {
         const rowProps = cell.props.rowProps;
 
-        return rowProps.isSelectable
+        return (rowProps.isSelectable != false)
             ? <input checked={cell.props.rowProps.isSelected} type="checkbox" />
             : null;
     }
