@@ -127,7 +127,7 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
             this.props.onBodyRowClick(event, row);
         }
 
-        if (!event.isPropagationStopped()) {
+        if (row.props.isSelectable != false && !event.isPropagationStopped()) {
             this.selector.selectOrUnselect(row.props.item);
         }
     }

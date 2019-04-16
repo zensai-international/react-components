@@ -13,6 +13,7 @@ export type GridBodyRowTemplate = (rowType: { new (props: GridBodyRowProps): Gri
 export interface GridBodyRowProps extends GridRowProps {
     isExpandable: boolean;
     isExpanded: boolean;
+    isSelectable: boolean;
     isSelected: boolean;
     item: any;
     style: GridBodyRowStyle;
