@@ -39,6 +39,16 @@ export class ClientDataSource<T = {}> implements DataSource<T> {
         if (Array.isArray(props.data)) {
             this._data = props.data as T[];
         }
+
+        const { onDataBinding, onDataBound } = props;
+
+        if (onDataBinding) {
+            this.onDataBinding.on(onDataBinding);
+        }
+
+        if (onDataBound) {
+            this.onDataBound.on(onDataBound);
+        }
     }
 
     protected createFilterOperation(expression: ConditionalExpression): ViewInitializer<T> {

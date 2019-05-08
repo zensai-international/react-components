@@ -49,6 +49,9 @@ export enum DataSourceState {
 export interface DataSourceProps {
     fieldAccessor?: FieldAccessor;
     view?: DataViewProps;
+
+    onDataBinding?: (dataSource: DataSource) => void;
+    onDataBound?: (dataSource: DataSource) => void;
 }
 
 export interface DataSource<T = {}> {

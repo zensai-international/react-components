@@ -31,6 +31,22 @@ export default describe('ClientDataSource', () => {
             expect(view.data[2].field).to.equal('value2');
         });
 
+        it('event calls', async () => {
+            const handleDataBinding = sinon.spy();
+            const handleDataBound = sinon.spy();
+            const dataSource = new ClientDataSource({
+                data: () => [],
+                onDataBinding: handleDataBinding,
+                onDataBound: handleDataBound,
+            });
+
+
+            await dataSource.dataBind();
+
+            expect(handleDataBinding.called, 'handleDataBinding.called').is.true;
+            expect(handleDataBound.called, 'handleDataBound.called').is.true;
+        });
+
         it('if data is promise', async () => {
             const data = getDataPromise([{ field: 'value0' }, { field: 'value1' }, { field: 'value2' }]);
             const dataSource = new ClientDataSource<{ field: string }>({ data: data });
