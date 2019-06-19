@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDom from 'react-dom';
 
 export interface ConfirmationDialogProps {
     cancelButtonLabel?: string;
@@ -18,7 +17,8 @@ export interface ConfirmationDialogState {
 }
 
 export class ConfirmationDialog<P extends ConfirmationDialogProps = ConfirmationDialogProps, S extends ConfirmationDialogState = ConfirmationDialogState> extends React.Component<P, S> {
-    private static _instance: Element;
+    private static _container: React.Component;
+    private static _renderContainerContent: () => React.ReactNode;
 
     public constructor(props: P) {
         super(props);
@@ -26,21 +26,33 @@ export class ConfirmationDialog<P extends ConfirmationDialogProps = Confirmation
         this.state = { isOpen: true } as S;
     }
 
-    public static render(dialog: JSX.Element) {
-        const container = document.createElement('div');
+    public static render(container: React.Component, dialog: React.ReactNode) {
+        this._container = container;
+        this._renderContainerContent = container.render;
 
-        document.body.appendChild(container);
+        container.render = () => {
+            const { isConfirmationDialogOpen } = container.state as any;
+            const renderContainerContent = ConfirmationDialog._renderContainerContent.bind(container);
 
-        ConfirmationDialog._instance = ReactDom.render(dialog, container) as Element;
+            return (
+                <>
+                    {renderContainerContent()}
+                    {isConfirmationDialogOpen && dialog}
+                </>
+            );
+        };
+
+        container.setState({ isConfirmationDialogOpen: true });
     }
 
     protected destroy() {
-        if (ConfirmationDialog._instance) {
-            const container = ReactDom.findDOMNode(ConfirmationDialog._instance) as Element;
+        if (ConfirmationDialog._container && ConfirmationDialog._renderContainerContent) {
+            ConfirmationDialog._container.render = ConfirmationDialog._renderContainerContent;
 
-            ReactDom.unmountComponentAtNode(container);
-            container.parentElement.remove();
-            ConfirmationDialog._instance = null;
+            ConfirmationDialog._container.setState({ isConfirmationDialogOpen: false }, () => {
+                ConfirmationDialog._container = null;
+                ConfirmationDialog._renderContainerContent = null;
+            });
         }
     }
 
@@ -61,10 +73,10 @@ export class ConfirmationDialog<P extends ConfirmationDialogProps = Confirmation
     }
 }
 
-export declare type ConfirmFunc<P extends ConfirmationDialogProps = ConfirmationDialogProps> = (props?: P) => Promise<{}>;
+export declare type ConfirmFunc<P extends ConfirmationDialogProps = ConfirmationDialogProps> = (container: React.Component, props?: P) => Promise<{}>;
 
 export function createConfirm<P extends ConfirmationDialogProps = ConfirmationDialogProps>(dialog: (props: P) => JSX.Element): ConfirmFunc<P> {
-    return function(props: P): Promise<{}> {
+    return function (container, props: P): Promise<{}> {
         return new Promise((resolve, reject) => {
             const requiredProps: ConfirmationDialogInternalProps = {
                 cancel: reject,
@@ -72,7 +84,7 @@ export function createConfirm<P extends ConfirmationDialogProps = ConfirmationDi
             };
             const resultProps = (props ? Object.assign({}, props, requiredProps) : requiredProps) as any;
 
-            ConfirmationDialog.render(dialog(resultProps));
+            ConfirmationDialog.render(container, dialog(resultProps));
         });
     };
 }
