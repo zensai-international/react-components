@@ -7,6 +7,7 @@
 .npmignore
 karma.config.js
 webpack.config.js
+webpack.config.prod.js
 tsconfig.json
 tslint.json
 typings.json
