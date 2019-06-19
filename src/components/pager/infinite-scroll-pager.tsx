@@ -21,8 +21,8 @@ function isElementVisible(element) {
 }
 
 export interface InfiniteScrollPagerProps {
+    className?: string;
     dataSource: DataSource;
-    containerClass?: string;
     isEnabled?: boolean;
 }
 
@@ -78,8 +78,10 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     }
 
     public render(): JSX.Element {
+        const { className } = this.props;
+
         return (
-            <div onScroll={this.handleScroll} >
+            <div className={className} onScroll={this.handleScroll} >
                 {this.props.children}
                 <div ref={x => this._visibilityDetector = x} />
             </div>
