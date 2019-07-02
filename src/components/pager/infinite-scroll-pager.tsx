@@ -2,59 +2,13 @@ import * as React from 'react';
 import { DataSource, DataSourceState } from '../../infrastructure/data/data-source';
 import { DataSourcePager, PageType } from '../../infrastructure/data/data-source-pager';
 
-function isElementVisible(element) {
-    let top = element.offsetTop;
-    let left = element.offsetLeft;
-    const width = element.offsetWidth;
-    const height = element.offsetHeight;
-
-    while(element.offsetParent) {
-        element = element.offsetParent;
-        top += element.offsetTop;
-        left += element.offsetLeft;
-    }
-
-    return top >= window.pageYOffset
-        && left >= window.pageXOffset
-        && (top + height) <= (window.pageYOffset + window.innerHeight)
-        && (left + width) <= (window.pageXOffset + window.innerWidth);
-}
-
 export interface InfiniteScrollPagerProps {
-    className?: string;
     dataSource: DataSource;
     isEnabled?: boolean;
+    scrollableElement: () => HTMLElement;
 }
 
 export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, {}> {
-    private _visibilityDetector: HTMLElement;
- 
-    public constructor(props: InfiniteScrollPagerProps) {
-        super(props);
-
-        this.state = { isLoading: false };
-    }
-
-    protected attachEvents() {
-        window.addEventListener('scroll', this.handleScroll);
-        window.addEventListener('resize', this.handleScroll);
-    }
-
-    protected detachEvents() {
-        window.removeEventListener('scroll', this.handleScroll);
-        window.removeEventListener('resize', this.handleScroll);
-    }
-
-    protected handleScroll = () => {
-        if ((this.props.dataSource.state != DataSourceState.Binding)
-            && this._visibilityDetector
-            && isElementVisible(this._visibilityDetector)) {
-            const dataSourcePager = new DataSourcePager(this.props.dataSource);
-
-            dataSourcePager.moveToPage(PageType.Next);
-        }
-    }
-
     public componentDidMount() {
         if (this.props.isEnabled != false) {
             this.attachEvents();
@@ -78,13 +32,38 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     }
 
     public render(): JSX.Element {
-        const { className } = this.props;
-
         return (
-            <div className={className} onScroll={this.handleScroll} >
+            <>
                 {this.props.children}
-                <div ref={x => this._visibilityDetector = x} />
-            </div>
+            </>
         );
+    }
+
+    protected attachEvents() {
+        const scrollableElement = this.props.scrollableElement();
+
+        scrollableElement.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('resize', this.handleScroll);
+    }
+
+    protected detachEvents() {
+        const scrollableElement = this.props.scrollableElement();
+
+        scrollableElement.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('resize', this.handleScroll);
+    }
+
+    protected handleScroll = () => {
+        const { dataSource } = this.props;
+        const scrollableElement = this.props.scrollableElement();
+
+        if ((dataSource.state != DataSourceState.Binding)
+            && (scrollableElement.scrollHeight - scrollableElement.scrollTop <= (scrollableElement.clientHeight + 25))) {
+            const dataSourcePager = new DataSourcePager(dataSource);
+
+            dataSourcePager.moveToPage(PageType.Next);
+        }
     }
 }
