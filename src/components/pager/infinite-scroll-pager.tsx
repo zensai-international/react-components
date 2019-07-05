@@ -75,9 +75,12 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     protected changeHeaderPadding() {
         const bodyElement = this.getBodyElement();
         const headerElement = this.getHeaderElement();
-        const scrollWidth = bodyElement.offsetWidth - bodyElement.clientWidth;
 
-        headerElement.style.paddingRight = (scrollWidth > 0) ? `${scrollWidth}px` : '';
+        if (headerElement) {
+            const scrollWidth = bodyElement.offsetWidth - bodyElement.clientWidth;
+
+            headerElement.style.paddingRight = (scrollWidth > 0) ? `${scrollWidth}px` : '';
+        }
     }
 
     protected attachEvents() {

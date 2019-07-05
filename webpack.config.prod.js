@@ -8,6 +8,7 @@ module.exports = (environment, options) => {
     const mode = options.mode;
 
     return {
+        devtool: false,
         context: path.resolve(__dirname, '.'),
         entry: {
             'index': ['./src/index']
