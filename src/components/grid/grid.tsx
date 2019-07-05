@@ -41,9 +41,12 @@ export enum GridSelectionMode {
 
 export interface GridProps {
     autoBind?: boolean;
+    headerProps?: React.ClassAttributes<GridHeader>;
+    bodyProps?: React.ClassAttributes<GridBody>;
     bodyRowTemplate?: GridBodyRowTemplate;
     dataSource: DataSource;
     filterContext?: FilterContext;
+    footerProps?: React.ClassAttributes<GridFooter>;
     messages?: GridMessages;
     selectedItems?: any[];
     selectionMode?: GridSelectionMode;
@@ -68,7 +71,10 @@ export interface GridStyle extends Style {
     header: GridHeaderStyle;
 }
 
-export abstract class Grid<P extends GridProps = GridProps, S extends GridState = GridState> extends React.Component<P, S> {
+export abstract class Grid<
+    P extends GridProps = GridProps,
+    S extends GridState = GridState
+> extends React.Component<P, S> {
     public static childContextTypes = GridContextTypes;
     public static defaultProps: Partial<GridProps> = DefaultGridProps;
 
@@ -171,10 +177,12 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
 
     protected renderBody(): React.ReactNode {
         const Body = this.bodyType;
-        const bodyStyle = this.props.style.body;
+        const { body: bodyStyle } = this.props.style;
+        const { bodyProps } = this.props;
 
         return (
             <Body
+                {...bodyProps}
                 columns={this.columns}
                 onCellClick={this.handleBodyCellClick}
                 onRowClick={this.handleBodyRowClick}
@@ -202,9 +210,11 @@ export abstract class Grid<P extends GridProps = GridProps, S extends GridState 
     protected renderHeader(): React.ReactNode {
         const Header = this.headerType;
         const headerStyle = this.props.style.header;
+        const { headerProps } = this.props;
 
         return (this.props.showHeader != false) && (
             <Header
+                {...headerProps}
                 columns={this.columns}
                 onCellClick={this.handleHeaderCellClick}
                 onRowClick={this.handleHeaderRowClick}
