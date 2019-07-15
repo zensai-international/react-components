@@ -2,7 +2,7 @@ import { parse } from 'url';
 import { Uri, UriScheme } from './uri';
 
 export class UriParser {
-    public static readonly currentUri: Uri = new UriParser().parse(window.location.href);
+    public static readonly currentUri: Uri = window ? new UriParser().parse(window.location.href) : null;
 
     private static getQueryParameters(query: string): { [name: string]: string } {
         const hashes = query.split('&');

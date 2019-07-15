@@ -16,7 +16,13 @@ module.exports = (environment, options) => {
         externals: {
             'jsdom': 'window',
             'cheerio': 'window',
+            'prop-types': true,
+            'react': true,
+            'react-dom': true,
+            'react/lib/ExecutionEnvironment': true,
+            'react/addons': true,
             'react/lib/ReactContext': 'window',
+            'url': true,
         },
         module: {
             rules: [
