@@ -46,6 +46,19 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
 
             this.changeHeaderPadding();
         }
+
+        const { dataSource: currentDataSource } = this.props;
+        const { dataSource: nextDataSource } = nextProps;
+
+        if (currentDataSource != nextDataSource) {
+            if (currentDataSource) {
+                currentDataSource.onDataBound.off(this.handleDataBound);
+            }
+
+            if (nextDataSource) {
+                nextDataSource.onDataBound.on(this.handleDataBound);
+            }
+        }
     }
 
     public componentWillUnmount() {
