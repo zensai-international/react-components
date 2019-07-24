@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DataSourceState, DataSource } from '../../infrastructure/data/data-source';
 import { DataSourcePager, PageType } from '../../infrastructure/data/data-source-pager';
+import { Event } from '../../infrastructure/event';
 import { GridProps, GridHeader } from '../grid';
 import { GridBody } from '../grid/table/grid-body';
 import * as ReactDOM from 'react-dom';
@@ -8,6 +9,7 @@ import * as ReactDOM from 'react-dom';
 export interface InfiniteScrollPagerProps {
     dataSource: DataSource;
     isEnabled?: boolean;
+    onChanged?: Event<any>;
 }
 
 export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProps, {}> {
@@ -27,12 +29,15 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
 
     public componentDidMount() {
         if (this.props.isEnabled) {
-            const { dataSource } = this.props;
+            const { dataSource, onChanged } = this.props;
 
             this.attachEvents();
             this.changeHeaderPadding();
 
             dataSource.onDataBound.on(this.handleDataBound);
+            if (onChanged) {
+                onChanged.on(this.handleDataBound);
+            }
         }
     }
 
@@ -64,6 +69,9 @@ export class InfiniteScrollPager extends React.Component<InfiniteScrollPagerProp
     public componentWillUnmount() {
         if (this.props.isEnabled) {
             this.detachEvents();
+        }
+        if (this.props.onChanged) {
+            this.props.onChanged.off(this.handleDataBound);
         }
     }
 
